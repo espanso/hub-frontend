@@ -1,11 +1,42 @@
 import { constant, flow, pipe } from "fp-ts/function";
-import { option, array, task } from "fp-ts";
+import { option, array, task, either } from "fp-ts";
 import { InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
-import { fetchPackagesIndexAsOption } from "../api/packagesIndex";
+import { fetchPackagesIndex } from "../api/packagesIndex";
 import { Package } from "../api/Package";
 import { Pane, majorScale, Heading, Paragraph, Card } from "evergreen-ui";
 import { ContentRow, useTabs, InstallPackage } from "../components";
+
+type QueryParams = {
+  params: {
+    packageName: string;
+  };
+};
+
+export const getStaticProps = pipe(
+  fetchPackagesIndex,
+  task.map(either.fold(constant(option.none), option.some)),
+  task.map((packagesIndex) => ({
+    props: {
+      packagesIndex,
+    },
+  }))
+);
+
+export const getStaticPaths = pipe(
+  fetchPackagesIndex,
+  task.map(
+    flow(
+      either.map((d) => d.packages),
+      either.map(array.map((p) => ({ params: { packageName: p.name } }))),
+      either.getOrElseW(constant([]))
+    )
+  ),
+  task.map((paths) => ({
+    paths,
+    fallback: false,
+  }))
+);
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -77,29 +108,5 @@ const PackagePage = (props: Props) => {
 
   return pipe(currentPackage, option.map(packageDetails), option.toNullable);
 };
-
-export const getStaticProps = pipe(
-  fetchPackagesIndexAsOption,
-  task.map((packagesIndex) => ({
-    props: {
-      packagesIndex,
-    },
-  }))
-);
-
-export const getStaticPaths = pipe(
-  fetchPackagesIndexAsOption,
-  task.map(
-    flow(
-      option.map((d) => d.packages),
-      option.map(array.map((p) => ({ params: { packageName: p.name } }))),
-      option.getOrElseW(constant([]))
-    )
-  ),
-  task.map((paths) => ({
-    paths,
-    fallback: false,
-  }))
-);
 
 export default PackagePage;

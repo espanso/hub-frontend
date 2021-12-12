@@ -54,3 +54,10 @@ export const PackagesIndex = t.type(
 );
 
 export type PackagesIndex = t.TypeOf<typeof PackagesIndex>;
+
+const PackageRepo = t.type({
+  name: t.string,
+  readme: t.string,
+});
+
+export type PackageRepo = t.TypeOf<typeof PackageRepo>;

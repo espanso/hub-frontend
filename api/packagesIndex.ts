@@ -1,24 +1,50 @@
 import { either, option, task, taskEither } from "fp-ts";
-import { constant, pipe } from "fp-ts/function";
+import { constant, constVoid, flow, pipe } from "fp-ts/function";
 import { PackagesIndex } from "./Package";
 import { TaskEither } from "fp-ts/TaskEither";
+import flatCache from "flat-cache";
 import { Task } from "fp-ts/Task";
 
-export const fetchPackagesIndex: TaskEither<Error, PackagesIndex> = pipe(
-  taskEither.tryCatch(
-    () =>
-      fetch(
-        "https://github.com/espanso/hub/releases/download/v1.0.0/package_index.json"
-      ),
-    either.toError
-  ),
-  taskEither.chain((response) =>
-    taskEither.tryCatch(() => response.json(), either.toError)
-  )
+const PACKAGE_INDEX_URL =
+  process.env.PACKAGE_INDEX_URL ||
+  "https://github.com/espanso/hub/releases/download/v1.0.0/package_index.json";
+
+export const PACKAGE_INDEX_CACHE_ID = "packagesIndex";
+
+const cache = flatCache.load(PACKAGE_INDEX_CACHE_ID);
+
+export const clearPackagesIndexCache: Task<boolean> = task.fromIO(() =>
+  flatCache.clearCacheById(PACKAGE_INDEX_CACHE_ID)
 );
 
-export const fetchPackagesIndexAsOption: Task<option.Option<PackagesIndex>> =
+export const fetchPackagesIndex: TaskEither<Error, PackagesIndex> = pipe(
   pipe(
-    fetchPackagesIndex,
-    task.map(either.fold(constant(option.none), option.some))
-  );
+    cache.getKey(PACKAGE_INDEX_URL),
+    option.fromNullable,
+    option.fold(
+      () =>
+        pipe(
+          taskEither.tryCatch(
+            constant(fetch(PACKAGE_INDEX_URL)),
+            either.toError
+          ),
+          taskEither.chain((response) =>
+            taskEither.tryCatch(constant(response.json()), either.toError)
+          ),
+          taskEither.chain(
+            flow(
+              PackagesIndex.decode,
+              either.mapLeft(either.toError),
+              taskEither.fromEither
+            )
+          ),
+          taskEither.map((pacakgesIndex) => {
+            cache.setKey(PACKAGE_INDEX_URL, pacakgesIndex);
+            cache.save();
+            return cache.getKey(PACKAGE_INDEX_URL);
+          })
+        ),
+      taskEither.of
+    )
+  )
+);
