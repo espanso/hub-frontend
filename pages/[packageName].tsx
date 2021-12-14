@@ -1,11 +1,11 @@
-import { constant, flow, pipe } from "fp-ts/function";
-import { option, array, task, either } from "fp-ts";
-import { InferGetStaticPropsType } from "next";
-import { useRouter } from "next/router";
+import { constant, constNull, flow, pipe } from "fp-ts/function";
+import { option, array, task, either, taskEither } from "fp-ts";
 import { fetchPackagesIndex } from "../api/packagesIndex";
-import { Package } from "../api/Package";
+import { Package, PackageRepo, PackagesIndex } from "../api/Package";
 import { Pane, majorScale, Heading, Paragraph, Card } from "evergreen-ui";
 import { ContentRow, useTabs, InstallPackage } from "../components";
+import { Option } from "fp-ts/Option";
+import { fetchPackageRepo } from "../api/packageRepo";
 
 type QueryParams = {
   params: {
@@ -13,15 +13,24 @@ type QueryParams = {
   };
 };
 
-export const getStaticProps = pipe(
-  fetchPackagesIndex,
-  task.map(either.fold(constant(option.none), option.some)),
-  task.map((packagesIndex) => ({
-    props: {
-      packagesIndex,
-    },
-  }))
-);
+export const getStaticProps = (context: QueryParams) =>
+  pipe(
+    fetchPackagesIndex,
+    taskEither.chain((packagesIndex) =>
+      pipe(
+        packagesIndex.packages,
+        array.findFirst((p) => p.name === context.params.packageName),
+        taskEither.fromOption(constant(new Error("Package not found")))
+      )
+    ),
+    taskEither.chain(fetchPackageRepo),
+    task.map(either.fold(constant(option.none), option.some)),
+    task.map((p) => ({
+      props: {
+        packageRepo: p,
+      },
+    }))
+  )();
 
 export const getStaticPaths = pipe(
   fetchPackagesIndex,
@@ -38,17 +47,13 @@ export const getStaticPaths = pipe(
   }))
 );
 
-type Props = InferGetStaticPropsType<typeof getStaticProps>;
+type Props = {
+  packageRepo: Option<PackageRepo>;
+};
+
+const Description = ({ readme }: { readme: string }) => <>{readme}</>;
 
 const PackagePage = (props: Props) => {
-  const router = useRouter();
-  const { packageName } = router.query;
-  const currentPackage = pipe(
-    props.packagesIndex,
-    option.map((index) => index.packages),
-    option.chain(array.findFirst((p) => p.name === packageName))
-  );
-
   const header = (currentPackage: Package) => (
     <Pane display="flex">
       <Pane display="flex" flexDirection="column" flex={2}>
@@ -83,11 +88,19 @@ const PackagePage = (props: Props) => {
       {content}
     </Card>
   );
+
   const [tabsHeader, tabsContent] = useTabs([
     {
       id: "description",
       label: "Description",
-      render: () => tabContentWrapper(<>Description</>),
+      render: () =>
+        tabContentWrapper(
+          pipe(
+            props.packageRepo,
+            option.map((p) => <Description readme={p.readme} />),
+            option.getOrElse(() => <></>)
+          )
+        ),
     },
     {
       id: "code",
@@ -106,7 +119,12 @@ const PackagePage = (props: Props) => {
     </Pane>
   );
 
-  return pipe(currentPackage, option.map(packageDetails), option.toNullable);
+  return pipe(
+    props.packageRepo,
+    option.map((p) => p.package),
+    option.map(packageDetails),
+    option.toNullable
+  );
 };
 
 export default PackagePage;

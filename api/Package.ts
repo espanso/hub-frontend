@@ -56,7 +56,7 @@ export const PackagesIndex = t.type(
 export type PackagesIndex = t.TypeOf<typeof PackagesIndex>;
 
 const PackageRepo = t.type({
-  name: t.string,
+  package: Package,
   readme: t.string,
 });
 
