@@ -38,6 +38,19 @@ const espansoTheme = deepmerge(defaultTheme, {
         },
       },
     },
+    Button: {
+      appearances: {
+        minimal: {
+          backgroundColor: "transparent",
+          _hover: {
+            backgroundColor: "trasparent",
+          },
+          _active: {
+            backgroundColor: "trasparent",
+          },
+        },
+      },
+    },
   },
 });
 

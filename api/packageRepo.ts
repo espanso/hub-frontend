@@ -4,17 +4,17 @@ import { TaskEither } from "fp-ts/TaskEither";
 import { unzip, ZipEntry, ZipInfo } from "unzipit";
 import { Eq } from "fp-ts/string";
 import { Package, PackageRepo } from "./Package";
+import { SHA256 } from "crypto-js";
+
+const taskEitherChainTryCatch = <A, T>(g: (a: A) => Promise<T>) =>
+  taskEither.chain((a: A) => taskEither.tryCatch(() => g(a), either.toError));
 
 export const fetchPackageRepo: (p: Package) => TaskEither<Error, PackageRepo> =
   (p: Package) =>
     pipe(
       taskEither.tryCatch(() => fetch(p.archive_url), either.toError),
-      taskEither.chain((r) =>
-        taskEither.tryCatch(() => r.arrayBuffer(), either.toError)
-      ),
-      taskEither.chain((buff) =>
-        taskEither.tryCatch(() => unzip(buff), either.toError)
-      ),
+      taskEitherChainTryCatch((res) => res.arrayBuffer()),
+      taskEitherChainTryCatch((buff) => unzip(buff)),
       taskEither.map<ZipInfo, ZipEntry[]>((info) =>
         Object.values(info.entries)
       ),

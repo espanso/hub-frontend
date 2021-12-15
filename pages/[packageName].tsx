@@ -1,9 +1,9 @@
-import { constant, constNull, flow, pipe } from "fp-ts/function";
+import { constant, flow, pipe } from "fp-ts/function";
 import { option, array, task, either, taskEither } from "fp-ts";
 import { fetchPackagesIndex } from "../api/packagesIndex";
-import { Package, PackageRepo, PackagesIndex } from "../api/Package";
+import { Package, PackageRepo } from "../api/Package";
 import { Pane, majorScale, Heading, Paragraph, Card } from "evergreen-ui";
-import { ContentRow, useTabs, InstallPackage } from "../components";
+import { ContentRow, useTabs, CodeBlock, Markdown } from "../components";
 import { Option } from "fp-ts/Option";
 import { fetchPackageRepo } from "../api/packageRepo";
 
@@ -51,8 +51,6 @@ type Props = {
   packageRepo: Option<PackageRepo>;
 };
 
-const Description = ({ readme }: { readme: string }) => <>{readme}</>;
-
 const PackagePage = (props: Props) => {
   const header = (currentPackage: Package) => (
     <Pane display="flex">
@@ -73,7 +71,10 @@ const PackagePage = (props: Props) => {
           Copy and past to install this package
         </Paragraph>
 
-        <InstallPackage packageName={currentPackage.name} />
+        <CodeBlock
+          content={`espanso install ${currentPackage.name}`}
+          showCopyButton
+        />
       </Pane>
     </Pane>
   );
@@ -82,6 +83,7 @@ const PackagePage = (props: Props) => {
     <Card
       marginTop={majorScale(6)}
       marginBottom={majorScale(6)}
+      padding={majorScale(5)}
       background="white"
       elevation={1}
     >
@@ -97,7 +99,7 @@ const PackagePage = (props: Props) => {
         tabContentWrapper(
           pipe(
             props.packageRepo,
-            option.map((p) => <Description readme={p.readme} />),
+            option.map((p) => <Markdown content={p.readme} />),
             option.getOrElse(() => <></>)
           )
         ),
