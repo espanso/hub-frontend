@@ -55,9 +55,22 @@ export const PackagesIndex = t.type(
 
 export type PackagesIndex = t.TypeOf<typeof PackagesIndex>;
 
+export const PackageManifest = t.type({
+  author: t.string,
+  description: t.string,
+  homepage: t.string,
+  name: t.string,
+  title: t.string,
+  version: t.string,
+});
+
+export type PackageManifest = t.TypeOf<typeof PackageManifest>;
+
 const PackageRepo = t.type({
   package: Package,
+  manifest: PackageManifest,
   readme: t.string,
+  packageYml: t.string,
 });
 
 export type PackageRepo = t.TypeOf<typeof PackageRepo>;
