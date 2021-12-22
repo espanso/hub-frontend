@@ -1,9 +1,10 @@
 import { either, option, task, taskEither } from "fp-ts";
-import { constant, constVoid, flow, pipe } from "fp-ts/function";
+import { constant, flow, pipe } from "fp-ts/function";
 import { PackagesIndex } from "./model";
 import { TaskEither } from "fp-ts/TaskEither";
 import flatCache from "flat-cache";
 import { Task } from "fp-ts/Task";
+import { taskEitherLogError } from "./utils";
 
 const PACKAGE_INDEX_URL =
   process.env.PACKAGE_INDEX_URL ||
@@ -45,6 +46,7 @@ export const fetchPackagesIndex: TaskEither<Error, PackagesIndex> = pipe(
           })
         ),
       taskEither.of
-    )
+    ),
+    taskEitherLogError
   )
 );

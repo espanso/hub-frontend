@@ -1,10 +1,10 @@
-import { array, either, option, task, taskEither } from "fp-ts";
-import { pipe, flow } from "fp-ts/function";
+import { array, either, taskEither } from "fp-ts";
+import { pipe } from "fp-ts/function";
 import { TaskEither } from "fp-ts/TaskEither";
-import { unzip, ZipEntry, ZipInfo } from "unzipit";
-import { Eq } from "fp-ts/string";
+import { unzip } from "unzipit";
 import { Package, PackageRepo, PackageManifest } from "./model";
 import * as yaml from "yaml";
+import { taskEitherLogError } from "./utils";
 
 const ZIP_REPO_FILENAMES = {
   readme: "README.md",
@@ -47,5 +47,6 @@ export const fetchPackageRepo: (p: Package) => TaskEither<Error, PackageRepo> =
       taskEither.map((repo) => ({
         package: p,
         ...repo,
-      }))
+      })),
+      taskEitherLogError
     );
