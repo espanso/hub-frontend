@@ -3,3 +3,4 @@ export * from "./layout";
 export * from "./CodeBlock";
 export * from "./Markdown";
 export * from "./PackagesGrid/PackagesGrid";
+export * from "./Navbar";
