@@ -45,7 +45,9 @@ export const PackagesGrid = (props: Props) => (
         <Pane display="flex" flexDirection="column">
           {pipe(
             packages,
-            array.map((p) => <PackageCard package={p} />)
+            array.map((p) => (
+              <PackageCard key={`${p.name}_${p.author}`} package={p} />
+            ))
           )}
         </Pane>
       ))
