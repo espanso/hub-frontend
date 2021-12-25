@@ -2,7 +2,7 @@ import { array, either, taskEither } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import { TaskEither } from "fp-ts/TaskEither";
 import { unzip } from "unzipit";
-import { Package, PackageRepo, PackageManifest } from "./model";
+import { Package, PackageRepo, PackageManifest } from "./domain";
 import * as yaml from "yaml";
 import { taskEitherLogError } from "./utils";
 

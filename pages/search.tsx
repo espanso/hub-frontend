@@ -1,11 +1,11 @@
 import { Pane } from "evergreen-ui";
 import { option, either, task, taskEither, array, nonEmptyArray } from "fp-ts";
-import { constant, pipe } from "fp-ts/function";
+import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { PackagesGrid, Navbar, ContentRow } from "../components";
 import { useRouter } from "next/router";
-import { Package } from "../api/model";
+import { Package, GroupedByVersion } from "../api/domain";
 
 export const getStaticProps = pipe(
   fetchPackagesIndex,
@@ -48,7 +48,8 @@ const Search = (props: Props) => {
           option.map((index) => index.packages),
           option.map(array.filter(packagesFilter)),
           option.chain(nonEmptyArray.fromArray),
-          option.map((packages) => <PackagesGrid packages={packages} />),
+          option.chain(flow(GroupedByVersion.decode, option.fromEither)),
+          option.map((grouped) => <PackagesGrid packages={grouped} />),
           option.toNullable
         )}
       </ContentRow>
