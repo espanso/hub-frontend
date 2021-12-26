@@ -41,6 +41,7 @@ const Search = (props: Props) => {
   const queryTerms = pipe(query, option.map(string.split(" ")));
 
   const packagesFilter = (p: Package) =>
+    pipe(queryTerms, option.isSome) &&
     pipe(
       Object.values(p),
       array.filter((value) => typeof value === "string"),
