@@ -1,13 +1,13 @@
 import {
   Card,
+  Code,
   DuplicateIcon,
   IconButton,
-  Code,
   majorScale,
-  Popover,
   Pane,
-  Text,
+  Popover,
   Position,
+  Text,
   TickIcon,
 } from "evergreen-ui";
 import { useState } from "react";

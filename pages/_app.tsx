@@ -1,7 +1,7 @@
-import "./reset.css";
-import "./index.css";
-import { EspansoThemeProvider } from "../components";
 import { AppProps } from "next/app";
+import { EspansoThemeProvider } from "../components";
+import "./index.css";
+import "./reset.css";
 
 const EspansoHub = ({ Component, pageProps }: AppProps) => {
   return (

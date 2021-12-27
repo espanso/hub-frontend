@@ -1,7 +1,7 @@
 import { Card, Heading, majorScale, Pane, Paragraph } from "evergreen-ui";
+import { array, nonEmptyArray, option, record } from "fp-ts";
 import { flow, pipe } from "fp-ts/function";
 import { GroupedByVersion, Package } from "../../api/domain";
-import { array, nonEmptyArray, option, record } from "fp-ts";
 
 type Props = {
   packages: GroupedByVersion;

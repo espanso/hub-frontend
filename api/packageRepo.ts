@@ -2,8 +2,8 @@ import { array, either, taskEither } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import { TaskEither } from "fp-ts/TaskEither";
 import { unzip } from "unzipit";
-import { Package, PackageRepo, PackageManifest } from "./domain";
 import * as yaml from "yaml";
+import { Package, PackageManifest, PackageRepo } from "./domain";
 import { taskEitherLogError } from "./utils";
 
 const ZIP_REPO_FILENAMES = {

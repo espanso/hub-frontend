@@ -1,8 +1,8 @@
-import { pipe } from "fp-ts/function";
-import { array } from "fp-ts";
 import { majorScale, Pane } from "evergreen-ui";
-import { v4 as uuidv4 } from "uuid";
+import { array } from "fp-ts";
+import { pipe } from "fp-ts/function";
 import { ReactNode } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 type Direction = "row" | "column";
 
