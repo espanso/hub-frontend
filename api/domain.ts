@@ -4,6 +4,7 @@ import { constant, flow, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { fromCompare, Ord } from "fp-ts/Ord";
 import * as t from "io-ts";
+import * as tp from "io-ts-types";
 
 interface PackageVersionBrand {
   readonly PackageVersion: unique symbol;
@@ -26,6 +27,7 @@ const RawPackage = t.type(
     version: PackageVersion,
     archive_url: t.string,
     archive_sha256_url: t.string,
+    tags: tp.nonEmptyArray(t.string),
   },
   "PackageRaw"
 );

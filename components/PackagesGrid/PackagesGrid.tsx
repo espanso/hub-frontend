@@ -1,7 +1,15 @@
-import { Card, Heading, majorScale, Pane, Paragraph } from "evergreen-ui";
+import {
+  Badge,
+  Card,
+  Heading,
+  majorScale,
+  Pane,
+  Paragraph,
+} from "evergreen-ui";
 import { array, nonEmptyArray, option, record } from "fp-ts";
 import { flow, pipe } from "fp-ts/function";
 import { GroupedByVersion, Package } from "../../api/domain";
+import { Stack } from "../layout";
 
 type Props = {
   packages: GroupedByVersion;
@@ -25,6 +33,21 @@ const PackageCard = (props: { package: Package }) => (
   >
     <Heading>{props.package.title}</Heading>
     <Paragraph>{props.package.description}</Paragraph>
+    <Stack units={1} flexWrap="wrap" marginTop={majorScale(1)}>
+      {pipe(
+        props.package.tags,
+        nonEmptyArray.map((t) => (
+          <Badge
+            key={`${props.package.id}-${t}`}
+            color="neutral"
+            marginTop={majorScale(2)}
+            isInteractive
+          >
+            {t}
+          </Badge>
+        ))
+      )}
+    </Stack>
   </Card>
 );
 
