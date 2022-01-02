@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import { GroupedByVersion, Package } from "../api/domain";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { ContentRow, Navbar, PackageCard, Stack } from "../components";
-import { search } from "../api/search";
+import { textSearch, tagsSearch } from "../api/search";
 
 export const getStaticProps = () =>
   pipe(
@@ -44,11 +44,12 @@ const Search = (props: Props) => {
   );
 
   const tags = pipe(
-    router.query.tags,
+    router.query.t,
     option.fromNullable,
     option.map((v) => (Array.isArray(v) ? v[0] : v)),
     option.map(decodeURIComponent),
-    option.map(string.split(","))
+    option.map(string.split(",")),
+    option.map(nonEmptyArray.fromReadonlyNonEmptyArray)
   );
 
   const filterBySearch: (packages: Array<Package>) => Array<Package> = (
@@ -56,7 +57,16 @@ const Search = (props: Props) => {
   ) =>
     pipe(
       query,
-      option.map(search(packages)),
+      option.map(textSearch(packages)),
+      option.getOrElseW(constant(packages))
+    );
+
+  const filterByTags: (packages: Array<Package>) => Array<Package> = (
+    packages
+  ) =>
+    pipe(
+      tags,
+      option.map(tagsSearch(packages)),
       option.getOrElseW(constant(packages))
     );
 
@@ -64,7 +74,7 @@ const Search = (props: Props) => {
     <Stack units={2} direction="column">
       {pipe(
         packages,
-        array.map((p) => <PackageCard package={p} />)
+        array.map((p) => <PackageCard key={p.id} package={p} />)
       )}
     </Stack>
   );
@@ -84,6 +94,7 @@ const Search = (props: Props) => {
           option.chain(flow(GroupedByVersion.decode, option.fromEither)),
           option.map(flow(record.map(nonEmptyArray.head), Object.values)),
           option.map(filterBySearch),
+          option.map(filterByTags),
           option.map(renderSearchResults),
           option.toNullable
         )}
