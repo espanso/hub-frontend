@@ -12,13 +12,16 @@ const NavbarLink = (props: { href: string; children: React.ReactNode }) => (
 
 type Props = {
   searchInitialValue?: string;
+  onSearchEnter?: (value: string) => unknown;
 };
 
 export const Navbar = (props: Props) => {
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      window.location.href = `/search?q=${event.currentTarget.value}`;
+      if (props.onSearchEnter && event.currentTarget.value) {
+        props.onSearchEnter(event.currentTarget.value);
+      }
     }
   };
 
