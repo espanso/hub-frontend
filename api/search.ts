@@ -1,12 +1,4 @@
-import {
-  array,
-  boolean,
-  nonEmptyArray,
-  option,
-  predicate,
-  record,
-  string,
-} from "fp-ts";
+import { array, boolean, nonEmptyArray, option, record, string } from "fp-ts";
 import { constVoid, flow, identity, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
@@ -16,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Package, TextSearch } from "./domain";
 
 const textSearchOptions: Fuse.IFuseOptions<Package> = {
+  useExtendedSearch: true, // enables '|' OR and ' ' AND operators
   keys: ["name", "author", "description", "title"],
 };
 
@@ -24,18 +17,15 @@ export const textSearch: (
 ) => (query: string) => Array<Package> = (packages) => (query) =>
   new Fuse(packages, textSearchOptions).search(query).map((i) => i.item);
 
-const tagSearchOptions: Fuse.IFuseOptions<Package> = {
-  useExtendedSearch: true, // enables '|' OR and ' ' AND operators
-  threshold: 0.0, // exact match
-  keys: ["tags"],
-};
-
 export const tagsSearch: (
   packages: Array<Package>
 ) => (tags: NonEmptyArray<string>) => Array<Package> = (packages) => (tags) =>
-  new Fuse(packages, tagSearchOptions)
-    .search(tags.join(" "))
-    .map((i) => i.item);
+  pipe(
+    tags,
+    array.reduce(packages, (acc, tag) =>
+      acc.filter((p) => p.tags.includes(tag))
+    )
+  );
 
 type Props = {
   searchPathname?: string;
