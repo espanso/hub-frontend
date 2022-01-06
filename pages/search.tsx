@@ -54,7 +54,7 @@ const tagEq: Eq<string> = {
 };
 
 const Search = (props: Props) => {
-  const packagesSearch = usePackageSearch();
+  const packageSearch = usePackageSearch();
 
   const tagsCheckboxes: ComponentProps<typeof CheckboxGroup>["items"] = pipe(
     props.packages,
@@ -68,7 +68,7 @@ const Search = (props: Props) => {
           [curr]: {
             label: curr,
             checked: pipe(
-              packagesSearch.tags,
+              packageSearch.tags,
               option.chain(array.findFirst((x) => tagEq.equals(x, curr))),
               option.fold(constant(false), constant(true))
             ),
@@ -83,7 +83,7 @@ const Search = (props: Props) => {
     packages
   ) =>
     pipe(
-      packagesSearch.query,
+      packageSearch.query,
       option.map(textSearch(packages)),
       option.getOrElseW(constant(packages))
     );
@@ -92,7 +92,7 @@ const Search = (props: Props) => {
     packages
   ) =>
     pipe(
-      packagesSearch.tags,
+      packageSearch.tags,
       option.map(tagsSearch(packages)),
       option.getOrElseW(constant(packages))
     );
@@ -107,7 +107,7 @@ const Search = (props: Props) => {
   );
 
   const onCheckboxesChange = (items: Record<string, CheckboxItem>) =>
-    packagesSearch.setTags(
+    packageSearch.setTags(
       pipe(
         items,
         record.filter((v) => v.checked),
@@ -121,10 +121,10 @@ const Search = (props: Props) => {
       <ContentRow background="green500">
         <Navbar
           searchInitialValue={pipe(
-            packagesSearch.query,
+            packageSearch.query,
             option.getOrElseW(constant(""))
           )}
-          onSearchEnter={flow(option.of, packagesSearch.setQuery)}
+          onSearchEnter={flow(option.of, packageSearch.setQuery)}
         />
       </ContentRow>
 
