@@ -1,11 +1,19 @@
-import { array, nonEmptyArray, option, record, string } from "fp-ts";
-import { identity, pipe } from "fp-ts/function";
+import {
+  array,
+  boolean,
+  nonEmptyArray,
+  option,
+  predicate,
+  record,
+  string,
+} from "fp-ts";
+import { constVoid, flow, identity, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 import Fuse from "fuse.js";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Package } from "./domain";
+import { Package, TextSearch } from "./domain";
 
 const textSearchOptions: Fuse.IFuseOptions<Package> = {
   keys: ["name", "author", "description", "title"],
@@ -29,47 +37,90 @@ export const tagsSearch: (
     .search(tags.join(" "))
     .map((i) => i.item);
 
-export const usePackageSearch = () => {
+type Props = {
+  searchPathname?: string;
+};
+
+type SearchParams = {
+  query: Option<TextSearch>;
+  tags: Option<NonEmptyArray<string>>;
+};
+
+export const usePackageSearch = (props?: Props) => {
   const router = useRouter();
-
-  const [query, setQuery] = useState<Option<string>>(
-    pipe(
-      router.query.q,
-      option.fromNullable,
-      option.map((v) => (Array.isArray(v) ? v[0] : v)),
-      option.map(decodeURIComponent)
-    )
+  const searchPathname = pipe(
+    props,
+    option.fromNullable,
+    option.map((p) => p.searchPathname),
+    option.chain(option.fromNullable)
   );
+  const [params, setParams] = useState<SearchParams>({
+    query: option.none,
+    tags: option.none,
+  });
 
-  const [tags, setTags] = useState<Option<NonEmptyArray<string>>>(
+  useEffect(() => {
     pipe(
-      router.query.t,
-      option.fromNullable,
-      option.map((v) => (Array.isArray(v) ? v[0] : v)),
-      option.map(decodeURIComponent),
-      option.map((a) => a.split(",")),
-      option.chain(nonEmptyArray.fromArray)
-    )
-  );
+      router.isReady,
+      boolean.fold(constVoid, () =>
+        setParams({
+          query: pipe(
+            router.query.q,
+            option.fromNullable,
+            option.map((v) => (Array.isArray(v) ? v.join(" ") : v)),
+            option.map(decodeURIComponent),
+            option.chain(flow(TextSearch.decode, option.fromEither))
+          ),
+          tags: pipe(
+            router.query.t,
+            option.fromNullable,
+            option.map((v) => (Array.isArray(v) ? v.join(",") : v)),
+            option.map(decodeURIComponent),
+            option.map((a) => a.split(",")),
+            option.chain(nonEmptyArray.fromArray)
+          ),
+        })
+      )
+    );
+  }, [router.isReady]);
 
   useEffect(() => {
     if (router.isReady) {
-      const params = {
-        q: pipe(query, option.map(encodeURIComponent)),
+      const optionalParams = {
+        q: pipe(params.query, option.map(encodeURIComponent)),
         t: pipe(
-          tags,
+          params.tags,
           option.map(array.sort(string.Ord)),
           option.map((t) => t.join(",")),
           option.map(encodeURIComponent)
         ),
       };
 
-      router.push({
-        pathname: "/search",
-        query: pipe(params, record.filterMap(identity)),
-      });
-    }
-  }, [query, tags]);
+      const newParams = pipe(optionalParams, record.filterMap(identity));
+      const newUrl = pipe(
+        {
+          pathname: searchPathname,
+          query: option.some(newParams),
+        },
+        record.filterMap<Option<any>, any>(identity)
+      );
 
-  return { query, setQuery, tags, setTags, isReady: router.isReady };
+      router.push(newUrl);
+    }
+  }, [params]);
+
+  const setQuery = (query: Option<string>) =>
+    setParams((prevState) => ({
+      ...prevState,
+      query: pipe(
+        query,
+        option.map(TextSearch.decode),
+        option.chain(option.fromEither)
+      ),
+    }));
+
+  const setTags = (tags: Option<NonEmptyArray<string>>) =>
+    setParams((prevState) => ({ ...prevState, tags }));
+
+  return { ...params, setQuery, setTags, setParams };
 };
