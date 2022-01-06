@@ -1,26 +1,25 @@
 import { Checkbox, Pane } from "evergreen-ui";
-import { record, string } from "fp-ts";
-import { pipe } from "fp-ts/function";
-import { Ord } from "fp-ts/Ord";
+import { array, option } from "fp-ts";
+import { pipe, constant } from "fp-ts/function";
 import { useEffect, useState } from "react";
 
 export type CheckboxItem = {
+  key: string;
   label: string;
   checked: boolean;
 };
 
 type Props = {
-  items: Record<string, CheckboxItem>;
-  onChange: (
-    items: Record<string, CheckboxItem>,
-    lastUpdated: string
-  ) => unknown;
-  order?: Ord<string>;
+  items: Array<CheckboxItem>;
+  onChange: (items: Array<CheckboxItem>, lastUpdated: string) => unknown;
 };
 
 export const CheckboxGroup = (props: Props) => {
   const [checks, setChecks] = useState(props.items);
-  const order = props.order ?? string.Ord;
+  const indexByKey: Record<string, number> = pipe(
+    checks,
+    array.reduceWithIndex({}, (i, acc, curr) => ({ ...acc, [curr.key]: i }))
+  );
 
   useEffect(() => setChecks(props.items), [props.items]);
 
@@ -28,22 +27,23 @@ export const CheckboxGroup = (props: Props) => {
     <Pane>
       {pipe(
         checks,
-        record.collect(order)((k, item) => (
+        array.map((item) => (
           <Checkbox
-            key={k}
-            id={k}
+            key={item.key}
+            id={item.key}
             label={item.label}
             checked={item.checked}
             onChange={(e) => {
-              const newChecks = {
-                ...checks,
-                [k]: {
-                  ...item,
+              const newChecks = pipe(
+                checks,
+                array.modifyAt(indexByKey[item.key], (elem: CheckboxItem) => ({
+                  ...elem,
                   checked: e.target.checked,
-                },
-              };
+                })),
+                option.getOrElse(constant(checks))
+              );
               setChecks(newChecks);
-              props.onChange(newChecks, k);
+              props.onChange(newChecks, item.key);
             }}
           />
         ))
