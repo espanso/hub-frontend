@@ -1,12 +1,10 @@
-import { Pane } from "evergreen-ui";
+import { CrossIcon, majorScale, Pane } from "evergreen-ui";
 import {
   array,
   either,
   nonEmptyArray,
-  number,
   option,
   record,
-  string,
   task,
   taskEither,
 } from "fp-ts";
@@ -22,6 +20,7 @@ import {
   CheckboxGroup,
   CheckboxItem,
   ContentRow,
+  IconBadge,
   Navbar,
   PackageCard,
   Stack,
@@ -137,6 +136,33 @@ const Search = (props: Props) => {
             />
           </Pane>
           <Pane display="flex" flexDirection="column" flexGrow={2}>
+            <Stack
+              units={1}
+              flexWrap="wrap"
+              marginTop={majorScale(2)}
+              marginBottom={majorScale(2)}
+            >
+              {pipe(
+                packageSearch.tags,
+                option.map(
+                  array.map((t) => (
+                    <IconBadge
+                      text={t}
+                      icon={() => <CrossIcon />}
+                      onIconClick={() =>
+                        pipe(
+                          packageSearch.tags,
+                          option.map(array.filter((x) => !tagEq.equals(x, t))),
+                          option.chain(nonEmptyArray.fromArray),
+                          packageSearch.setTags
+                        )
+                      }
+                    />
+                  ))
+                ),
+                option.toNullable
+              )}
+            </Stack>
             {pipe(
               props.packages,
               option.map(filterBySearch),
