@@ -7,7 +7,7 @@ import { fetchPackageRepo } from "../api/packageRepo";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { CodeBlock, ContentRow, Markdown, useTabs } from "../components";
 
-export const getStaticrops = (context: GetStaticPropsContext) =>
+export const getStaticProps = (context: GetStaticPropsContext) =>
   pipe(
     fetchPackagesIndex,
     taskEither.chain((packagesIndex) =>

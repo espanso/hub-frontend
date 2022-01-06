@@ -32,9 +32,9 @@
     "yaml": "^1.10.2"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "PACKAGE_INDEX_CACHE_DIR=.cache next dev",
+    "build": "PACKAGE_INDEX_CACHE_DIR=.cache next build",
+    "start": "PACKAGE_INDEX_CACHE_DIR=.cache next start",
     "lint": "next lint"
   },
   "eslintConfig": {
