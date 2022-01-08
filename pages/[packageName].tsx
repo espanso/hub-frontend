@@ -5,7 +5,14 @@ import { GetStaticPropsContext } from "next";
 import { Package, PackageRepo } from "../api/domain";
 import { fetchPackageRepo } from "../api/packageRepo";
 import { fetchPackagesIndex } from "../api/packagesIndex";
-import { CodeBlock, ContentRow, Markdown, useTabs } from "../components";
+import { usePackageSearch } from "../api/search";
+import {
+  CodeBlock,
+  ContentRow,
+  Markdown,
+  TagBadgeGroup,
+  useTabs,
+} from "../components";
 
 export const getStaticProps = (context: GetStaticPropsContext) =>
   pipe(
@@ -58,6 +65,9 @@ type Props = {
 };
 
 const PackagePage = (props: Props) => {
+  const packagesSearch = usePackageSearch({
+    searchPathname: "/search",
+  });
   const header = (currentPackage: Package) => (
     <Pane display="flex">
       <Pane display="flex" flexDirection="column" flex={2}>
@@ -65,6 +75,10 @@ const PackagePage = (props: Props) => {
         <Paragraph size={500} marginTop={12}>
           {currentPackage.description}
         </Paragraph>
+        <TagBadgeGroup
+          tags={currentPackage.tags}
+          onClick={(tag) => packagesSearch.setTags(option.some([tag]))}
+        />
       </Pane>
       <Pane width={36} />
       <Pane

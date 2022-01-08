@@ -20,10 +20,10 @@ import {
   CheckboxGroup,
   CheckboxItem,
   ContentRow,
-  IconBadge,
   Navbar,
   PackageCard,
   Stack,
+  TagBadgeGroup,
 } from "../components";
 
 export const getStaticProps = () =>
@@ -97,11 +97,15 @@ const Search = (props: Props) => {
       option.getOrElseW(constant(packages))
     );
 
+  const onTagClick = (tag: string) => packageSearch.setTags(option.some([tag]));
+
   const renderSearchResults = (packages: Array<Package>) => (
     <Stack units={2} direction="column">
       {pipe(
         packages,
-        array.map((p) => <PackageCard key={p.id} package={p} />)
+        array.map((p) => (
+          <PackageCard key={p.id} package={p} onTagClick={onTagClick} />
+        ))
       )}
     </Stack>
   );
@@ -136,33 +140,13 @@ const Search = (props: Props) => {
             />
           </Pane>
           <Pane display="flex" flexDirection="column" flexGrow={2}>
-            <Stack
-              units={1}
-              flexWrap="wrap"
-              marginTop={majorScale(2)}
-              marginBottom={majorScale(2)}
-            >
-              {pipe(
-                packageSearch.tags,
-                option.map(
-                  array.map((t) => (
-                    <IconBadge
-                      text={t}
-                      icon={() => <CrossIcon />}
-                      onIconClick={() =>
-                        pipe(
-                          packageSearch.tags,
-                          option.map(array.filter((x) => !tagEq.equals(x, t))),
-                          option.chain(nonEmptyArray.fromArray),
-                          packageSearch.setTags
-                        )
-                      }
-                    />
-                  ))
-                ),
-                option.toNullable
-              )}
-            </Stack>
+            <TagBadgeGroup
+              tags={pipe(packageSearch.tags, option.getOrElseW(constant([])))}
+              onRemove={(tags) =>
+                packageSearch.setTags(pipe(tags, nonEmptyArray.fromArray))
+              }
+              onClick={onTagClick}
+            />
             {pipe(
               props.packages,
               option.map(filterBySearch),
