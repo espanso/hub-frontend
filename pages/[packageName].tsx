@@ -78,7 +78,13 @@ const PackagePage = (props: Props) => {
   });
   const header = (currentRepo: PackageRepo) => (
     <Pane display="flex">
-      <Pane display="flex" flexDirection="column" flex={2}>
+      <Pane
+        display="flex"
+        flexDirection="column"
+        flex={2}
+        paddingRight={majorScale(2)}
+        borderRight={true}
+      >
         <Pane display="flex">
           <Heading display="flex" flexGrow={1} size={900}>
             {currentRepo.package.name}
