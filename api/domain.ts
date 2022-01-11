@@ -128,13 +128,13 @@ export const OrderedByVersion = new t.Type<
   (input): input is NonEmptyArray<Package> =>
     Array.isArray(input) &&
     input.every(
-      flow(Package.decode, either.fold(constant(true), constant(false)))
+      flow(Package.decode, either.fold(constant(false), constant(true)))
     ),
   (input, ctx) =>
     pipe(
       Array.isArray(input) &&
         input.every(
-          flow(Package.decode, either.fold(constant(true), constant(false)))
+          flow(Package.decode, either.fold(constant(false), constant(true)))
         ),
       boolean.fold(constant(t.failure(input, ctx)), () =>
         pipe(
