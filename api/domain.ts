@@ -93,22 +93,31 @@ export const PackageManifest = t.type(
   {
     author: t.string,
     description: t.string,
-    homepage: t.string,
     name: t.string,
     title: t.string,
     version: t.string,
+    homepage: tp.optionFromNullable(t.string),
+    tags: tp.nonEmptyArray(t.string),
   },
   "PackageManifest"
 );
 
 export type PackageManifest = t.TypeOf<typeof PackageManifest>;
 
+const FileAsString = t.type({
+  name: t.string,
+  content: t.string,
+});
+
+export type FileAsString = t.TypeOf<typeof FileAsString>;
+
 const PackageRepo = t.type(
   {
     package: Package,
     manifest: PackageManifest,
     readme: t.string,
-    packageYml: t.string,
+    packageYml: tp.nonEmptyArray(FileAsString),
+    license: tp.optionFromNullable(t.string),
   },
   "PackageRepo"
 );
