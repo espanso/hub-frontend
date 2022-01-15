@@ -3,7 +3,9 @@ import { option } from "fp-ts";
 import { zipper } from "fp-ts-contrib";
 import { pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
-import { useState } from "react";
+import React, { useState } from "react";
+
+type TabVariant = "topbar" | "sidebar";
 
 type TabProps = {
   id: string;
@@ -11,36 +13,84 @@ type TabProps = {
   render: () => JSX.Element;
 };
 
+const foldVariant: <T>(match: { [k in TabVariant]: () => T }) => (
+  variant: TabVariant
+) => T = (match) => (variant) => match[variant]();
+
+type CommonTabProps = {
+  label: string;
+  key: string;
+  id: string;
+  onSelect: () => unknown;
+  isSelected: boolean;
+  "aria-controls": string;
+};
+
 export const useTabs: (
-  tabs: NonEmptyArray<TabProps>
-) => [JSX.Element, JSX.Element] = (tabs) => {
+  tabs: NonEmptyArray<TabProps>,
+  variant?: TabVariant
+) => [JSX.Element, JSX.Element] = (tabs, variant = "topbar") => {
   const [ztabs, setTabs] = useState(
     pipe(tabs, zipper.fromNonEmptyArray, zipper.start)
   );
-  const tabList = (
-    <Tablist elevation={1}>
-      {pipe(
+
+  const makeProps: (tab: TabProps) => CommonTabProps = (tab) => ({
+    label: tab.label,
+    key: tab.id,
+    id: tab.id,
+    onSelect: () =>
+      pipe(
         ztabs,
-        zipper.map((tab) => (
-          <Tab
-            key={tab.id}
-            id={tab.id}
-            onSelect={() =>
-              pipe(
-                ztabs,
-                zipper.moveByFindFirst((t) => t.id === tab.id),
-                option.map(setTabs)
-              )
-            }
-            isSelected={tab.id === ztabs.focus.id}
-            aria-controls={`tab-${tab}`}
-          >
-            {tab.label}
-          </Tab>
-        )),
-        zipper.toNonEmptyArray
-      )}
-    </Tablist>
+        zipper.moveByFindFirst((t) => t.id === tab.id),
+        option.map(setTabs)
+      ),
+    isSelected: tab.id === ztabs.focus.id,
+    "aria-controls": `tab-${tab}`,
+  });
+
+  const makeTab: (
+    variant: TabVariant
+  ) => (props: CommonTabProps) => JSX.Element = (variant) =>
+    pipe(
+      variant,
+      foldVariant({
+        topbar: () => (props: CommonTabProps) =>
+          (
+            <Tab {...props} appearance="primary" justifyContent="center">
+              {props.label}
+            </Tab>
+          ),
+        sidebar: () => (props: CommonTabProps) =>
+          (
+            <Tab
+              {...props}
+              appearance="secondary"
+              direction="vertical"
+              justifyContent="left"
+            >
+              {props.label}
+            </Tab>
+          ),
+      })
+    );
+
+  const tabList = pipe(
+    ztabs,
+    zipper.map(makeProps),
+    zipper.map(makeTab(variant)),
+    zipper.toNonEmptyArray,
+    (tabs) =>
+      pipe(
+        variant,
+        foldVariant({
+          topbar: () => <Tablist>{tabs}</Tablist>,
+          sidebar: () => (
+            <Tablist display="flex" flexDirection="column">
+              {tabs}
+            </Tablist>
+          ),
+        })
+      )
   );
 
   const panels = (
@@ -49,6 +99,7 @@ export const useTabs: (
         ztabs,
         zipper.map((tab) => (
           <Pane
+            width="100%"
             key={tab.id}
             id={`tab-${tab.id}`}
             role="tabpanel"

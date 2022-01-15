@@ -27,8 +27,6 @@ export const CodeBlock = (props: Props) => {
       minHeight={majorScale(5)}
       padding={majorScale(1)}
       elevation={2}
-      marginTop={majorScale(2)}
-      marginBottom={majorScale(2)}
     >
       <Code
         flex={1}
