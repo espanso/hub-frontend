@@ -25,6 +25,7 @@ import {
   PackageCard,
   Stack,
   TagBadgeGroup,
+  EmptyResultsIcon,
 } from "../components";
 
 export const getStaticProps = () =>
@@ -144,26 +145,6 @@ const Search = (props: Props) => {
     </Stack>
   );
 
-  const emptyResultsIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="64"
-      height="64"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      className="feather feather-meh"
-    >
-      <circle cx="12" cy="12" r="10"></circle>
-      <line x1="8" y1="15" x2="16" y2="15"></line>
-      <line x1="9" y1="9" x2="9.01" y2="9"></line>
-      <line x1="15" y1="9" x2="15.01" y2="9"></line>
-    </svg>
-  );
-
   const renderSearchResultsOrEmpty = (packages: Array<Package>) =>
     pipe(
       packages,
@@ -173,7 +154,9 @@ const Search = (props: Props) => {
         constant(
           additionalSearchResultWrapper(
             <Stack units={3} direction="column" alignItems="center">
-              <Text color="muted">{emptyResultsIcon}</Text>
+              <Text color="muted">
+                <EmptyResultsIcon />
+              </Text>
               <Stack units={1} direction="column" alignItems="center">
                 <Heading size={700}>{`Sorry! No results found! `}</Heading>
                 {createPackageSuggestion(

@@ -6,3 +6,4 @@ export * from "./layout";
 export * from "./Markdown";
 export * from "./Navbar";
 export * from "./PackageCard";
+export * from "./EmptyResultsIcon";
