@@ -47,10 +47,10 @@ export const Navbar = (props: Props) => {
         </Pane>
         <Stack units={4} display="flex" alignContent="center">
           <NavbarLink href="/search">Explore</NavbarLink>
-          <NavbarLink href="https://espanso.org/">Create a package</NavbarLink>
-          <NavbarLink href="https://espanso.org/docs/packages/#creating-a-package">
-            Espanso
+          <NavbarLink href="https://espanso.org/docs/next/packages/creating-a-package/">
+            Create a package
           </NavbarLink>
+          <NavbarLink href="https://espanso.org/">Espanso</NavbarLink>
         </Stack>
       </Pane>
     </Pane>

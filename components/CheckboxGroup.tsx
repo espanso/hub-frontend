@@ -1,4 +1,4 @@
-import { Checkbox, Pane } from "evergreen-ui";
+import { Checkbox, majorScale, Pane, Text } from "evergreen-ui";
 import { array, option } from "fp-ts";
 import { pipe, constant } from "fp-ts/function";
 import { useEffect, useState } from "react";
@@ -31,7 +31,11 @@ export const CheckboxGroup = (props: Props) => {
           <Checkbox
             key={item.key}
             id={item.key}
-            label={item.label}
+            label={
+              <Text textTransform="capitalize" alignSelf="center">
+                {item.label}
+              </Text>
+            }
             checked={item.checked}
             onChange={(e) => {
               const newChecks = pipe(
