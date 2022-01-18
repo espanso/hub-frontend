@@ -125,7 +125,7 @@ const YamlShowcase = (props: { files: NonEmptyArray<FileAsString> }) => {
     nonEmptyArray.map((f) => ({
       id: f.name,
       label: f.name,
-      render: () => <CodeBlock content={f.content} />,
+      render: () => <CodeBlock content={f.content} syntax="yaml" />,
     }))
   );
 
@@ -235,6 +235,7 @@ const VersionedPackagePage = (props: Props) => {
 
         <CodeBlock
           content={`espanso install ${currentRepo.package.name}`}
+          syntax="shell"
           showCopyButton
         />
       </Pane>
