@@ -1,6 +1,7 @@
-import { CrossIcon, majorScale, Pane } from "evergreen-ui";
+import { Pane, Text, Link, majorScale, Heading } from "evergreen-ui";
 import {
   array,
+  boolean,
   either,
   nonEmptyArray,
   option,
@@ -11,7 +12,7 @@ import {
 import { Eq } from "fp-ts/Eq";
 import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
-import { ComponentProps } from "react";
+import React, { ComponentProps } from "react";
 import { GroupedByVersion, Package } from "../api/domain";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { tagsSearch, textSearch, usePackageSearch } from "../api/search";
@@ -99,16 +100,92 @@ const Search = (props: Props) => {
 
   const onTagClick = (tag: string) => packageSearch.setTags(option.some([tag]));
 
+  const additionalSearchResultWrapper = (children: React.ReactNode) => (
+    <Pane
+      display="flex"
+      justifyContent="center"
+      marginTop={majorScale(4)}
+      marginBottom={majorScale(4)}
+    >
+      {children}
+    </Pane>
+  );
+
+  const createPackageSuggestion = (preamble: string, label: string) => (
+    <Stack units={1}>
+      <Text size={500} color="muted">
+        {preamble}
+      </Text>
+      <Link
+        size={500}
+        href="https://espanso.org/docs/next/packages/creating-a-package/"
+      >
+        {label}
+      </Link>
+    </Stack>
+  );
+
   const renderSearchResults = (packages: Array<Package>) => (
     <Stack units={2} direction="column">
       {pipe(
         packages,
         array.map((p) => (
           <PackageCard key={p.id} package={p} onTagClick={onTagClick} />
-        ))
+        )),
+        array.concat([
+          additionalSearchResultWrapper(
+            createPackageSuggestion(
+              "Nothing fits you?",
+              "Create your own package!"
+            )
+          ),
+        ])
       )}
     </Stack>
   );
+
+  const emptyResultsIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="64"
+      height="64"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      className="feather feather-meh"
+    >
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="8" y1="15" x2="16" y2="15"></line>
+      <line x1="9" y1="9" x2="9.01" y2="9"></line>
+      <line x1="15" y1="9" x2="15.01" y2="9"></line>
+    </svg>
+  );
+
+  const renderSearchResultsOrEmpty = (packages: Array<Package>) =>
+    pipe(
+      packages,
+      array.isEmpty,
+      boolean.fold(
+        constant(renderSearchResults(packages)),
+        constant(
+          additionalSearchResultWrapper(
+            <Stack units={3} direction="column" alignItems="center">
+              <Text color="muted">{emptyResultsIcon}</Text>
+              <Stack units={1} direction="column" alignItems="center">
+                <Heading size={700}>{`Sorry! No results found! `}</Heading>
+                {createPackageSuggestion(
+                  "If you can’t find what you’re looking for,",
+                  "create a new package!"
+                )}
+              </Stack>
+            </Stack>
+          )
+        )
+      )
+    );
 
   const onCheckboxesChange = (items: Array<CheckboxItem>) =>
     packageSearch.setTags(
@@ -151,7 +228,7 @@ const Search = (props: Props) => {
               props.packages,
               option.map(filterBySearch),
               option.map(filterByTags),
-              option.map(renderSearchResults),
+              option.map(renderSearchResultsOrEmpty),
               option.toNullable
             )}
           </Pane>
