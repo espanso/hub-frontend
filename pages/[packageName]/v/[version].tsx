@@ -274,8 +274,8 @@ const VersionedPackagePage = (props: Props) => {
         ),
     },
     {
-      id: "content",
-      label: "Content",
+      id: "source",
+      label: "Source",
       render: () =>
         tabContentWrapper(
           <Pane>
