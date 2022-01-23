@@ -12,7 +12,6 @@ const NavbarLink = (props: { href: string; children: React.ReactNode }) => (
 );
 
 type Props = {
-  assetLogo: string;
   searchInitialValue?: string;
   onSearchEnter?: (value: string) => unknown;
 };
@@ -45,6 +44,7 @@ export const Navbar = (props: Props) => {
             alt="Espanso Hub"
           />
           <SearchInput
+            appearance="navbar"
             placeholder="Search for wonderful packages!"
             onKeyDown={onEnter}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
