@@ -51,7 +51,12 @@ export const TagBadgeGroup = (props: Props) => {
     canBeRemoved ? makeRemovableBadge(tag) : makeNonRemovableBadge(tag);
 
   return (
-    <Stack units={1} flexWrap="wrap" marginTop={majorScale(1)}>
+    <Stack
+      units={1}
+      flexWrap="wrap"
+      marginTop={majorScale(1)}
+      marginBottom={majorScale(1)}
+    >
       {pipe(tags, array.map(makeBadge))}
     </Stack>
   );
