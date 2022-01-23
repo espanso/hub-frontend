@@ -13,7 +13,7 @@ type Props = {
 
 export const PackageCard = (props: Props) => (
   <Card
-    className="package-card"
+    className="clickable"
     display="flex"
     width="100%"
     flexDirection="column"

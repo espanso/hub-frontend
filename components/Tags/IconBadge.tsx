@@ -28,7 +28,7 @@ export const IconBadge = forwardRef(
         <Stack units={1} display="flex" alignItems="center">
           {props.text}
           <Pane
-            className="icon-badge-icon"
+            className="clickable"
             onClick={(e: SyntheticEvent) => {
               e.preventDefault();
               props.onIconClick();
