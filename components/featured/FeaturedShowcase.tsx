@@ -38,6 +38,7 @@ export const FeaturedShowcase = (props: Props) => {
           props.packages,
           nonEmptyArray.map((p) => (
             <Pane
+              key={p.id}
               display="flex"
               alignItems="center"
               justifyContent="center"
