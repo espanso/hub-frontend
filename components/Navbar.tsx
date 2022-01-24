@@ -47,8 +47,8 @@ export const Navbar = (props: Props) => {
       <Pane display="flex">
         <Stack units={2} display="flex" flex={1} alignItems="center">
           <Image
-            height={26}
-            width={161}
+            height={30}
+            width={172}
             src="/images/navbar_logo.svg"
             alt="Espanso Hub"
             className="clickable"
