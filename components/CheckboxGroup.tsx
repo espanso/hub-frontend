@@ -1,4 +1,4 @@
-import { Checkbox, majorScale, Pane, Text } from "evergreen-ui";
+import { Checkbox, Pane, Text } from "evergreen-ui";
 import { array, option } from "fp-ts";
 import { pipe, constant } from "fp-ts/function";
 import { useEffect, useState } from "react";

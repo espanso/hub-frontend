@@ -1,12 +1,4 @@
-import {
-  Pane,
-  Text,
-  Link,
-  majorScale,
-  Heading,
-  Strong,
-  minorScale,
-} from "evergreen-ui";
+import { Pane, Text, Link, majorScale, Heading, Strong } from "evergreen-ui";
 import {
   array,
   boolean,

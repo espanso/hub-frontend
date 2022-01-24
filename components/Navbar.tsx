@@ -1,4 +1,11 @@
-import { Link, majorScale, Pane, SearchInput, Strong } from "evergreen-ui";
+import {
+  Link,
+  majorScale,
+  Pane,
+  SearchInput,
+  Strong,
+  TextInputAppearance,
+} from "evergreen-ui";
 import { useState } from "react";
 import { Stack } from "./layout";
 import Image from "next/image";
@@ -48,7 +55,8 @@ export const Navbar = (props: Props) => {
             onClick={() => router.push("/")}
           />
           <SearchInput
-            appearance="navbar"
+            // evergreen doesn't infer user defined appearance type
+            appearance={"navbar" as TextInputAppearance}
             placeholder="Search for wonderful packages!"
             onKeyDown={onEnter}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
