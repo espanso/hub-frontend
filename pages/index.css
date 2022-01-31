@@ -1,3 +1,43 @@
 .clickable:hover {
   cursor: pointer;
 }
+
+.content-row {
+  width: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+@media (min-width: 576px) {
+  .content-row {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .content-row {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  .content-row {
+    width: 992px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .content-row {
+    width: 1024px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .content-row {
+    width: 1280px;
+  }
+}
