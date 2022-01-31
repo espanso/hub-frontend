@@ -4,23 +4,19 @@
 
 .content-row {
   width: 100%;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 @media (min-width: 576px) {
   .content-row {
     width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
   }
 }
 
 @media (min-width: 768px) {
   .content-row {
     width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
   }
 }
 

@@ -51,7 +51,7 @@ export const Navbar = (props: Props) => {
   const [searchValue, setSearchValue] = useState(props.searchInitialValue);
   const { foldDevices } = useResponsive();
 
-  const searchInput = (
+  const makeSearchInput = (widthPerc?: string) => (
     <SearchInput
       // evergreen doesn't infer user defined appearance type
       appearance={"navbar" as TextInputAppearance}
@@ -61,6 +61,7 @@ export const Navbar = (props: Props) => {
         setSearchValue(e.target.value)
       }
       value={searchValue}
+      width={widthPerc}
     />
   );
 
@@ -129,24 +130,17 @@ export const Navbar = (props: Props) => {
     >
       {foldDevices({
         mobile: () => (
-          <Stack units={2} display="flex">
+          <Stack units={2} display="flex" alignItems="center">
             {logoMobile}
-            {searchInput}
-            <Pane
-              display="flex"
-              flex={1}
-              alignItems="center"
-              justifyContent="center"
-            >
-              {hamburgerMenu}
-            </Pane>
+            {makeSearchInput("100%")}
+            {hamburgerMenu}
           </Stack>
         ),
         tablet: () => (
           <Pane display="flex">
             <Stack units={2} display="flex" flex={1} alignItems="center">
               {logoMobile}
-              {searchInput}
+              {makeSearchInput()}
             </Stack>
             <Stack units={4} display="flex" alignContent="center">
               {makeLinks("white")}
@@ -157,7 +151,7 @@ export const Navbar = (props: Props) => {
           <Pane display="flex">
             <Stack units={2} display="flex" flex={1} alignItems="center">
               {logoDesktop}
-              {searchInput}
+              {makeSearchInput()}
             </Stack>
             <Stack units={4} display="flex" alignContent="center">
               {makeLinks("white")}
