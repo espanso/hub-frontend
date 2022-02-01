@@ -1,13 +1,17 @@
 import {
   Button,
   Card,
+  ChevronRightIcon,
   Heading,
   IconButton,
+  Link,
   majorScale,
   Pane,
   Paragraph,
+  Position,
   SelectMenu,
   ShareIcon,
+  SideSheet,
 } from "evergreen-ui";
 import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
 import { sequenceS } from "fp-ts/Apply";
@@ -16,6 +20,7 @@ import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
+import React from "react";
 import {
   FileAsString,
   OrderedByVersion,
@@ -29,12 +34,12 @@ import { taskEitherLogError } from "../../../api/utils";
 import {
   CodeBlock,
   ContentRow,
+  FeaturedBadge,
   Markdown,
   Navbar,
   Stack,
   TagBadgeGroup,
   useTabs,
-  FeaturedBadge,
 } from "../../../components";
 import { useResponsive } from "../../../components/layout/useResponsive";
 
@@ -143,6 +148,47 @@ const YamlShowcase = (props: { files: NonEmptyArray<FileAsString> }) => {
   );
 };
 
+const YamlShowcaseMobile = (props: { files: NonEmptyArray<FileAsString> }) => {
+  const tabs = pipe(
+    props.files,
+    nonEmptyArray.map((f) => ({
+      id: f.name,
+      label: f.name,
+      render: () => <CodeBlock content={f.content} syntax="yaml" />,
+    }))
+  );
+
+  const [header, content, selectedTab] = useTabs(tabs, "sidebar");
+  const [showSideSheet, setShowSideSheet] = React.useState(false);
+
+  return (
+    <>
+      <React.Fragment>
+        <SideSheet
+          position={Position.LEFT}
+          isShown={showSideSheet}
+          onCloseComplete={() => setShowSideSheet(false)}
+          width="80%"
+        >
+          <Pane onClick={() => setShowSideSheet(false)}>{header}</Pane>
+        </SideSheet>
+      </React.Fragment>
+
+      <Stack units={2} direction="column" marginTop={majorScale(2)}>
+        <Stack
+          onClick={() => setShowSideSheet(true)}
+          units={1}
+          alignItems="center"
+        >
+          <ChevronRightIcon color="green500" />
+          <Link>{selectedTab.label}</Link>
+        </Stack>
+        {content}
+      </Stack>
+    </>
+  );
+};
+
 const VersionedPackagePage = (props: Props) => {
   const { device } = useResponsive();
   const isDesktop = device === "desktop";
@@ -168,7 +214,9 @@ const VersionedPackagePage = (props: Props) => {
       <Pane display="flex" flexDirection="column" flex={2} {...dividerProps}>
         <Pane display="flex">
           <Stack units={3} alignItems="baseline">
-            <Heading size={900}>{currentRepo.package.name}</Heading>
+            <Heading size={isDesktop ? 900 : 600}>
+              {currentRepo.package.name}
+            </Heading>
             {isFeatured(currentRepo.package) && <FeaturedBadge />}
           </Stack>
 
@@ -225,7 +273,7 @@ const VersionedPackagePage = (props: Props) => {
             )}
           </Stack>
         </Pane>
-        <Paragraph size={500} marginTop={12}>
+        <Paragraph size={isDesktop ? 500 : 300} marginTop={12}>
           {currentRepo.package.description}
         </Paragraph>
         <TagBadgeGroup
@@ -270,40 +318,66 @@ const VersionedPackagePage = (props: Props) => {
     </Card>
   );
 
-  const [tabsHeader, tabsContent] = useTabs([
-    {
-      id: "description",
-      label: "Description",
-      render: () =>
-        tabContentWrapper(
-          pipe(
-            props.packageRepo,
-            option.map((p) => (
-              <Markdown
-                // TODO: Avoid rendering specific package that fails next.js build
-                content={p.package.name === "foreign-thanks" ? "" : p.readme}
-              />
-            )),
-            option.getOrElse(constant(<></>))
-          )
-        ),
-    },
-    {
-      id: "source",
-      label: "Source",
-      render: () =>
-        tabContentWrapper(
-          <Pane>
-            {pipe(
-              props.packageRepo,
-              option.map((p) => p.packageYml),
-              option.map((files) => <YamlShowcase files={files} />),
-              option.getOrElse(constant(<></>))
-            )}
-          </Pane>
-        ),
-    },
-  ]);
+  const tabDescriptionContent = pipe(
+    props.packageRepo,
+    option.map((p) => (
+      <Markdown
+        // TODO: Avoid rendering specific package that fails next.js build
+        content={p.package.name === "foreign-thanks" ? "" : p.readme}
+      />
+    )),
+    option.getOrElse(constant(<></>)),
+    tabContentWrapper
+  );
+
+  const tabSourceContentDesktop = pipe(
+    props.packageRepo,
+    option.map((p) => p.packageYml),
+    option.map((files) => <YamlShowcase files={files} />),
+    option.getOrElse(constant(<></>)),
+    (content) => <Pane>{content}</Pane>,
+    tabContentWrapper
+  );
+
+  const tabSourceContentMobile = pipe(
+    props.packageRepo,
+    option.map((p) => p.packageYml),
+    option.map((files) => <YamlShowcaseMobile files={files} />),
+    option.getOrElse(constant(<></>)),
+    (content) => <Pane>{content}</Pane>
+  );
+
+  const [tabsHeader, tabsContent] = useTabs(
+    [
+      {
+        id: "description",
+        label: "Description",
+        render: () => tabDescriptionContent,
+      },
+      {
+        id: "source",
+        label: `Source`,
+        render: () => tabSourceContentDesktop,
+      },
+    ],
+    "topbar"
+  );
+
+  const [tabsHeaderMobile, tabsContentMobile] = useTabs(
+    [
+      {
+        id: "description",
+        label: "Description",
+        render: () => tabDescriptionContent,
+      },
+      {
+        id: "source",
+        label: `Source`,
+        render: () => tabSourceContentMobile,
+      },
+    ],
+    "topbar"
+  );
 
   const packageSearch = usePackageSearch({
     searchPathname: "/search",
@@ -324,8 +398,10 @@ const VersionedPackagePage = (props: Props) => {
       <ContentRow marginTop={majorScale(4)} marginBottom={majorScale(4)}>
         {header(currentRepo)}
       </ContentRow>
-      <ContentRow>{tabsHeader}</ContentRow>
-      <ContentRow background="gray200">{tabsContent}</ContentRow>
+      <ContentRow>{isDesktop ? tabsHeader : tabsHeaderMobile}</ContentRow>
+      <ContentRow background="gray200">
+        {isDesktop ? tabsContent : tabsContentMobile}
+      </ContentRow>
     </Pane>
   );
 

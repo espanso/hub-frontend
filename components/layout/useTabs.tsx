@@ -29,7 +29,7 @@ type CommonTabProps = {
 export const useTabs: (
   tabs: NonEmptyArray<TabProps>,
   variant?: TabVariant
-) => [JSX.Element, JSX.Element] = (tabs, variant = "topbar") => {
+) => [JSX.Element, JSX.Element, TabProps] = (tabs, variant = "topbar") => {
   const [ztabs, setTabs] = useState(
     pipe(tabs, zipper.fromNonEmptyArray, zipper.start)
   );
@@ -115,5 +115,5 @@ export const useTabs: (
     </>
   );
 
-  return [tabList, panels];
+  return [tabList, panels, ztabs.focus];
 };
