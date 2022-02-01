@@ -66,16 +66,17 @@ export const Navbar = (props: Props) => {
   );
 
   const makeLinks = (color?: string) => [
-    <NavbarLink href="/search" color={color}>
+    <NavbarLink href="/search" color={color} key="/search">
       Explore
     </NavbarLink>,
     <NavbarLink
       href="https://espanso.org/docs/next/packages/creating-a-package/"
       color={color}
+      key="/createapackage"
     >
       Create a package
     </NavbarLink>,
-    <NavbarLink href="https://espanso.org/" color={color}>
+    <NavbarLink href="https://espanso.org/" color={color} key="/espanso">
       Espanso
     </NavbarLink>,
   ];
@@ -110,7 +111,9 @@ export const Navbar = (props: Props) => {
           <Menu.Group>
             {pipe(
               makeLinks(),
-              array.map((l) => <Menu.Item>{l}</Menu.Item>)
+              array.map((l) => (
+                <Menu.Item key={`${l.key}-menu-item`}>{l}</Menu.Item>
+              ))
             )}
           </Menu.Group>
         </Menu>
