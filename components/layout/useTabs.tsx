@@ -1,15 +1,17 @@
-import { Pane, Tab, Tablist } from "evergreen-ui";
+import { majorScale, Pane, Tab, Tablist } from "evergreen-ui";
 import { option } from "fp-ts";
 import { zipper } from "fp-ts-contrib";
 import { pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import React, { useState } from "react";
+import { Stack } from ".";
 
 type TabVariant = "topbar" | "sidebar";
 
 type TabProps = {
   id: string;
   label: string;
+  icon?: JSX.Element;
   render: () => JSX.Element;
 };
 
@@ -19,6 +21,7 @@ const foldVariant: <T>(match: { [k in TabVariant]: () => T }) => (
 
 type CommonTabProps = {
   label: string;
+  icon?: JSX.Element;
   key: string;
   id: string;
   onSelect: () => unknown;
@@ -36,6 +39,7 @@ export const useTabs: (
 
   const makeProps: (tab: TabProps) => CommonTabProps = (tab) => ({
     label: tab.label,
+    icon: tab.icon,
     key: tab.id,
     id: tab.id,
     onSelect: () =>
@@ -56,8 +60,18 @@ export const useTabs: (
       foldVariant({
         topbar: () => (props: CommonTabProps) =>
           (
-            <Tab {...props} appearance="primary" justifyContent="center">
-              {props.label}
+            <Tab
+              {...props}
+              height={majorScale(5)}
+              appearance="primary"
+              justifyContent="center"
+              paddingLeft={majorScale(2)}
+              paddingRight={majorScale(2)}
+            >
+              <Stack units={2}>
+                {props.icon}
+                {props.label}
+              </Stack>
             </Tab>
           ),
         sidebar: () => (props: CommonTabProps) =>
@@ -68,7 +82,10 @@ export const useTabs: (
               direction="vertical"
               justifyContent="left"
             >
-              {props.label}
+              <Stack units={2}>
+                {props.icon}
+                {props.label}
+              </Stack>
             </Tab>
           ),
       })
