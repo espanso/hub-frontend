@@ -3,6 +3,7 @@ import { Package } from "../api/domain";
 import { isFeatured } from "../api/packageFeatured";
 import { TagBadgeGroup } from "./Tags/TagBadgeGroup";
 import { FeaturedBadge } from "./featured";
+import { Stack } from "./layout";
 
 type Props = {
   package: Package;
@@ -26,14 +27,18 @@ export const PackageCard = (props: Props) => (
       window.location.href = props.package.name;
     }}
   >
-    <Pane display="flex">
-      <Heading flex={1}>{props.package.title}</Heading>
-      {props.hideFeaturedBadge ||
-        (isFeatured(props.package) && <FeaturedBadge />)}
-    </Pane>
-    {props.hideDescription || (
-      <Paragraph>{props.package.description}</Paragraph>
-    )}
-    <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
+    <Stack units={3} direction="column">
+      <Pane>
+        <Pane display="flex">
+          <Heading flex={1}>{props.package.title}</Heading>
+          {props.hideFeaturedBadge ||
+            (isFeatured(props.package) && <FeaturedBadge />)}
+        </Pane>
+        {props.hideDescription || (
+          <Paragraph>{props.package.description}</Paragraph>
+        )}
+      </Pane>
+      <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
+    </Stack>
   </Card>
 );

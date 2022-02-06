@@ -11,7 +11,6 @@ export const TagBadge = forwardRef(
     <Badge
       ref={ref}
       color="neutral"
-      marginTop={majorScale(2)}
       isInteractive
       {...props}
       onClick={props.onClick}

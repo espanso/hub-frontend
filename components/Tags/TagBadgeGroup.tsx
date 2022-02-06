@@ -1,4 +1,4 @@
-import { CrossIcon, majorScale } from "evergreen-ui";
+import { CrossIcon, majorScale, Pane } from "evergreen-ui";
 import { array } from "fp-ts";
 import { Eq } from "fp-ts/Eq";
 import { pipe } from "fp-ts/function";
@@ -47,17 +47,15 @@ export const TagBadgeGroup = (props: Props) => {
     </TagBadge>
   );
 
-  const makeBadge = (tag: string) =>
-    canBeRemoved ? makeRemovableBadge(tag) : makeNonRemovableBadge(tag);
+  const makeBadge = (tag: string) => (
+    <Pane>
+      {canBeRemoved ? makeRemovableBadge(tag) : makeNonRemovableBadge(tag)}
+    </Pane>
+  );
 
   return (
-    <Stack
-      units={1}
-      flexWrap="wrap"
-      marginTop={majorScale(1)}
-      marginBottom={majorScale(1)}
-    >
+    <Pane display="inline-flex" flexWrap="wrap" gap={majorScale(1)}>
       {pipe(tags, array.map(makeBadge))}
-    </Stack>
+    </Pane>
   );
 };
