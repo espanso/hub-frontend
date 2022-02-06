@@ -1,4 +1,14 @@
-import { Pane, Text, Link, majorScale, Heading, Strong } from "evergreen-ui";
+import {
+  Pane,
+  Text,
+  Link,
+  majorScale,
+  Heading,
+  Strong,
+  SideSheet,
+  Position,
+  ChevronDownIcon,
+} from "evergreen-ui";
 import {
   array,
   boolean,
@@ -27,6 +37,7 @@ import {
   TagBadgeGroup,
   EmptyResultsIcon,
 } from "../components";
+import { useResponsive } from "../components/layout/useResponsive";
 
 export const getStaticProps = () =>
   pipe(
@@ -58,6 +69,12 @@ const tagEq: Eq<string> = {
 
 const Search = (props: Props) => {
   const packageSearch = usePackageSearch();
+  const { foldDevices } = useResponsive();
+  const isDesktop = foldDevices({
+    mobile: () => false,
+    tablet: () => false,
+    desktop: () => true,
+  });
 
   const tagsCheckboxes: ComponentProps<typeof CheckboxGroup>["items"] = pipe(
     props.packages,
@@ -185,6 +202,47 @@ const Search = (props: Props) => {
     option.map(filterByTags)
   );
 
+  const [showSideSheet, setShowSideSheet] = React.useState(false);
+
+  const filtersCheckboxes = (
+    <CheckboxGroup items={tagsCheckboxes} onChange={onCheckboxesChange} />
+  );
+
+  const filters = isDesktop ? (
+    <Pane display="flex" flex={1}>
+      {filtersCheckboxes}
+    </Pane>
+  ) : (
+    <React.Fragment>
+      <SideSheet
+        position={Position.LEFT}
+        isShown={showSideSheet}
+        onCloseComplete={() => setShowSideSheet(false)}
+        width="80%"
+      >
+        <Pane
+          marginLeft={majorScale(1)}
+          onClick={() => setShowSideSheet(false)}
+        >
+          {filtersCheckboxes}
+        </Pane>
+      </SideSheet>
+    </React.Fragment>
+  );
+
+  const showFiltersBtnMobile = (
+    <Stack units={1} alignItems="center">
+      <Text
+        color="muted"
+        className="clickable"
+        onClick={() => setShowSideSheet(true)}
+      >
+        Filter by tags
+      </Text>
+      <ChevronDownIcon color="muted" />
+    </Stack>
+  );
+
   return (
     <Pane display="flex" flexDirection="column">
       <ContentRow background="green500">
@@ -199,14 +257,11 @@ const Search = (props: Props) => {
 
       <ContentRow background="tint2">
         <Pane display="flex">
-          <Pane display="flex" flex={1}>
-            <CheckboxGroup
-              items={tagsCheckboxes}
-              onChange={onCheckboxesChange}
-            />
-          </Pane>
+          {filters}
 
           <Pane flex={3}>
+            {!isDesktop && showFiltersBtnMobile}
+
             {pipe(
               packageSearch.query,
               option.map((q) => (
