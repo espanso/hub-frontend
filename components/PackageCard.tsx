@@ -18,11 +18,11 @@ export const PackageCard = (props: Props) => (
     display="flex"
     width="100%"
     flexDirection="column"
-    elevation={0}
     float="left"
     padding={majorScale(2)}
     backgroundColor="white"
     hoverElevation={2}
+    border
     onClick={() => {
       window.location.href = props.package.name;
     }}

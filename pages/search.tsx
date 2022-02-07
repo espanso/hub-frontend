@@ -276,7 +276,7 @@ const Search = (props: Props) => {
 
   return (
     <Pane display="flex" flexDirection="column">
-      <ContentRow background="green500">
+      <ContentRow background="green500" elevation={2} zIndex={1}>
         <Navbar
           searchInitialValue={pipe(
             packageSearch.query,
