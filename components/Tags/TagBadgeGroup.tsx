@@ -42,13 +42,11 @@ export const TagBadgeGroup = (props: Props) => {
   );
 
   const makeNonRemovableBadge = (tag: string) => (
-    <TagBadge key={tag} onClick={() => props.onClick(tag)}>
-      {tag}
-    </TagBadge>
+    <TagBadge onClick={() => props.onClick(tag)}>{tag}</TagBadge>
   );
 
   const makeBadge = (tag: string) => (
-    <Pane>
+    <Pane key={tag}>
       {canBeRemoved ? makeRemovableBadge(tag) : makeNonRemovableBadge(tag)}
     </Pane>
   );
