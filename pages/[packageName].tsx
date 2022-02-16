@@ -5,6 +5,7 @@ import { GetStaticPropsContext } from "next";
 import { OrderedByVersion } from "../api/domain";
 import { fetchPackageRepo } from "../api/packageRepo";
 import { fetchPackagesIndex } from "../api/packagesIndex";
+import { serializeReadme } from "../api/serializeReadme";
 import { taskEitherLogError } from "../api/utils";
 import VersionedPackagePage, { Props } from "./[packageName]/v/[version]";
 
@@ -38,7 +39,8 @@ export const getStaticProps = (context: GetStaticPropsContext) =>
           taskEither.fromOption(
             () => new Error(`Version ${context.params?.version} not found`)
           ),
-          taskEither.flatten
+          taskEither.flatten,
+          serializeReadme
         ),
         versions: pipe(
           packages,
