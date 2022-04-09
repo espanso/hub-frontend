@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://hub.espanso.org/
+
+# Sitemaps
+Sitemap: https://hub.espanso.org/sitemap.xml
