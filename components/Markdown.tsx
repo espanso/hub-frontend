@@ -1,4 +1,4 @@
-import { Heading, Paragraph, Code, Table, majorScale } from "evergreen-ui";
+import { Code, Heading, majorScale, Paragraph, Table } from "evergreen-ui";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";

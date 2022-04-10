@@ -1,23 +1,21 @@
 import { Pane } from "evergreen-ui";
 import {
-  option,
-  either,
-  task,
-  taskEither,
   array,
+  either,
   nonEmptyArray,
-  string,
+  option,
   readonlyNonEmptyArray,
+  string,
+  task,
 } from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
-import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import { fetchPackagesIndex } from "../api/packagesIndex";
-import { PackagesGrid, Navbar, ContentRow } from "../components";
-import { Package, GroupedByVersion, PackagesIndex } from "../api/domain";
+import { InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { GroupedByVersion, Package } from "../api/domain";
+import { fetchPackagesIndex } from "../api/packagesIndex";
+import { ContentRow, Navbar, PackagesGrid } from "../components";
 
-export const getStaticProps = (context: GetStaticPropsContext) =>
+export const getStaticProps = () =>
   pipe(
     fetchPackagesIndex,
     task.map(either.fold(constant(option.none), option.some)),

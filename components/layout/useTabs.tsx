@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { Pane, Tab, Tablist } from "evergreen-ui";
+import { option } from "fp-ts";
 import { zipper } from "fp-ts-contrib";
 import { pipe } from "fp-ts/function";
-import { option } from "fp-ts";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
-import { Tablist, Tab, Pane } from "evergreen-ui";
+import { useState } from "react";
 
 type Tab = {
   id: string;

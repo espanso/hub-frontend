@@ -1,5 +1,5 @@
 import deepmerge from "deepmerge";
-import { ThemeProvider, defaultTheme } from "evergreen-ui";
+import { defaultTheme, ThemeProvider } from "evergreen-ui";
 
 // https://evergreen.segment.com/introduction/theming
 

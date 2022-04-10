@@ -1,13 +1,13 @@
 import { Pane } from "evergreen-ui";
-import { option, either, task, taskEither, array, nonEmptyArray } from "fp-ts";
+import { either, nonEmptyArray, option, task, taskEither } from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
+import { GroupedByVersion } from "../api/domain";
 import {
   clearPackagesIndexCache,
   fetchPackagesIndex,
 } from "../api/packagesIndex";
-import { PackagesGrid, Navbar, ContentRow } from "../components";
-import { GroupedByVersion } from "../api/domain";
+import { ContentRow, Navbar, PackagesGrid } from "../components";
 
 export const getStaticProps = pipe(
   taskEither.fromTask(clearPackagesIndexCache),

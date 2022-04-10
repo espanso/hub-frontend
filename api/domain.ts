@@ -1,18 +1,9 @@
-import {
-  array,
-  boolean,
-  either,
-  nonEmptyArray,
-  option,
-  record,
-  string,
-} from "fp-ts";
-import { constant, flow, pipe } from "fp-ts/function";
-import * as t from "io-ts";
 import compareVersions from "compare-versions";
-import { fromCompare, Ord } from "fp-ts/Ord";
+import { array, boolean, either, nonEmptyArray, option, record } from "fp-ts";
+import { constant, flow, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
-import { none } from "fp-ts/lib/Option";
+import { fromCompare, Ord } from "fp-ts/Ord";
+import * as t from "io-ts";
 
 interface PackageVersionBrand {
   readonly PackageVersion: unique symbol;
