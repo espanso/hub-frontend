@@ -100,30 +100,23 @@ const Index = (props: Props) => {
           />
         </ContentRow>
         <ContentRow justifyContent="center" flex={6}>
-          <Stack units={2} direction="column" alignItems="center">
-            <Pane display="flex" alignContent="center">
+          <Stack units={6} direction="column" alignItems="center">
+            <Stack units={3} direction="column" alignItems="center">
+              <Pane display="flex" alignContent="center">
+                <Heading size={1000} color={espansoTheme.colors.white}>
+                  Espanso packages to enhance your workflows
+                </Heading>
+              </Pane>
               <Heading
-                size={1000}
+                size={600}
                 color={espansoTheme.colors.white}
-                fontFamily="Quicksand"
+                textAlign="center"
               >
-                espanso
+                Emoji, code-snippets, mathematical notations, accents and more.{" "}
+                <br />
+                Espanso's got you covered, one click away.
               </Heading>
-              <Heading
-                size={1000}
-                color={espansoTheme.colors.green200}
-                fontFamily="Quicksand"
-              >
-                hub
-              </Heading>
-            </Pane>
-            <Heading
-              size={900}
-              color={espansoTheme.colors.white}
-              textAlign="center"
-            >
-              Find espanso packages that fit you
-            </Heading>
+            </Stack>
             <TextInput
               width={foldDevices({
                 mobile: () => "100%",
@@ -131,7 +124,7 @@ const Index = (props: Props) => {
                 desktop: () => "600px",
               })}
               height={50}
-              placeholder="Search for wonderful packages!"
+              placeholder="Already got an idea? Search it here..."
               onKeyDown={onEnter}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setSearchValue(e.target.value)
@@ -146,7 +139,7 @@ const Index = (props: Props) => {
                 className="link-white-override"
                 textDecoration="underline"
               >
-                browse the hub
+                explore the hub
               </Link>
             </Paragraph>
           </Stack>
