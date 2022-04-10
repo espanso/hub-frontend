@@ -1,34 +1,41 @@
-import { constant, flow, pipe } from "fp-ts/function";
-import { option, array, task, either, taskEither } from "fp-ts";
-import { fetchPackagesIndex } from "../api/packagesIndex";
-import { Package, PackageRepo } from "../api/domain";
-import { Pane, majorScale, Heading, Paragraph, Card } from "evergreen-ui";
-import { ContentRow, useTabs, CodeBlock, Markdown } from "../components";
-import { Option } from "fp-ts/Option";
-import { fetchPackageRepo } from "../api/packageRepo";
+import { Card, Heading, majorScale, Pane, Paragraph } from "evergreen-ui";
+import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
+import { constant, flow, identity, pipe } from "fp-ts/function";
 import { GetStaticPropsContext } from "next";
+import { Package, PackageRepo } from "../api/domain";
+import { fetchPackageRepo } from "../api/packageRepo";
+import { fetchPackagesIndex } from "../api/packagesIndex";
+import { CodeBlock, ContentRow, Markdown, useTabs } from "../components";
 
-export const getStaticProps = (context: GetStaticPropsContext) =>
+export const getStaticrops = (context: GetStaticPropsContext) =>
   pipe(
     fetchPackagesIndex,
     taskEither.chain((packagesIndex) =>
       pipe(
         packagesIndex.packages,
-        array.findFirst(
+        array.filter(
           (p) =>
             context.params !== undefined &&
             p.name === context.params.packageName
         ),
+        nonEmptyArray.fromArray,
         taskEither.fromOption(constant(new Error("Package not found")))
       )
     ),
-    taskEither.chain(fetchPackageRepo),
-    task.map(either.fold(constant(option.none), option.some)),
-    task.map((p) => ({
-      props: {
-        packageRepo: p,
-      },
-    }))
+    taskEither.chain((packages) =>
+      pipe(
+        packages,
+        nonEmptyArray.map(fetchPackageRepo),
+        nonEmptyArray.sequence(taskEither.taskEither)
+      )
+    ),
+    task.map((results) =>
+      pipe(results, either.foldW(constant([]), identity), (p) => ({
+        props: {
+          packageRepo: p as Array<PackageRepo>,
+        },
+      }))
+    )
   )();
 
 export const getStaticPaths = pipe(
@@ -47,7 +54,7 @@ export const getStaticPaths = pipe(
 );
 
 type Props = {
-  packageRepo: Option<PackageRepo>;
+  packageRepo: Array<PackageRepo>;
 };
 
 const PackagePage = (props: Props) => {
@@ -90,6 +97,7 @@ const PackagePage = (props: Props) => {
     </Card>
   );
 
+  const packageRepo = pipe(props.packageRepo, array.head);
   const [tabsHeader, tabsContent] = useTabs([
     {
       id: "description",
@@ -97,7 +105,7 @@ const PackagePage = (props: Props) => {
       render: () =>
         tabContentWrapper(
           pipe(
-            props.packageRepo,
+            packageRepo,
             option.map((p) => <Markdown content={p.readme} />),
             option.getOrElse(() => <></>)
           )
@@ -109,7 +117,7 @@ const PackagePage = (props: Props) => {
       render: () =>
         tabContentWrapper(
           pipe(
-            props.packageRepo,
+            packageRepo,
             option.map((p) => <CodeBlock content={p.packageYml} />),
             option.getOrElse(() => <></>)
           )
@@ -128,7 +136,7 @@ const PackagePage = (props: Props) => {
   );
 
   return pipe(
-    props.packageRepo,
+    packageRepo,
     option.map((p) => p.package),
     option.map(packageDetails),
     option.toNullable
