@@ -199,7 +199,7 @@ const Search = (props: Props) => {
               onChange={onCheckboxesChange}
             />
           </Pane>
-          <Pane display="flex" flexDirection="column" flex={3}>
+          <Stack units={1} direction="column" flex={3}>
             <TagBadgeGroup
               tags={pipe(packageSearch.tags, option.getOrElseW(constant([])))}
               onRemove={(tags) =>
@@ -214,7 +214,7 @@ const Search = (props: Props) => {
               option.map(renderSearchResultsOrEmpty),
               option.toNullable
             )}
-          </Pane>
+          </Stack>
         </Pane>
       </ContentRow>
     </Pane>
