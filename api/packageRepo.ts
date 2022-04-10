@@ -4,65 +4,34 @@ import { TaskEither } from "fp-ts/TaskEither";
 import { unzip, ZipEntry, ZipInfo } from "unzipit";
 import { Eq } from "fp-ts/string";
 import { Package, PackageRepo } from "./Package";
-import { promisify } from "util";
-import { writeFile } from "fs";
 
-const PATH_REPO_ZIP = "./packagesRepo/";
-
-export const taskEitherWriteFile =
-  (path: string) => (content: ReadableStream) =>
-    taskEither.tryCatch(
-      () => promisify(writeFile)(path, content),
-      either.toError
-    );
-
-const fetchArchive: (
-  path: string
-) => (archiveUrl: string) => TaskEither<Error, string> =
-  (path) => (archiveUrl) =>
+export const fetchPackageRepo: (p: Package) => TaskEither<Error, PackageRepo> =
+  (p: Package) =>
     pipe(
-      taskEither.tryCatch(() => fetch(archiveUrl), either.toError),
-      taskEither.chain<Error, Response, ReadableStream>(
+      taskEither.tryCatch(() => fetch(p.archive_url), either.toError),
+      taskEither.chain((r) =>
+        taskEither.tryCatch(() => r.arrayBuffer(), either.toError)
+      ),
+      taskEither.chain((buff) =>
+        taskEither.tryCatch(() => unzip(buff), either.toError)
+      ),
+      taskEither.map<ZipInfo, ZipEntry[]>((info) =>
+        Object.values(info.entries)
+      ),
+      taskEither.chain(
         flow(
-          option.fromNullable,
-          option.map((r) => r.body),
+          array.findFirst((entry) => {
+            return Eq.equals(entry.name, "README.md");
+          }),
           option.chain(option.fromNullable),
-          taskEither.fromOption(
-            () => new Error(`${archiveUrl} failed to fetch`)
+          option.fold(
+            () => taskEither.left(new Error("README.md not found")),
+            (entry) => taskEither.tryCatch(() => entry.text(), either.toError)
           )
         )
       ),
-      taskEither.chain(taskEitherWriteFile(path)),
-      taskEither.map(() => path)
+      taskEither.map((readme) => ({
+        package: p,
+        readme,
+      }))
     );
-
-const readArchiviedFileAsText: (
-  filename: string
-) => (path: string) => TaskEither<Error, string> = (filename) => (path) =>
-  pipe(
-    taskEither.tryCatch(() => unzip(path), either.toError),
-    taskEither.map<ZipInfo, ZipEntry[]>(Object.values),
-    taskEither.chain(
-      flow(
-        array.findFirst((entry) => Eq.equals(entry.name, filename)),
-        option.chain(option.fromNullable),
-        option.fold(
-          () => taskEither.left(new Error("README.md not found")),
-          (entry) => taskEither.tryCatch(() => entry.text(), either.toError)
-        )
-      )
-    )
-  );
-
-const fetchPackageRepo: (p: Package) => TaskEither<Error, PackageRepo> = (
-  p: Package
-) =>
-  pipe(
-    p.archive_url,
-    fetchArchive(`${PATH_REPO_ZIP}/${p.name}`),
-    taskEither.chain(readArchiviedFileAsText("README.md")),
-    taskEither.map((readme) => ({
-      name: p.name,
-      readme,
-    }))
-  );
