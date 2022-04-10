@@ -1,4 +1,4 @@
-import { Pane, Text, Link, majorScale, Heading } from "evergreen-ui";
+import { Pane, Text, Link, majorScale, Heading, Strong } from "evergreen-ui";
 import {
   array,
   boolean,
@@ -179,6 +179,12 @@ const Search = (props: Props) => {
       )
     );
 
+  const results = pipe(
+    props.packages,
+    option.map(filterBySearch),
+    option.map(filterByTags)
+  );
+
   return (
     <Pane display="flex" flexDirection="column">
       <ContentRow background="green500">
@@ -199,7 +205,39 @@ const Search = (props: Props) => {
               onChange={onCheckboxesChange}
             />
           </Pane>
-          <Stack units={1} direction="column" flex={3}>
+          <Stack
+            units={1}
+            direction="column"
+            flex={3}
+            marginTop={majorScale(2)}
+          >
+            {pipe(
+              packageSearch.query,
+              option.map((q) => (
+                <Stack units={1}>
+                  {pipe(
+                    results,
+                    option.map((r) => (
+                      <Text color="muted">
+                        {r.length} results for{" "}
+                        {<Strong color="muted">{`"${q}".`}</Strong>}
+                      </Text>
+                    )),
+                    option.toNullable
+                  )}
+                  <Text
+                    color="muted"
+                    textDecoration="underline"
+                    className="clickable"
+                    onClick={() => packageSearch.setQuery(option.none)}
+                  >
+                    Clear search
+                  </Text>
+                </Stack>
+              )),
+              option.toNullable
+            )}
+
             <TagBadgeGroup
               tags={pipe(packageSearch.tags, option.getOrElseW(constant([])))}
               onRemove={(tags) =>
@@ -208,9 +246,7 @@ const Search = (props: Props) => {
               onClick={onTagClick}
             />
             {pipe(
-              props.packages,
-              option.map(filterBySearch),
-              option.map(filterByTags),
+              results,
               option.map(renderSearchResultsOrEmpty),
               option.toNullable
             )}

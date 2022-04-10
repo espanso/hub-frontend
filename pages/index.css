@@ -1,7 +1,3 @@
-.package-card:hover {
-  cursor: pointer;
-}
-
-.icon-badge-icon:hover {
+.clickable:hover {
   cursor: pointer;
 }
