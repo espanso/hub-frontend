@@ -209,6 +209,7 @@ const Search = (props: Props) => {
       title="Filters"
       items={tagsCheckboxes}
       onChange={onCheckboxesChange}
+      limit={15}
     />
   );
 
