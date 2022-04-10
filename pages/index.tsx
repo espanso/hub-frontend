@@ -1,11 +1,12 @@
-import { Heading, Pane, Text } from "evergreen-ui";
-import { option, readonlyArray, either } from "fp-ts";
-import { constNull, pipe, flow } from "fp-ts/function";
-import { InferGetServerSidePropsType } from "next";
+import { Heading, Pane, Text, Link } from "evergreen-ui";
+import { option, readonlyArray, either, task } from "fp-ts";
+import { constNull, pipe } from "fp-ts/function";
+import { InferGetStaticPropsType } from "next";
+import React from "react";
 import { DateFromTimestamp } from "../api/Package";
-import { withPackagesIndex } from "../api/withPackagesIndex";
+import { fetchPackagesIndexAsOption } from "../api/packagesIndex";
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Index = (props: Props) => (
   <Pane>
@@ -23,17 +24,26 @@ const Index = (props: Props) => (
       {pipe(
         props.packagesIndex,
         option.map((x) => x.packages),
-        option.getOrElse(() => readonlyArray.fromArray([])),
-        readonlyArray.mapWithIndex((i, pack) => (
-          <li key={`${pack.name}-${i}`}>
-            <Text>{`${i} - ${pack.name}`}</Text>
-          </li>
-        ))
+        option.map(
+          readonlyArray.mapWithIndex((i, pack) => (
+            <li key={`${pack.name}-${i}`}>
+              <Link href={`/${pack.name}`}>{`${i} - ${pack.name}`}</Link>
+            </li>
+          ))
+        ),
+        option.toNullable
       )}
     </ul>
   </Pane>
 );
 
-export const getServerSideProps = withPackagesIndex;
+export const getStaticProps = pipe(
+  fetchPackagesIndexAsOption,
+  task.map((packagesIndex) => ({
+    props: {
+      packagesIndex,
+    },
+  }))
+);
 
 export default Index;

@@ -27,6 +27,9 @@ const espansoTheme = deepmerge(defaultTheme, {
         secondary: {
           borderRadius: 0,
           _focus: {},
+          _hover: {
+            backgroundColor: "trasparent",
+          },
           _current: {
             backgroundColor: "trasparent",
             color: espansoColors.green500,
@@ -38,8 +41,8 @@ const espansoTheme = deepmerge(defaultTheme, {
   },
 });
 
-const EspansoThemeProvider = ({ children }) => (
-  <ThemeProvider value={espansoTheme}>{children}</ThemeProvider>
-);
-
-export default EspansoThemeProvider;
+export const EspansoThemeProvider = ({
+  children,
+}: {
+  children: JSX.Element;
+}) => <ThemeProvider value={espansoTheme}>{children}</ThemeProvider>;
