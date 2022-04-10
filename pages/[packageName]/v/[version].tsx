@@ -41,6 +41,7 @@ import {
   CodeBlock,
   ContentRow,
   FeaturedBadge,
+  Footer,
   MDXRenderer,
   Navbar,
   Stack,
@@ -445,8 +446,13 @@ const VersionedPackagePage = (props: Props) => {
           {isDesktop ? tabsHeader : tabsHeaderMobile}
         </Stack>
       </ContentRow>
+
       <ContentRow background="gray200">
         {isDesktop ? tabsContent : tabsContentMobile}
+      </ContentRow>
+
+      <ContentRow background="green600">
+        <Footer />
       </ContentRow>
     </Pane>
   );

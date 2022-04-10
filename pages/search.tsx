@@ -1,13 +1,13 @@
 import {
-  Pane,
-  Text,
+  ChevronDownIcon,
+  Heading,
   Link,
   majorScale,
-  Heading,
-  Strong,
-  SideSheet,
+  Pane,
   Position,
-  ChevronDownIcon,
+  SideSheet,
+  Strong,
+  Text,
 } from "evergreen-ui";
 import {
   array,
@@ -28,15 +28,16 @@ import { fetchPackagesIndex } from "../api/packagesIndex";
 import { tagsSearch, textSearch, usePackageSearch } from "../api/search";
 import { tagsCount } from "../api/tags";
 import {
+  BetaBanner,
   CheckboxGroup,
   CheckboxItem,
   ContentRow,
+  EmptyResultsIcon,
+  Footer,
   Navbar,
   PackageCard,
   Stack,
   TagBadgeGroup,
-  EmptyResultsIcon,
-  BetaBanner,
 } from "../components";
 import { useResponsive } from "../components/layout/useResponsive";
 
@@ -333,6 +334,10 @@ const Search = (props: Props) => {
             )}
           </Pane>
         </Pane>
+      </ContentRow>
+
+      <ContentRow background="green600">
+        <Footer />
       </ContentRow>
     </Pane>
   );
