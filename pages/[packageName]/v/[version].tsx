@@ -29,6 +29,7 @@ import {
   CodeBlock,
   ContentRow,
   Markdown,
+  Navbar,
   Stack,
   TagBadgeGroup,
   useTabs,
@@ -289,8 +290,22 @@ const VersionedPackagePage = (props: Props) => {
     },
   ]);
 
+  const packageSearch = usePackageSearch({
+    searchPathname: "/search",
+  });
+
   const packagePage = (currentRepo: PackageRepo) => (
     <Pane display="flex" flexDirection="column">
+      <ContentRow background="green500">
+        <Navbar
+          searchInitialValue={pipe(
+            packageSearch.query,
+            option.getOrElseW(constant(""))
+          )}
+          onSearchEnter={flow(option.of, packageSearch.setQuery)}
+        />
+      </ContentRow>
+
       <ContentRow marginTop={majorScale(4)} marginBottom={majorScale(4)}>
         {header(currentRepo)}
       </ContentRow>
