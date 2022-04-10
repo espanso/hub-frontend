@@ -2,7 +2,7 @@ import { ComponentProps } from "react";
 import { majorScale, Pane } from "evergreen-ui";
 
 type Props = ComponentProps<typeof Pane> & {
-  children: JSX.Element;
+  children: React.ReactNode;
 };
 
 export const ContentRow = (props: Props) => (

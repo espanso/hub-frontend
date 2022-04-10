@@ -2,9 +2,10 @@ import { Card, Heading, majorScale, Pane, Paragraph } from "evergreen-ui";
 import { pipe } from "fp-ts/function";
 import { Package } from "../../api/model";
 import { array } from "fp-ts";
+import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 
 type Props = {
-  packages: Package[];
+  packages: NonEmptyArray<Package>;
 };
 
 const PackageCard = (props: { package: Package }) => (
@@ -29,7 +30,7 @@ const PackageCard = (props: { package: Package }) => (
 );
 
 export const PackagesGrid = (props: Props) => (
-  <Pane display="flex" background="tint2">
+  <Pane display="flex" justifyContent="center">
     {pipe(
       props.packages,
       array.partitionWithIndex((index) => index > props.packages.length / 3),
