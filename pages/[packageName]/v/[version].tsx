@@ -138,13 +138,20 @@ const VersionedPackagePage = (props: Props) => {
 
           <Pane flexGrow={1} />
           <Stack units={1} alignItems="center">
-            <IconButton
-              icon={ShareIcon}
-              appearance="minimal"
-              onClick={() => {
-                window.open(currentRepo.manifest.homepage, "_blank");
-              }}
-            />
+            {pipe(
+              currentRepo.manifest.homepage,
+              option.map((homepage) => (
+                <IconButton
+                  icon={ShareIcon}
+                  appearance="minimal"
+                  onClick={() => {
+                    window.open(homepage, "_blank");
+                  }}
+                />
+              )),
+              option.toNullable
+            )}
+
             {pipe(
               currentVersion,
               option.map((version) => (
@@ -244,11 +251,14 @@ const VersionedPackagePage = (props: Props) => {
       label: "Content",
       render: () =>
         tabContentWrapper(
-          pipe(
-            props.packageRepo,
-            option.map((p) => <CodeBlock content={p.packageYml} />),
-            option.getOrElse(() => <></>)
-          )
+          <Pane>
+            {pipe(
+              props.packageRepo,
+              option.map((p) => p.packageYml),
+              option.getOrElseW(() => []),
+              array.map((file) => <CodeBlock content={file.content} />)
+            )}
+          </Pane>
         ),
     },
   ]);
