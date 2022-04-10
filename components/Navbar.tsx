@@ -1,6 +1,7 @@
 import { Link, majorScale, Pane, SearchInput, Strong } from "evergreen-ui";
 import { useState } from "react";
 import { Stack } from "./layout";
+import Image from "next/image";
 
 const NavbarLink = (props: { href: string; children: React.ReactNode }) => (
   <Link href={props.href} display="flex" alignItems="center">
@@ -11,6 +12,7 @@ const NavbarLink = (props: { href: string; children: React.ReactNode }) => (
 );
 
 type Props = {
+  assetLogo: string;
   searchInitialValue?: string;
   onSearchEnter?: (value: string) => unknown;
 };
@@ -35,7 +37,13 @@ export const Navbar = (props: Props) => {
       justifyContent="center"
     >
       <Pane display="flex">
-        <Pane display="flex" flex={1}>
+        <Stack units={2} display="flex" flex={1} alignItems="center">
+          <Image
+            height={26}
+            width={161}
+            src="/images/navbar_logo.svg"
+            alt="Espanso Hub"
+          />
           <SearchInput
             placeholder="Search for wonderful packages!"
             onKeyDown={onEnter}
@@ -44,7 +52,7 @@ export const Navbar = (props: Props) => {
             }
             value={searchValue}
           />
-        </Pane>
+        </Stack>
         <Stack units={4} display="flex" alignContent="center">
           <NavbarLink href="/search">Explore</NavbarLink>
           <NavbarLink href="https://espanso.org/docs/next/packages/creating-a-package/">
