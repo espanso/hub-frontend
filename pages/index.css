@@ -7,7 +7,19 @@ html {
   cursor: pointer;
 }
 
-.override-color-white {
+.link-white-override {
+  color: white !important;
+}
+
+.link-white-override:hover {
+  color: #d8dae5 !important;
+}
+
+.link-pelle {
+  color: #8f95b2 !important;
+}
+
+.link-pelle:hover {
   color: white !important;
 }
 

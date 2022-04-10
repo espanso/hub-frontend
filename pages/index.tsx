@@ -1,13 +1,13 @@
 import {
-  Heading,
-  Pane,
-  TextInput,
-  TextInputAppearance,
-  Text,
-  Link,
   ChevronDownIcon,
+  Heading,
+  Image,
+  Link,
   majorScale,
+  Pane,
   Paragraph,
+  TextInput,
+  Text,
 } from "evergreen-ui";
 import {
   array,
@@ -20,6 +20,7 @@ import {
 } from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
+import router from "next/router";
 import React, { useState } from "react";
 import { GroupedByVersion, Package } from "../api/domain";
 import { isFeatured } from "../api/packageFeatured";
@@ -62,6 +63,30 @@ const FullHeightSection = (props: React.ComponentProps<typeof Pane>) => (
   <Pane display="flex" minHeight="100vh" flexDirection="column" {...props}>
     {props.children}
   </Pane>
+);
+
+type FooterLinkProps = {
+  children: React.ReactNode;
+  href: string;
+  external?: boolean;
+  iconPath?: string;
+};
+
+const FooterLink = (props: FooterLinkProps) => (
+  <Link
+    href={props.href}
+    target={props.external ? "_blank" : undefined}
+    className="link-white-override"
+  >
+    {props.iconPath ? (
+      <Stack units={1} alignItems="center">
+        <Image src={props.iconPath} display="inline-block" height={20} />
+        {props.children}
+      </Stack>
+    ) : (
+      props.children
+    )}
+  </Link>
 );
 
 const Index = (props: Props) => {
@@ -131,7 +156,7 @@ const Index = (props: Props) => {
               <Link
                 href="/search"
                 size={600}
-                className="override-color-white"
+                className="link-white-override"
                 textDecoration="underline"
               >
                 browse the hub
@@ -149,7 +174,6 @@ const Index = (props: Props) => {
           </Link>
         </Pane>
       </FullHeightSection>
-
       <FullHeightSection
         justifyContent="center"
         id="featured_showcase"
@@ -169,7 +193,89 @@ const Index = (props: Props) => {
         backgroundImage="url(/images/landing_footer_bg.svg)"
         backgroundSize="cover"
         backgroundPosition="bottom"
-      />
+      >
+        <ContentRow minHeight="50vh">
+          <Pane display="flex" flexGrow={1} paddingTop={majorScale(8)}>
+            <Pane
+              flexGrow={1}
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+            >
+              <Image
+                height={30}
+                width={172}
+                src="/images/navbar_logo.svg"
+                alt="Espanso Hub"
+                className="clickable"
+                onClick={() => router.push("/")}
+              />
+              <Stack units={1}>
+                <Text color={espansoTheme.colors.gray600}>Made with ❤️</Text>
+                <Text color={espansoTheme.colors.gray600}>by️</Text>
+                <Link
+                  href="https://www.matteopellegrino.me/"
+                  target="_blank"
+                  className="link-pelle"
+                >
+                  Matteo Pellegrino
+                </Link>
+              </Stack>
+            </Pane>
+            <Stack flexGrow={1} units={1} direction="column">
+              <Heading
+                size={500}
+                color={espansoTheme.colors.white}
+                paddingBottom={majorScale(2)}
+              >
+                Navigation
+              </Heading>
+              <FooterLink href="https://espanso.org/docs/get-started/" external>
+                Documetation
+              </FooterLink>
+              <FooterLink
+                href="https://espanso.org/docs/next/packages/creating-a-package/"
+                external
+              >
+                Create Package
+              </FooterLink>
+              <FooterLink href="/search">Explore</FooterLink>
+            </Stack>
+            <Stack flexGrow={1} units={1} direction="column">
+              <Heading
+                size={500}
+                color={espansoTheme.colors.white}
+                paddingBottom={majorScale(2)}
+              >
+                Community
+              </Heading>
+              <FooterLink
+                href="https://www.reddit.com/r/espanso/"
+                external
+                iconPath="/images/reddit_logo.svg"
+              >
+                Reddit
+              </FooterLink>
+
+              <FooterLink
+                href="https://github.com/espanso/hub-frontend/"
+                external
+                iconPath="/images/github_logo.png"
+              >
+                Contribute
+              </FooterLink>
+
+              <FooterLink
+                href="https://espanso.org"
+                external
+                iconPath="/images/espanso_logo.svg"
+              >
+                Espanso
+              </FooterLink>
+            </Stack>
+          </Pane>
+        </ContentRow>
+      </FullHeightSection>
     </Pane>
   );
 };
