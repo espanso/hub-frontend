@@ -19,18 +19,19 @@ const githubAssetMiddleware: (assetUrl: string) => string = (assetUrl) =>
     )
   );
 
-const markdownComponents = {
+const markdownComponents: Record<string, React.ReactNode> = {
+  // props: React.ComponentProps<any>... forgive me for my sins
   table: Table,
-  thead: (props) => (
+  thead: (props: React.ComponentProps<any>) => (
     <Table.Head>
-      {props.children.props.children.map((c) => (
+      {props.children.props.children.map((c: React.ComponentProps<any>) => (
         <Table.TextHeaderCell key={c.props.children}>
           {c.props.children}
         </Table.TextHeaderCell>
       ))}
     </Table.Head>
   ),
-  img: (props) => (
+  img: (props: React.ComponentProps<any>) => (
     <Image
       {...{ ...props, src: pipe(props.src, githubAssetMiddleware) }}
       maxWidth="100%"
@@ -39,7 +40,7 @@ const markdownComponents = {
   tbody: Table.Body,
   td: Table.TextCell,
   tr: Table.Row,
-  h1: (props) => (
+  h1: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
@@ -49,7 +50,7 @@ const markdownComponents = {
       {props.children}
     </Heading>
   ),
-  h2: (props) => (
+  h2: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
@@ -59,7 +60,7 @@ const markdownComponents = {
       {props.children}
     </Heading>
   ),
-  h3: (props) => (
+  h3: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
@@ -69,7 +70,7 @@ const markdownComponents = {
       {props.children}
     </Heading>
   ),
-  h4: (props) => (
+  h4: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(2)}
       marginBottom={majorScale(2)}
@@ -79,7 +80,7 @@ const markdownComponents = {
       {props.children}
     </Heading>
   ),
-  h5: (props) => (
+  h5: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
@@ -89,7 +90,7 @@ const markdownComponents = {
       {props}
     </Heading>
   ),
-  h6: (props) => (
+  h6: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
@@ -99,7 +100,7 @@ const markdownComponents = {
       {props.children}
     </Heading>
   ),
-  p: (props) => (
+  p: (props: React.ComponentProps<any>) => (
     <Paragraph
       size={500}
       marginTop={majorScale(2)}
@@ -108,7 +109,7 @@ const markdownComponents = {
       {props.children}
     </Paragraph>
   ),
-  code: (props) => (
+  code: (props: React.ComponentProps<any>) => (
     <CodeBlock content={String(props.children)} showCopyButton />
   ),
 };
