@@ -1,6 +1,6 @@
 import { either, option, task, taskEither } from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
-import { PackagesIndex } from "./model";
+import { PackagesIndex } from "./domain";
 import { TaskEither } from "fp-ts/TaskEither";
 import flatCache from "flat-cache";
 import { Task } from "fp-ts/Task";

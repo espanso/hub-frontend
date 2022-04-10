@@ -1,5 +1,7 @@
+import compareVersions from "compare-versions";
 import { taskEither } from "fp-ts";
 import { pipe } from "fp-ts/function";
+import { fromCompare, Ord } from "fp-ts/Ord";
 import { TaskEither } from "fp-ts/TaskEither";
 
 export const taskEitherLogError: <E, A>(

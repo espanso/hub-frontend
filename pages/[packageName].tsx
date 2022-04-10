@@ -1,7 +1,7 @@
 import { constant, flow, pipe } from "fp-ts/function";
 import { option, array, task, either, taskEither } from "fp-ts";
 import { fetchPackagesIndex } from "../api/packagesIndex";
-import { Package, PackageRepo } from "../api/model";
+import { Package, PackageRepo } from "../api/domain";
 import { Pane, majorScale, Heading, Paragraph, Card } from "evergreen-ui";
 import { ContentRow, useTabs, CodeBlock, Markdown } from "../components";
 import { Option } from "fp-ts/Option";
