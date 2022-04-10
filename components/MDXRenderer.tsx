@@ -5,6 +5,8 @@ import {
   Table,
   Image,
   Text,
+  UnorderedList,
+  ListItem
 } from "evergreen-ui";
 import { either } from "fp-ts";
 import { pipe } from "fp-ts/function";
@@ -132,6 +134,12 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
   span: (props: React.ComponentProps<any>) => (
     <Text display="flex">{props.children}</Text>
   ),
+  ul: (props: React.ComponentProps<any>) => (
+    <UnorderedList>{props.children}</UnorderedList>
+  ),
+  li: (props: React.ComponentProps<any>) => (
+    <ListItem>{props.children}</ListItem>
+  )
 });
 
 export const MDXRenderer = (props: Props) => (
