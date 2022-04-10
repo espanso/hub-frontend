@@ -180,7 +180,13 @@ export const Navbar = (props: Props) => {
         mobile: () => (
           <Stack units={2} display="flex" alignItems="center">
             {logoMobile}
-            {makeSearchInput("100%")}
+            {pipe(
+              variant,
+              foldVariant({
+                default: () => makeSearchInput("100%"),
+                landing: () => <Pane flex={1} />,
+              })
+            )}
             {hamburgerMenu}
           </Stack>
         ),

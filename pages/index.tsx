@@ -31,6 +31,7 @@ import {
   Navbar,
   Stack,
 } from "../components";
+import { useResponsive } from "../components/layout/useResponsive";
 
 export const getStaticProps = () =>
   pipe(
@@ -70,6 +71,8 @@ const Index = (props: Props) => {
 
   const [searchValue, setSearchValue] = useState<string | undefined>(undefined);
 
+  const { foldDevices } = useResponsive();
+
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -94,7 +97,7 @@ const Index = (props: Props) => {
         </ContentRow>
         <ContentRow justifyContent="center" flex={6}>
           <Stack units={2} direction="column" alignItems="center">
-            <Pane display="flex">
+            <Pane display="flex" alignContent="center">
               <Heading
                 size={1000}
                 color={espansoTheme.colors.white}
@@ -110,21 +113,27 @@ const Index = (props: Props) => {
                 hub
               </Heading>
             </Pane>
-            <Heading size={900} color={espansoTheme.colors.white}>
+            <Heading
+              size={900}
+              color={espansoTheme.colors.white}
+              textAlign="center"
+            >
               Find espanso packages that fit you
             </Heading>
-            <Pane elevation={2}>
-              <TextInput
-                width={600}
-                height={50}
-                placeholder="Search for wonderful packages!"
-                onKeyDown={onEnter}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setSearchValue(e.target.value)
-                }
-                value={searchValue}
-              />
-            </Pane>
+            <TextInput
+              width={foldDevices({
+                mobile: () => "100%",
+                tablet: () => "600px",
+                desktop: () => "600px",
+              })}
+              height={50}
+              placeholder="Search for wonderful packages!"
+              onKeyDown={onEnter}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchValue(e.target.value)
+              }
+              value={searchValue}
+            />
             <Paragraph size={600} color={espansoTheme.colors.white}>
               or{" "}
               <Link
