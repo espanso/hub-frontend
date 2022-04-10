@@ -287,27 +287,37 @@ const Search = (props: Props) => {
       </ContentRow>
 
       <ContentRow background="tint2">
-        <Pane display="flex" marginTop={majorScale(6)}>
+        <Pane display="flex" marginTop={majorScale(isDesktop ? 6 : 2)}>
           {filters}
 
           <Pane flex={3}>
-            {!isDesktop && makeStackableBlock(showFiltersBtnMobile)}
-
             {pipe(
               packageSearch.query,
-              option.map(makeResultsSummary),
-              option.map(makeStackableBlock),
+              option.map(flow(makeResultsSummary, makeStackableBlock)),
               option.toNullable
             )}
 
-            {makeStackableBlock(
-              <TagBadgeGroup
-                tags={pipe(packageSearch.tags, option.getOrElseW(constant([])))}
-                onRemove={(tags) =>
-                  packageSearch.setTags(pipe(tags, nonEmptyArray.fromArray))
-                }
-                onClick={onTagClick}
-              />
+            {!isDesktop && makeStackableBlock(showFiltersBtnMobile)}
+
+            {pipe(
+              packageSearch.tags,
+              option.map(
+                flow(
+                  (tags) => (
+                    <TagBadgeGroup
+                      tags={tags}
+                      onRemove={(tags) =>
+                        packageSearch.setTags(
+                          pipe(tags, nonEmptyArray.fromArray)
+                        )
+                      }
+                      onClick={onTagClick}
+                    />
+                  ),
+                  makeStackableBlock
+                )
+              ),
+              option.toNullable
             )}
 
             {pipe(
