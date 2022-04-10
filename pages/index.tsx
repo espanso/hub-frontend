@@ -57,6 +57,7 @@ export const getStaticProps = () =>
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
+// Landing bg images generated from https://app.haikei.app/
 const FullHeightSection = (props: React.ComponentProps<typeof Pane>) => (
   <Pane display="flex" minHeight="100vh" flexDirection="column" {...props}>
     {props.children}
