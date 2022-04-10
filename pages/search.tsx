@@ -3,6 +3,7 @@ import {
   array,
   either,
   nonEmptyArray,
+  number,
   option,
   record,
   string,
@@ -16,6 +17,7 @@ import { ComponentProps } from "react";
 import { GroupedByVersion, Package } from "../api/domain";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { tagsSearch, textSearch, usePackageSearch } from "../api/search";
+import { tagsCount } from "../api/tags";
 import {
   CheckboxGroup,
   CheckboxItem,
@@ -60,23 +62,22 @@ const Search = (props: Props) => {
     props.packages,
     option.map(
       flow(
-        array.map((p) => p.tags),
-        array.flatten,
-        array.uniq(string.Eq),
-        array.reduce({}, (acc, curr) => ({
+        tagsCount,
+        array.reduce([] as Array<CheckboxItem>, (acc, curr) => [
           ...acc,
-          [curr]: {
-            label: curr,
+          {
+            key: curr.tag,
+            label: `${curr.tag} (${curr.count})`,
             checked: pipe(
               packageSearch.tags,
-              option.chain(array.findFirst((x) => tagEq.equals(x, curr))),
+              option.chain(array.findFirst((x) => tagEq.equals(x, curr.tag))),
               option.fold(constant(false), constant(true))
             ),
           },
-        }))
+        ])
       )
     ),
-    option.getOrElseW(constant({}))
+    option.getOrElseW(constant([]))
   );
 
   const filterBySearch: (packages: Array<Package>) => Array<Package> = (
@@ -106,12 +107,11 @@ const Search = (props: Props) => {
     </Stack>
   );
 
-  const onCheckboxesChange = (items: Record<string, CheckboxItem>) =>
+  const onCheckboxesChange = (items: Array<CheckboxItem>) =>
     packageSearch.setTags(
       pipe(
         items,
-        record.filter((v) => v.checked),
-        record.collect(string.Ord)((k, v) => k),
+        array.filterMap((v) => (v.checked ? option.some(v.key) : option.none)),
         nonEmptyArray.fromArray
       )
     );
