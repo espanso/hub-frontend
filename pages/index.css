@@ -7,6 +7,11 @@ html {
   cursor: pointer;
 }
 
+.search-bar-icon:hover {
+  cursor: pointer;
+  fill: black;
+}
+
 .link-white-override {
   color: white !important;
 }

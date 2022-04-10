@@ -29,6 +29,7 @@ import {
   FeaturedShowcase,
   Footer,
   Navbar,
+  SearchBar,
   Stack,
 } from "../components";
 import { useResponsive } from "../components/layout/useResponsive";
@@ -73,15 +74,6 @@ const Index = (props: Props) => {
 
   const { foldDevices } = useResponsive();
 
-  const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (event.currentTarget.value !== undefined) {
-        packageSearch.setQuery(option.some(event.currentTarget.value));
-      }
-    }
-  };
-
   return (
     <Pane display="flex" flexDirection="column">
       <FullHeightSection
@@ -115,7 +107,7 @@ const Index = (props: Props) => {
                 Emoji, code-snippets, mathematical notations, accents and more.{" "}
               </Heading>
             </Stack>
-            <TextInput
+            <SearchBar
               width={foldDevices({
                 mobile: () => "100%",
                 tablet: () => "600px",
@@ -123,12 +115,9 @@ const Index = (props: Props) => {
               })}
               height={50}
               placeholder="Already got an idea? Search it here..."
-              onKeyDown={onEnter}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchValue(e.target.value)
-              }
+              onSearch={flow(option.some, packageSearch.setQuery)}
               value={searchValue}
-            />
+            ></SearchBar>
             <Paragraph size={600} color={espansoTheme.colors.white}>
               or{" "}
               <Link
