@@ -30,7 +30,7 @@ const espansoColors = {
 };
 
 // Default Theme definition https://github.com/segmentio/evergreen/blob/master/src/themes/default
-const espansoTheme = deepmerge(defaultTheme, {
+export const espansoTheme = deepmerge(defaultTheme, {
   colors: {
     ...espansoColors,
   },
@@ -55,6 +55,11 @@ const espansoTheme = deepmerge(defaultTheme, {
           _focus: {
             backgroundColor: "white",
           },
+        },
+        landing: {
+          border: `2px solid ${espansoColors.green200}`,
+          backgroundColor: "transparent",
+          color: "white",
         },
       },
     },

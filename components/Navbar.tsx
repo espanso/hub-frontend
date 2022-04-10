@@ -13,19 +13,36 @@ import {
   TextInputAppearance,
 } from "evergreen-ui";
 import { array } from "fp-ts";
-import { pipe } from "fp-ts/function";
+import { constant, pipe } from "fp-ts/function";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { espansoTheme } from ".";
 import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
 
+type NavbarVariant = "default" | "landing";
+
 type Props = {
   searchInitialValue?: string;
+  variant?: NavbarVariant;
   onSearchEnter?: (value: string) => unknown;
 };
 
+const foldVariant: <T>(match: {
+  default: () => T;
+  landing: () => T;
+}) => (variant: NavbarVariant) => T = (match) => (variant) => {
+  switch (variant) {
+    case "default":
+      return match.default();
+    case "landing":
+      return match.landing();
+  }
+};
+
 export const Navbar = (props: Props) => {
+  const variant: NavbarVariant = props.variant ?? "default";
   const router = useRouter();
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -149,7 +166,13 @@ export const Navbar = (props: Props) => {
     <Pane
       display="flex"
       flexDirection="column"
-      background="green500"
+      background={pipe(
+        variant,
+        foldVariant({
+          default: constant(espansoTheme.colors.green500),
+          landing: constant("transparent"),
+        })
+      )}
       height={majorScale(8)}
       justifyContent="center"
     >
@@ -176,7 +199,13 @@ export const Navbar = (props: Props) => {
           <Pane display="flex">
             <Stack units={2} display="flex" flex={1} alignItems="center">
               {logoDesktop}
-              {makeSearchInput()}
+              {pipe(
+                variant,
+                foldVariant({
+                  default: makeSearchInput,
+                  landing: constant(<></>),
+                })
+              )}
             </Stack>
             <Stack units={4} display="flex" alignContent="center">
               {makeLinks("white")}
