@@ -6,20 +6,19 @@ import { Pane, majorScale, Heading, Paragraph, Card } from "evergreen-ui";
 import { ContentRow, useTabs, CodeBlock, Markdown } from "../components";
 import { Option } from "fp-ts/Option";
 import { fetchPackageRepo } from "../api/packageRepo";
+import { GetStaticPropsContext } from "next";
 
-type QueryParams = {
-  params: {
-    packageName: string;
-  };
-};
-
-export const getStaticProps = (context: QueryParams) =>
+export const getStaticProps = (context: GetStaticPropsContext) =>
   pipe(
     fetchPackagesIndex,
     taskEither.chain((packagesIndex) =>
       pipe(
         packagesIndex.packages,
-        array.findFirst((p) => p.name === context.params.packageName),
+        array.findFirst(
+          (p) =>
+            context.params !== undefined &&
+            p.name === context.params.packageName
+        ),
         taskEither.fromOption(constant(new Error("Package not found")))
       )
     ),

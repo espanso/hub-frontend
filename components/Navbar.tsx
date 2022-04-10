@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Stack } from "./layout";
 
 const NavbarLink = (props: { href: string; children: React.ReactNode }) => (
-  <Link href="#" display="flex" alignItems="center">
+  <Link href={props.href} display="flex" alignItems="center">
     <Strong size={400} color="white">
       {props.children}
     </Strong>
@@ -23,7 +23,6 @@ export const Navbar = (props: Props) => {
   };
 
   const [searchValue, setSearchValue] = useState(props.searchInitialValue);
-
   return (
     <Pane
       display="flex"
