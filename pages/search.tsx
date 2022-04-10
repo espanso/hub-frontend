@@ -1,12 +1,20 @@
 import { Pane } from "evergreen-ui";
-import { either, nonEmptyArray, option, string, task } from "fp-ts";
+import {
+  array,
+  either,
+  nonEmptyArray,
+  option,
+  record,
+  string,
+  task,
+} from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
 import { Eq } from "fp-ts/Eq";
 import { InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
 import { GroupedByVersion, Package } from "../api/domain";
 import { fetchPackagesIndex } from "../api/packagesIndex";
-import { ContentRow, Navbar, PackagesGrid } from "../components";
+import { ContentRow, Navbar, PackageCard, Stack } from "../components";
 import { search } from "../api/search";
 
 export const getStaticProps = () =>
@@ -52,6 +60,15 @@ const Search = (props: Props) => {
       option.getOrElseW(constant(packages))
     );
 
+  const renderSearchResults = (packages: Array<Package>) => (
+    <Stack units={2} direction="column">
+      {pipe(
+        packages,
+        array.map((p) => <PackageCard package={p} />)
+      )}
+    </Stack>
+  );
+
   return (
     <Pane display="flex" flexDirection="column">
       <ContentRow background="green500">
@@ -64,10 +81,10 @@ const Search = (props: Props) => {
         {pipe(
           props.packagesIndex,
           option.map((index) => index.packages),
-          option.map(filterBySearch),
-          option.chain(nonEmptyArray.fromArray),
           option.chain(flow(GroupedByVersion.decode, option.fromEither)),
-          option.map((grouped) => <PackagesGrid packages={grouped} />),
+          option.map(flow(record.map(nonEmptyArray.head), Object.values)),
+          option.map(filterBySearch),
+          option.map(renderSearchResults),
           option.toNullable
         )}
       </ContentRow>
