@@ -4,7 +4,7 @@ export * from "./EmptyResultsIcon";
 export * from "./EspansoThemeProvider";
 export * from "./featured";
 export * from "./layout";
-export * from "./Markdown";
+export * from "./MDXRenderer";
 export * from "./Navbar";
 export * from "./PackageCard";
 export * from "./Tags/TagBadgeGroup";
