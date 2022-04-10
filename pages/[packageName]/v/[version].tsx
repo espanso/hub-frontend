@@ -14,6 +14,7 @@ import {
   SelectMenu,
   ShareIcon,
   SideSheet,
+  Table,
 } from "evergreen-ui";
 import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
 import { sequenceS } from "fp-ts/Apply";
@@ -37,16 +38,22 @@ import {
   CodeBlock,
   ContentRow,
   FeaturedBadge,
-  Markdown,
+  MDXRenderer,
   Navbar,
   Stack,
   TagBadgeGroup,
   useTabs,
 } from "../../../components";
 import { useResponsive } from "../../../components/layout/useResponsive";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serializeReadme } from "../../../api/serializeReadme";
 
 export type Props = {
-  packageRepo: Option<PackageRepo>;
+  packageRepo: Option<
+    PackageRepo & {
+      serializedReadme: MDXRemoteSerializeResult<Record<string, unknown>>;
+    }
+  >;
   versions: Array<string>;
 };
 
@@ -84,7 +91,8 @@ export const getStaticProps = (context: GetStaticPropsContext) =>
           taskEither.fromOption(
             () => new Error(`Version ${context.params?.version} not found`)
           ),
-          taskEither.flatten
+          taskEither.flatten,
+          serializeReadme
         ),
         versions: pipe(
           packages,
@@ -249,6 +257,7 @@ const VersionedPackagePage = (props: Props) => {
               option.map((version) => (
                 <SelectMenu
                   height="auto"
+                  position={Position.BOTTOM_RIGHT}
                   title="Select version"
                   options={props.versions.map((v) => ({
                     label: `v${v}`,
@@ -335,11 +344,8 @@ const VersionedPackagePage = (props: Props) => {
 
   const tabDescriptionContent = pipe(
     props.packageRepo,
-    option.map((p) => (
-      <Markdown
-        // TODO: Avoid rendering specific package that fails next.js build
-        content={p.package.name === "foreign-thanks" ? "" : p.readme}
-      />
+    option.map((packageRepo) => (
+      <MDXRenderer mdxSource={packageRepo.serializedReadme} />
     )),
     option.getOrElse(constant(<></>)),
     tabContentWrapper
