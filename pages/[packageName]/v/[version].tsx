@@ -269,7 +269,10 @@ const VersionedPackagePage = (props: Props) => {
               currentVersion,
               option.map((version) => (
                 <SelectMenu
-                  height="auto"
+                  height={pipe(
+                    props.versions,
+                    array.reduce(40, (acc) => acc + 33)
+                  )}
                   position={Position.BOTTOM_RIGHT}
                   title="Select version"
                   options={props.versions.map((v) => ({
