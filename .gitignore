@@ -1,5 +1,8 @@
 # Custom
 .packagesRepo/
+public/sitemap-0.xml
+.vscode
+out/
 
 # Logs
 logs

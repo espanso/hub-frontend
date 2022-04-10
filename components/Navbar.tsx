@@ -11,10 +11,10 @@ import {
   SearchInput,
   Strong,
   TextInputAppearance,
+  Image,
 } from "evergreen-ui";
 import { array } from "fp-ts";
 import { constant, pipe } from "fp-ts/function";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { espansoTheme } from ".";

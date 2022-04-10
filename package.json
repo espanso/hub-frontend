@@ -40,6 +40,7 @@
     "build": "cross-env PACKAGE_INDEX_CACHE_DIR=.cache next build",
     "postbuild": "next-sitemap",
     "start": "cross-env PACKAGE_INDEX_CACHE_DIR=.cache next start",
+    "export": "cross-env PACKAGE_INDEX_CACHE_DIR=.cache next export",
     "lint": "next lint",
     "test": "jest"
   },
