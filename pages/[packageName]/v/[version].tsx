@@ -6,17 +6,21 @@ import {
   majorScale,
   Pane,
   Paragraph,
-  Select,
   SelectMenu,
   ShareIcon,
 } from "evergreen-ui";
 import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
+import { sequenceS } from "fp-ts/Apply";
 import { constant, flow, pipe } from "fp-ts/function";
-import { sequenceS } from "fp-ts/lib/Apply";
+import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
-import { OrderedByVersion, PackageRepo } from "../../../api/domain";
+import {
+  FileAsString,
+  OrderedByVersion,
+  PackageRepo,
+} from "../../../api/domain";
 import { fetchPackageRepo } from "../../../api/packageRepo";
 import { fetchPackagesIndex } from "../../../api/packagesIndex";
 import { usePackageSearch } from "../../../api/search";
@@ -115,6 +119,26 @@ export const getStaticPaths = pipe(
   }))
 );
 
+const YamlShowcase = (props: { files: NonEmptyArray<FileAsString> }) => {
+  const tabs = pipe(
+    props.files,
+    nonEmptyArray.map((f) => ({
+      id: f.name,
+      label: f.name,
+      render: () => <CodeBlock content={f.content} />,
+    }))
+  );
+
+  const [header, content] = useTabs(tabs, "sidebar");
+
+  return (
+    <Pane display="flex">
+      <Pane marginRight={majorScale(2)}>{header}</Pane>
+      {content}
+    </Pane>
+  );
+};
+
 const VersionedPackagePage = (props: Props) => {
   const router = useRouter();
   const packagesSearch = usePackageSearch({
@@ -205,7 +229,7 @@ const VersionedPackagePage = (props: Props) => {
         flex={1}
         justifyContent="center"
       >
-        <Paragraph size={400} color="muted">
+        <Paragraph size={400} color="muted" marginBottom={majorScale(2)}>
           Copy and past to install this package
         </Paragraph>
 
@@ -243,7 +267,7 @@ const VersionedPackagePage = (props: Props) => {
                 content={p.package.name === "foreign-thanks" ? "" : p.readme}
               />
             )),
-            option.getOrElse(() => <></>)
+            option.getOrElse(constant(<></>))
           )
         ),
     },
@@ -256,8 +280,8 @@ const VersionedPackagePage = (props: Props) => {
             {pipe(
               props.packageRepo,
               option.map((p) => p.packageYml),
-              option.getOrElseW(() => []),
-              array.map((file) => <CodeBlock content={file.content} />)
+              option.map((files) => <YamlShowcase files={files} />),
+              option.getOrElse(constant(<></>))
             )}
           </Pane>
         ),

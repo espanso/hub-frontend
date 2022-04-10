@@ -17,6 +17,7 @@ const espansoColors = {
   green900: "#00211e",
 };
 
+// Default Theme definition https://github.com/segmentio/evergreen/blob/master/src/themes/default
 const espansoTheme = deepmerge(defaultTheme, {
   colors: {
     ...espansoColors,
@@ -24,16 +25,29 @@ const espansoTheme = deepmerge(defaultTheme, {
   components: {
     Tab: {
       appearances: {
-        secondary: {
-          borderRadius: 0,
-          _focus: {},
-          _hover: {
-            backgroundColor: "trasparent",
+        primary: {
+          _before: {
+            backgroundColor: espansoColors.green500,
           },
+
           _current: {
-            backgroundColor: "trasparent",
             color: espansoColors.green500,
-            borderBottom: `2px solid ${espansoColors.green500}`,
+
+            "&:before": {
+              transform: "scaleY(1)",
+            },
+
+            "&:focus": {
+              color: espansoColors.green500,
+            },
+          },
+        },
+        secondary: {
+          _current: {
+            borderRadius: 2,
+            borderLeft: `2px solid ${espansoColors.green500}`,
+            backgroundColor: espansoColors.green25,
+            color: espansoColors.green500,
           },
         },
       },

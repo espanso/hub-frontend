@@ -5,6 +5,7 @@ import {
   nonEmptyArray,
   option,
   record,
+  string,
   taskEither,
 } from "fp-ts";
 import { sequenceS } from "fp-ts/Apply";
@@ -27,6 +28,8 @@ const optionalFilenames = {
 
 const taskEitherChainTryCatch = <A, T>(g: (a: A) => Promise<T>) =>
   taskEither.chain((a: A) => taskEither.tryCatch(() => g(a), either.toError));
+
+const predicateYaml = string.endsWith(".yml") || string.endsWith(".yaml");
 
 export const fetchPackageRepo: (
   p: Package
@@ -92,7 +95,7 @@ export const fetchPackageRepo: (
                         Object.values(optionalFilenames),
                       ],
                       array.flatten,
-                      array.exists((filename) => filename !== k),
+                      array.every((filename) => filename !== k),
                       boolean.fold(
                         constant(option.none),
                         constant(
@@ -104,7 +107,8 @@ export const fetchPackageRepo: (
                       )
                     )
                   ),
-                  Object.values
+                  Object.values,
+                  array.filter((v) => predicateYaml(v.name))
                 )
               )
             ),
