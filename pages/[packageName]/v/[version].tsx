@@ -425,7 +425,7 @@ const VersionedPackagePage = (props: Props) => {
   });
 
   const packagePage = (currentRepo: PackageRepo) => (
-    <Pane display="flex" flexDirection="column">
+    <Pane display="flex" flexDirection="column" minHeight="100vh">
       <ContentRow background="blueTint">
         <BetaBanner />
       </ContentRow>
@@ -447,7 +447,7 @@ const VersionedPackagePage = (props: Props) => {
         </Stack>
       </ContentRow>
 
-      <ContentRow background="gray200">
+      <ContentRow background="gray200" flexGrow={1}>
         {isDesktop ? tabsContent : tabsContentMobile}
       </ContentRow>
 

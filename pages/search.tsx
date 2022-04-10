@@ -278,7 +278,7 @@ const Search = (props: Props) => {
   );
 
   return (
-    <Pane display="flex" flexDirection="column">
+    <Pane display="flex" flexDirection="column" minHeight="100vh">
       <ContentRow background="blueTint">
         <BetaBanner />
       </ContentRow>
@@ -293,7 +293,7 @@ const Search = (props: Props) => {
         />
       </ContentRow>
 
-      <ContentRow background="tint2">
+      <ContentRow background="tint2" flexGrow={1}>
         <Pane display="flex" marginTop={majorScale(isDesktop ? 6 : 2)}>
           {filters}
 
