@@ -1,4 +1,12 @@
-import { Pane, Text, Link, majorScale, Heading, Strong } from "evergreen-ui";
+import {
+  Pane,
+  Text,
+  Link,
+  majorScale,
+  Heading,
+  Strong,
+  minorScale,
+} from "evergreen-ui";
 import {
   array,
   boolean,
@@ -205,16 +213,16 @@ const Search = (props: Props) => {
               onChange={onCheckboxesChange}
             />
           </Pane>
-          <Stack
-            units={1}
-            direction="column"
-            flex={3}
-            marginTop={majorScale(2)}
-          >
+
+          <Pane flex={3}>
             {pipe(
               packageSearch.query,
               option.map((q) => (
-                <Stack units={1}>
+                <Stack
+                  units={1}
+                  marginTop={majorScale(1)}
+                  marginBottom={majorScale(1)}
+                >
                   {pipe(
                     results,
                     option.map((r) => (
@@ -245,12 +253,13 @@ const Search = (props: Props) => {
               }
               onClick={onTagClick}
             />
+
             {pipe(
               results,
               option.map(renderSearchResultsOrEmpty),
               option.toNullable
             )}
-          </Stack>
+          </Pane>
         </Pane>
       </ContentRow>
     </Pane>
