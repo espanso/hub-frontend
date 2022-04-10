@@ -1,11 +1,10 @@
-import { Badge, Card, Heading, majorScale, Paragraph } from "evergreen-ui";
-import { nonEmptyArray } from "fp-ts";
-import { pipe } from "fp-ts/function";
+import { Card, Heading, majorScale, Paragraph } from "evergreen-ui";
 import { Package } from "../api/domain";
-import { Stack } from "./layout";
+import { TagBadgeGroup } from "./Tags/TagBadgeGroup";
 
 type Props = {
   package: Package;
+  onTagClick: (tag: string) => unknown;
 };
 
 export const PackageCard = (props: Props) => (
@@ -24,20 +23,6 @@ export const PackageCard = (props: Props) => (
   >
     <Heading>{props.package.title}</Heading>
     <Paragraph>{props.package.description}</Paragraph>
-    <Stack units={1} flexWrap="wrap" marginTop={majorScale(1)}>
-      {pipe(
-        props.package.tags,
-        nonEmptyArray.map((t) => (
-          <Badge
-            key={`${props.package.id}-${t}`}
-            color="neutral"
-            marginTop={majorScale(2)}
-            isInteractive
-          >
-            {t}
-          </Badge>
-        ))
-      )}
-    </Stack>
+    <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
   </Card>
 );

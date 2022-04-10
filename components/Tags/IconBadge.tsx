@@ -1,9 +1,10 @@
 import { Badge, majorScale, Pane } from "evergreen-ui";
-import { ForwardedRef, forwardRef } from "react";
-import { Stack } from "./layout";
+import { ForwardedRef, forwardRef, SyntheticEvent } from "react";
+import { Stack } from "../layout";
 
 type Props = {
   text: string;
+  onClick: () => unknown;
   onIconClick: () => unknown;
   icon: () => JSX.Element;
 };
@@ -19,12 +20,19 @@ export const IconBadge = forwardRef(
         paddingLeft={majorScale(2)}
         paddingRight={majorScale(2)}
         ref={ref}
+        isInteractive
+        onClick={(e: SyntheticEvent) => {
+          !e.defaultPrevented && props.onClick();
+        }}
       >
         <Stack units={1} display="flex" alignItems="center">
           {props.text}
           <Pane
             className="icon-badge-icon"
-            onClick={props.onIconClick}
+            onClick={(e: SyntheticEvent) => {
+              e.preventDefault();
+              props.onIconClick();
+            }}
             display="flex"
             alignItems="center"
           >
