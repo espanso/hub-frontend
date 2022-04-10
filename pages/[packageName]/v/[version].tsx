@@ -24,6 +24,7 @@ import { GetStaticPropsContext } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { useRouter } from "next/router";
 import React from "react";
+import { GithubURL } from "../../../api/assets";
 import {
   FileAsString,
   OrderedByVersion,
@@ -34,8 +35,9 @@ import { fetchPackageRepo } from "../../../api/packageRepo";
 import { fetchPackagesIndex } from "../../../api/packagesIndex";
 import { usePackageSearch } from "../../../api/search";
 import { serializeReadme } from "../../../api/serializeReadme";
-import { eitherLogError, taskEitherLogError } from "../../../api/utils";
+import { taskEitherLogError } from "../../../api/utils";
 import {
+  BetaBanner,
   CodeBlock,
   ContentRow,
   FeaturedBadge,
@@ -46,7 +48,6 @@ import {
   useTabs,
 } from "../../../components";
 import { useResponsive } from "../../../components/layout/useResponsive";
-import { GithubURL } from "../../../api/assets";
 
 export type Props = {
   packageRepo: Option<
@@ -424,6 +425,10 @@ const VersionedPackagePage = (props: Props) => {
 
   const packagePage = (currentRepo: PackageRepo) => (
     <Pane display="flex" flexDirection="column">
+      <ContentRow background="blueTint">
+        <BetaBanner />
+      </ContentRow>
+
       <ContentRow background="green500" elevation={2} zIndex={1}>
         <Navbar
           searchInitialValue={pipe(

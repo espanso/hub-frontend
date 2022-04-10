@@ -36,6 +36,7 @@ import {
   Stack,
   TagBadgeGroup,
   EmptyResultsIcon,
+  BetaBanner,
 } from "../components";
 import { useResponsive } from "../components/layout/useResponsive";
 
@@ -277,6 +278,10 @@ const Search = (props: Props) => {
 
   return (
     <Pane display="flex" flexDirection="column">
+      <ContentRow background="blueTint">
+        <BetaBanner />
+      </ContentRow>
+
       <ContentRow background="green500" elevation={2} zIndex={1}>
         <Navbar
           searchInitialValue={pipe(

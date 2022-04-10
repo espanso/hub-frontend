@@ -8,3 +8,4 @@ export * from "./MDXRenderer";
 export * from "./Navbar";
 export * from "./PackageCard";
 export * from "./Tags/TagBadgeGroup";
+export * from "./BetaBanner";
