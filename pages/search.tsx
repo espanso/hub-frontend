@@ -130,7 +130,7 @@ const Search = (props: Props) => {
   );
 
   const createPackageSuggestion = (preamble: string, label: string) => (
-    <Stack units={1}>
+    <Stack units={1} direction="column" alignItems="center">
       <Text size={500} color="muted">
         {preamble}
       </Text>
@@ -177,8 +177,8 @@ const Search = (props: Props) => {
               <Stack units={1} direction="column" alignItems="center">
                 <Heading size={700}>{`Sorry! No results found! `}</Heading>
                 {createPackageSuggestion(
-                  "If you can’t find what you’re looking for,",
-                  "create a new package!"
+                  "Can't find what you're looking for?",
+                  "create your own package!"
                 )}
               </Stack>
             </Stack>
