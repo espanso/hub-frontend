@@ -126,6 +126,7 @@ const Search = (props: Props) => {
       justifyContent="center"
       marginTop={majorScale(4)}
       marginBottom={majorScale(4)}
+      key="additional-search-result-wrapper"
     >
       {children}
     </Pane>
