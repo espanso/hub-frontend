@@ -133,13 +133,13 @@ const Search = (props: Props) => {
 
       <ContentRow background="tint2">
         <Pane display="flex">
-          <Pane display="flex" flexGrow={1}>
+          <Pane display="flex" flex={1}>
             <CheckboxGroup
               items={tagsCheckboxes}
               onChange={onCheckboxesChange}
             />
           </Pane>
-          <Pane display="flex" flexDirection="column" flexGrow={2}>
+          <Pane display="flex" flexDirection="column" flex={3}>
             <TagBadgeGroup
               tags={pipe(packageSearch.tags, option.getOrElseW(constant([])))}
               onRemove={(tags) =>
