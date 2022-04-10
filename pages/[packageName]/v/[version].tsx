@@ -21,6 +21,7 @@ import {
   OrderedByVersion,
   PackageRepo,
 } from "../../../api/domain";
+import { isFeatured } from "../../../api/packageFeatured";
 import { fetchPackageRepo } from "../../../api/packageRepo";
 import { fetchPackagesIndex } from "../../../api/packagesIndex";
 import { usePackageSearch } from "../../../api/search";
@@ -33,6 +34,7 @@ import {
   Stack,
   TagBadgeGroup,
   useTabs,
+  FeaturedBadge,
 } from "../../../components";
 
 export type Props = {
@@ -161,7 +163,10 @@ const VersionedPackagePage = (props: Props) => {
         borderRight={true}
       >
         <Pane display="flex">
-          <Heading size={900}>{currentRepo.package.name}</Heading>
+          <Stack units={3} alignItems="baseline">
+            <Heading size={900}>{currentRepo.package.name}</Heading>
+            {isFeatured(currentRepo.package) && <FeaturedBadge />}
+          </Stack>
 
           <Pane flexGrow={1} />
           <Stack units={1} alignItems="center">
