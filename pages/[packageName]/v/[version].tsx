@@ -404,7 +404,7 @@ const VersionedPackagePage = (props: Props) => {
 
   const packagePage = (currentRepo: PackageRepo) => (
     <Pane display="flex" flexDirection="column">
-      <ContentRow background="green500">
+      <ContentRow background="green500" elevation={2} zIndex={1}>
         <Navbar
           searchInitialValue={pipe(
             packageSearch.query,
@@ -414,10 +414,12 @@ const VersionedPackagePage = (props: Props) => {
         />
       </ContentRow>
 
-      <ContentRow marginTop={majorScale(4)} marginBottom={majorScale(4)}>
-        {header(currentRepo)}
+      <ContentRow elevation={1} zIndex={1} paddingTop={majorScale(4)}>
+        <Stack units={4} direction="column">
+          {header(currentRepo)}
+          {isDesktop ? tabsHeader : tabsHeaderMobile}
+        </Stack>
       </ContentRow>
-      <ContentRow>{isDesktop ? tabsHeader : tabsHeaderMobile}</ContentRow>
       <ContentRow background="gray200">
         {isDesktop ? tabsContent : tabsContentMobile}
       </ContentRow>

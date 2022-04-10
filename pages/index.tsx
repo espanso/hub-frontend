@@ -47,7 +47,7 @@ const Index = (props: Props) => {
 
   return (
     <Pane display="flex" flexDirection="column">
-      <ContentRow background="green500">
+      <ContentRow background="green500" elevation={2} zIndex={1}>
         <Navbar onSearchEnter={flow(option.of, packageSearch.setQuery)} />
       </ContentRow>
       <ContentRow background="tint2">
