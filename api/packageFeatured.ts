@@ -11,6 +11,7 @@ const featuredPackages = [
   "shruggie",
   "spanish-accent",
   "espanso-dice",
+  "medical-docs",
 ];
 
 export const isFeatured: (p: Package) => boolean = (p) =>
