@@ -1,5 +1,5 @@
 import { Link, Pane, majorScale, Image, Text, HeartIcon } from "evergreen-ui";
-import { array, boolean } from "fp-ts";
+import { array } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import router from "next/router";
 import { espansoTheme } from "./EspansoThemeProvider";
