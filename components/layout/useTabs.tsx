@@ -8,7 +8,7 @@ import { Stack } from ".";
 
 type TabVariant = "topbar" | "sidebar";
 
-type TabProps = {
+export type TabProps = {
   id: string;
   label: string;
   icon?: JSX.Element;

@@ -14,10 +14,20 @@ import {
   SelectMenu,
   ShareIcon,
   SideSheet,
+  Text,
 } from "evergreen-ui";
-import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
+import {
+  array,
+  boolean,
+  either,
+  nonEmptyArray,
+  option,
+  string,
+  task,
+  taskEither,
+} from "fp-ts";
 import { sequenceS } from "fp-ts/Apply";
-import { constant, flow, pipe } from "fp-ts/function";
+import { constant, flow, pipe, identity } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 import { GetStaticPropsContext } from "next";
@@ -45,6 +55,7 @@ import {
   MDXRenderer,
   Navbar,
   Stack,
+  TabProps,
   TagBadgeGroup,
   useTabs,
 } from "../../../components";
@@ -344,8 +355,18 @@ const VersionedPackagePage = (props: Props) => {
     </Card>
   );
 
-  const tabDescriptionContent = pipe(
+  const tabDescription = pipe(
     props.packageRepo,
+    option.chain((packageRepo) =>
+      pipe(
+        packageRepo.readme,
+        string.isEmpty,
+        boolean.fold(
+          () => option.some(packageRepo),
+          () => option.none
+        )
+      )
+    ),
     option.map((packageRepo) => ({
       mdxSource: option.some(packageRepo.serializedReadme),
       repositoryHomepage: pipe(
@@ -363,62 +384,69 @@ const VersionedPackagePage = (props: Props) => {
     })),
     option.chain(sequenceS(option.Apply)),
     option.map((props) => <MDXRenderer {...props} />),
-    option.getOrElse(constant(<></>)),
-    tabContentWrapper
+    option.map((content) => ({
+      id: "description",
+      label: "Description",
+      icon: <ManualIcon />,
+      render: () => tabContentWrapper(content),
+    }))
   );
 
-  const tabSourceContentDesktop = pipe(
+  const tabSourceDesktop = pipe(
     props.packageRepo,
     option.map((p) => p.packageYml),
-    option.map((files) => <YamlShowcase files={files} />),
-    option.getOrElse(constant(<></>)),
-    (content) => <Pane>{content}</Pane>,
-    tabContentWrapper
+    option.map((files) => (
+      <Pane>
+        <YamlShowcase files={files} />
+      </Pane>
+    )),
+    option.map((content) => ({
+      id: "source",
+      label: `Source`,
+      icon: <CodeIcon />,
+      render: () => tabContentWrapper(content),
+    }))
   );
 
-  const tabSourceContentMobile = pipe(
+  const fallbackTab = {
+    id: "fallback",
+    label: "Description",
+    render: () => tabContentWrapper(<Text>No data available</Text>),
+  };
+
+  const tabs = pipe(
+    [tabDescription, tabSourceDesktop],
+    array.compact,
+    nonEmptyArray.fromArray,
+    option.fold(() => nonEmptyArray.of(fallbackTab), identity)
+  ) as NonEmptyArray<TabProps>;
+
+  const [tabsHeader, tabsContent] = useTabs(tabs, "topbar");
+
+  const tabSourceMobile = pipe(
     props.packageRepo,
     option.map((p) => p.packageYml),
-    option.map((files) => <YamlShowcaseMobile files={files} />),
-    option.getOrElse(constant(<></>)),
-    (content) => <Pane>{content}</Pane>
+    option.map((files) => (
+      <Pane>
+        <YamlShowcaseMobile files={files} />
+      </Pane>
+    )),
+    option.map((content) => ({
+      id: "source",
+      label: `Source`,
+      icon: <CodeIcon />,
+      render: () => tabContentWrapper(content),
+    }))
   );
 
-  const [tabsHeader, tabsContent] = useTabs(
-    [
-      {
-        id: "description",
-        label: "Description",
-        icon: <ManualIcon />,
-        render: () => tabDescriptionContent,
-      },
-      {
-        id: "source",
-        label: `Source`,
-        icon: <CodeIcon />,
-        render: () => tabSourceContentDesktop,
-      },
-    ],
-    "topbar"
-  );
+  const tabsMobile = pipe(
+    [tabDescription, tabSourceMobile],
+    array.compact,
+    nonEmptyArray.fromArray,
+    option.fold(() => nonEmptyArray.of(fallbackTab), identity)
+  ) as NonEmptyArray<TabProps>;
 
-  const [tabsHeaderMobile, tabsContentMobile] = useTabs(
-    [
-      {
-        id: "description",
-        label: "Description",
-        icon: <ManualIcon />,
-        render: () => tabDescriptionContent,
-      },
-      {
-        id: "source",
-        label: `Source`,
-        icon: <CodeIcon />,
-        render: () => tabSourceContentMobile,
-      },
-    ],
-    "topbar"
-  );
+  const [tabsHeaderMobile, tabsContentMobile] = useTabs(tabsMobile, "topbar");
 
   const packageSearch = usePackageSearch({
     searchPathname: "/search",
