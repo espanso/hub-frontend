@@ -1,8 +1,10 @@
 import { array, boolean, either } from "fp-ts";
 import { flow, identity, pipe } from "fp-ts/function";
+import { Either } from "fp-ts/Either";
 import * as t from "io-ts";
 
-const GITHUB_DOMAIN = "https://github.com/";
+const GITHUB_DOMAIN = "github.com";
+const GITHUB_USER_CONTENT_DOMAIN = "githubusercontent.com";
 
 interface GithubURLBrand {
   readonly GithubURL: unique symbol;
@@ -18,6 +20,7 @@ export type GithubURL = t.TypeOf<typeof GithubURL>;
 
 interface GithubURLRawBrand {
   readonly GithubURLRaw: unique symbol;
+  readonly GithubUserContentURL: unique symbol;
 }
 
 const GithubURLRaw = t.brand(
@@ -28,6 +31,15 @@ const GithubURLRaw = t.brand(
 );
 
 export type GithubURLRaw = t.TypeOf<typeof GithubURLRaw>;
+
+const GithubUserContentURL = t.brand(
+  t.string,
+  (s): s is t.Branded<string, GithubURLRawBrand> =>
+    s.includes(GITHUB_USER_CONTENT_DOMAIN),
+  "GithubUserContentURL"
+);
+
+export type GithubUserContentURL = t.TypeOf<typeof GithubUserContentURL>;
 
 interface GithubURLBlobBrand {
   readonly GithubURLBlob: unique symbol;
@@ -52,7 +64,7 @@ const GithubLocalAsset = t.type(
 
 export type GithubLocalAsset = t.TypeOf<typeof GithubLocalAsset>;
 
-const GithubURLRawFromBlob = new t.Type<GithubURLRaw, GithubURLRaw, unknown>(
+const GithubURLRawFromBlob = new t.Type<GithubURLRaw, GithubURLRaw, string>(
   "GithubURLRawFromBlob",
   (input): input is GithubURLRaw => typeof input === "string",
   (input, ctx) =>
@@ -89,8 +101,21 @@ const GithubURLRawFromLocalAsset = new t.Type<
             `GithubURLRawFromLocalAsset failure: input is not a GithubLocalAsset`
           ),
         (asset) =>
-          t.success(
-            `${asset.repositoryHomepage}/raw/master/${asset.relativePath}` as GithubURLRaw
+          pipe(
+            asset.relativePath.startsWith("http://") ||
+              asset.relativePath.startsWith("https://"),
+            boolean.fold(
+              () =>
+                t.success(
+                  `${asset.repositoryHomepage}/raw/master/${asset.relativePath}` as GithubURLRaw
+                ),
+              () =>
+                t.failure(
+                  input,
+                  ctx,
+                  `asset.relativePath is not a relative path`
+                )
+            )
           )
       )
     ),
@@ -108,22 +133,34 @@ const eitherFromValidation = either.mapLeft(
   )
 );
 
+const chainLeftToRight: <E1, A, E2>(
+  f: (e: E1) => Either<E2, A>
+) => (ma: Either<E1, A>) => Either<E2, A> = (f) =>
+  flow(
+    either.match(
+      flow(f, either.matchW(either.left, either.right)),
+      either.right
+    )
+  );
+
+/**
+ * GithubUserContentURL
+ * GithubURL => GithubURLRaw
+ * GithubURL => GithubURLBlob => GithubURLRawFromBlob => GithubURLRaw
+ * GithubURLRawFromLocalAsset => GithubURLRaw
+ */
 export const fromGithub =
   (repositoryHomepage: string) => (localAssetOrBlob: string) =>
     pipe(
-      GithubURLBlob.decode(localAssetOrBlob),
-      either.fold(
-        () => GithubURLRaw.decode(localAssetOrBlob),
-        GithubURLRawFromBlob.decode
+      localAssetOrBlob,
+      GithubUserContentURL.decode,
+      chainLeftToRight(() => GithubURLRaw.decode(localAssetOrBlob)),
+      chainLeftToRight(() => GithubURLRawFromBlob.decode(localAssetOrBlob)),
+      chainLeftToRight(() =>
+        GithubURLRawFromLocalAsset.decode({
+          repositoryHomepage,
+          relativePath: localAssetOrBlob,
+        })
       ),
-      either.fold(
-        () =>
-          GithubURLRawFromLocalAsset.decode({
-            repositoryHomepage,
-            relativePath: localAssetOrBlob,
-          }),
-        t.success
-      ),
-      eitherFromValidation,
-      either.map(GithubURLRaw.encode)
+      eitherFromValidation
     );

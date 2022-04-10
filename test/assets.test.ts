@@ -26,9 +26,18 @@ describe("assets API", () => {
       );
     });
 
-    test("returns none for a non-Github URL", () => {
+    test("does nothing with a user content raw URL", () => {
+      const rawusercontent = "https://camo.githubusercontent.com/something";
+      expect(fromGithub(repositoryHomepage)(rawusercontent)).toStrictEqual(
+        either.right(rawusercontent)
+      );
+    });
+
+    test("returns left with a non-Github URL", () => {
       expect(
-        either.isLeft(fromGithub("https://example.com")(relativePath))
+        either.isLeft(
+          fromGithub(repositoryHomepage)("https://example.com/resource")
+        )
       ).toBe(true);
     });
   });

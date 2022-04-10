@@ -11,7 +11,6 @@ import { pipe } from "fp-ts/function";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import * as assets from "../api/assets";
 import { GithubURL } from "../api/assets";
-import { eitherLogError } from "../api/utils";
 import { CodeBlock } from "./CodeBlock";
 
 export type MDXSerialize = MDXRemoteSerializeResult<Record<string, unknown>>;
@@ -36,9 +35,10 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
     pipe(
       props.src,
       assets.fromGithub(repositoryHomepage),
-      eitherLogError,
       either.fold(
-        () => <></>,
+        () => (
+          <Image {...props} src={props.src} maxWidth="100%" display="block" />
+        ),
         (src) => <Image {...props} src={src} maxWidth="100%" display="block" />
       )
     ),
