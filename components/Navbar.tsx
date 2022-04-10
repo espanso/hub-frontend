@@ -2,6 +2,7 @@ import { Link, majorScale, Pane, SearchInput, Strong } from "evergreen-ui";
 import { useState } from "react";
 import { Stack } from "./layout";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const NavbarLink = (props: { href: string; children: React.ReactNode }) => (
   <Link href={props.href} display="flex" alignItems="center">
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export const Navbar = (props: Props) => {
+  const router = useRouter();
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -42,6 +44,8 @@ export const Navbar = (props: Props) => {
             width={161}
             src="/images/navbar_logo.svg"
             alt="Espanso Hub"
+            className="clickable"
+            onClick={() => router.push("/")}
           />
           <SearchInput
             appearance="navbar"
