@@ -1,4 +1,4 @@
-import { Checkbox, Pane, Text } from "evergreen-ui";
+import { Checkbox, Heading, Pane, Text } from "evergreen-ui";
 import { array, option } from "fp-ts";
 import { pipe, constant } from "fp-ts/function";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ export type CheckboxItem = {
 };
 
 type Props = {
+  title: string;
   items: Array<CheckboxItem>;
   onChange: (items: Array<CheckboxItem>, lastUpdated: string) => unknown;
 };
@@ -25,6 +26,7 @@ export const CheckboxGroup = (props: Props) => {
 
   return (
     <Pane>
+      <Text size={600}>{props.title}</Text>
       {pipe(
         checks,
         array.map((item) => (

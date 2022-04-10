@@ -205,7 +205,11 @@ const Search = (props: Props) => {
   const [showSideSheet, setShowSideSheet] = React.useState(false);
 
   const filtersCheckboxes = (
-    <CheckboxGroup items={tagsCheckboxes} onChange={onCheckboxesChange} />
+    <CheckboxGroup
+      title="Filters"
+      items={tagsCheckboxes}
+      onChange={onCheckboxesChange}
+    />
   );
 
   const filters = isDesktop ? (
@@ -228,6 +232,33 @@ const Search = (props: Props) => {
         </Pane>
       </SideSheet>
     </React.Fragment>
+  );
+
+  const makeResultsSummary = (query: string) => (
+    <Stack units={1}>
+      {pipe(
+        results,
+        option.map((r) => (
+          <Text color="muted">
+            {r.length} results for{" "}
+            {<Strong color="muted">{`"${query}".`}</Strong>}
+          </Text>
+        )),
+        option.toNullable
+      )}
+      <Text
+        color="muted"
+        textDecoration="underline"
+        className="clickable"
+        onClick={() => packageSearch.setQuery(option.none)}
+      >
+        Clear search
+      </Text>
+    </Stack>
+  );
+
+  const makeStackableBlock = (item: React.ReactNode) => (
+    <Pane marginBottom={majorScale(2)}>{item}</Pane>
   );
 
   const showFiltersBtnMobile = (
@@ -256,50 +287,28 @@ const Search = (props: Props) => {
       </ContentRow>
 
       <ContentRow background="tint2">
-        <Pane display="flex">
+        <Pane display="flex" marginTop={majorScale(6)}>
           {filters}
 
           <Pane flex={3}>
-            {!isDesktop && showFiltersBtnMobile}
+            {!isDesktop && makeStackableBlock(showFiltersBtnMobile)}
 
             {pipe(
               packageSearch.query,
-              option.map((q) => (
-                <Stack
-                  units={1}
-                  marginTop={majorScale(1)}
-                  marginBottom={majorScale(1)}
-                >
-                  {pipe(
-                    results,
-                    option.map((r) => (
-                      <Text color="muted">
-                        {r.length} results for{" "}
-                        {<Strong color="muted">{`"${q}".`}</Strong>}
-                      </Text>
-                    )),
-                    option.toNullable
-                  )}
-                  <Text
-                    color="muted"
-                    textDecoration="underline"
-                    className="clickable"
-                    onClick={() => packageSearch.setQuery(option.none)}
-                  >
-                    Clear search
-                  </Text>
-                </Stack>
-              )),
+              option.map(makeResultsSummary),
+              option.map(makeStackableBlock),
               option.toNullable
             )}
 
-            <TagBadgeGroup
-              tags={pipe(packageSearch.tags, option.getOrElseW(constant([])))}
-              onRemove={(tags) =>
-                packageSearch.setTags(pipe(tags, nonEmptyArray.fromArray))
-              }
-              onClick={onTagClick}
-            />
+            {makeStackableBlock(
+              <TagBadgeGroup
+                tags={pipe(packageSearch.tags, option.getOrElseW(constant([])))}
+                onRemove={(tags) =>
+                  packageSearch.setTags(pipe(tags, nonEmptyArray.fromArray))
+                }
+                onClick={onTagClick}
+              />
+            )}
 
             {pipe(
               results,
