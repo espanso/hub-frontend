@@ -1,4 +1,4 @@
-import { Badge, majorScale } from "evergreen-ui";
+import { Badge } from "evergreen-ui";
 import { ForwardedRef, forwardRef } from "react";
 
 type Props = {

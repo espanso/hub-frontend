@@ -3,7 +3,6 @@ import { array } from "fp-ts";
 import { Eq } from "fp-ts/Eq";
 import { pipe } from "fp-ts/function";
 import { useEffect, useState } from "react";
-import { Stack } from "../layout";
 import { IconBadge } from "./IconBadge";
 import { TagBadge } from "./TagBadge";
 
