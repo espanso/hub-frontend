@@ -6,7 +6,7 @@ import {
   clearPackagesIndexCache,
   fetchPackagesIndex,
 } from "../api/packagesIndex";
-import { PackagesGrid } from "../components";
+import { PackagesGrid, Navbar } from "../components";
 
 export const getStaticProps = pipe(
   taskEither.fromTask(clearPackagesIndexCache),
@@ -23,13 +23,16 @@ type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Index = (props: Props) => {
   return (
-    <Pane clearfix>
-      {pipe(
-        props.packagesIndex,
-        option.map((index) => index.packages),
-        option.map((packages) => <PackagesGrid packages={packages} />),
-        option.toNullable
-      )}
+    <Pane display="flex" flexDirection="column">
+      <Navbar />
+      <Pane clearfix>
+        {pipe(
+          props.packagesIndex,
+          option.map((index) => index.packages),
+          option.map((packages) => <PackagesGrid packages={packages} />),
+          option.toNullable
+        )}
+      </Pane>
     </Pane>
   );
 };
