@@ -1,4 +1,12 @@
-import { Card, Heading, majorScale, Pane, Paragraph } from "evergreen-ui";
+import {
+  Card,
+  Heading,
+  IconButton,
+  majorScale,
+  Pane,
+  Paragraph,
+  ShareIcon,
+} from "evergreen-ui";
 import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
 import { constant, flow, identity, pipe } from "fp-ts/function";
 import { GetStaticPropsContext } from "next";
@@ -68,15 +76,26 @@ const PackagePage = (props: Props) => {
   const packagesSearch = usePackageSearch({
     searchPathname: "/search",
   });
-  const header = (currentPackage: Package) => (
+  const header = (currentRepo: PackageRepo) => (
     <Pane display="flex">
       <Pane display="flex" flexDirection="column" flex={2}>
-        <Heading size={900}>{currentPackage.name}</Heading>
+        <Pane display="flex">
+          <Heading display="flex" flexGrow={1} size={900}>
+            {currentRepo.package.name}
+          </Heading>
+          <IconButton
+            icon={ShareIcon}
+            appearance="minimal"
+            onClick={() => {
+              window.open(currentRepo.manifest.homepage, "_blank");
+            }}
+          />
+        </Pane>
         <Paragraph size={500} marginTop={12}>
-          {currentPackage.description}
+          {currentRepo.package.description}
         </Paragraph>
         <TagBadgeGroup
-          tags={currentPackage.tags}
+          tags={currentRepo.package.tags}
           onClick={(tag) => packagesSearch.setTags(option.some([tag]))}
         />
       </Pane>
@@ -92,7 +111,7 @@ const PackagePage = (props: Props) => {
         </Paragraph>
 
         <CodeBlock
-          content={`espanso install ${currentPackage.name}`}
+          content={`espanso install ${currentRepo.package.name}`}
           showCopyButton
         />
       </Pane>
@@ -139,22 +158,17 @@ const PackagePage = (props: Props) => {
     },
   ]);
 
-  const packageDetails = (currentPackage: Package) => (
+  const packageDetails = (currentRepo: PackageRepo) => (
     <Pane display="flex" flexDirection="column">
       <ContentRow marginTop={majorScale(4)} marginBottom={majorScale(4)}>
-        {header(currentPackage)}
+        {header(currentRepo)}
       </ContentRow>
       <ContentRow>{tabsHeader}</ContentRow>
       <ContentRow background="gray200">{tabsContent}</ContentRow>
     </Pane>
   );
 
-  return pipe(
-    packageRepo,
-    option.map((p) => p.package),
-    option.map(packageDetails),
-    option.toNullable
-  );
+  return pipe(packageRepo, option.map(packageDetails), option.toNullable);
 };
 
 export default PackagePage;
