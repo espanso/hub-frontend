@@ -104,7 +104,7 @@ const Index = (props: Props) => {
             <Stack units={3} direction="column" alignItems="center">
               <Pane display="flex" alignContent="center">
                 <Heading size={1000} color={espansoTheme.colors.white}>
-                  Espanso packages to enhance your workflows
+                  Enhance your workflows with espanso packages
                 </Heading>
               </Pane>
               <Heading
@@ -113,8 +113,6 @@ const Index = (props: Props) => {
                 textAlign="center"
               >
                 Emoji, code-snippets, mathematical notations, accents and more.{" "}
-                <br />
-                Espanso's got you covered, one click away.
               </Heading>
             </Stack>
             <TextInput
