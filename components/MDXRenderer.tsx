@@ -9,6 +9,7 @@ import {
 import { either } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import React from "react";
 import * as assets from "../api/assets";
 import { GithubURL } from "../api/assets";
 import { CodeBlock } from "./CodeBlock";
@@ -123,7 +124,10 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
     <CodeBlock content={String(props.children)} showCopyButton />
   ),
   inlineCode: (props: React.ComponentProps<any>) => (
-    <CodeBlock content={props.children} inline />
+    <CodeBlock content={String(props.children)} inline />
+  ),
+  kbd: (props: React.ComponentProps<any>) => (
+    <CodeBlock content={String(props.children)} inline />
   ),
   span: (props: React.ComponentProps<any>) => (
     <Text display="flex">{props.children}</Text>
