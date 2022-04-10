@@ -41,7 +41,7 @@ export const FeaturedShowcase = (props: Props) => {
               package={p}
               onTagClick={(tag) => packageSearch.setTags(option.some([tag]))}
               hideFeaturedBadge
-              height={majorScale(20)}
+              height={majorScale(22)}
             />
           </Pane>
         ))

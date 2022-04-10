@@ -1,4 +1,4 @@
-import { Card, Heading, majorScale, Pane, Paragraph } from "evergreen-ui";
+import { Card, Heading, majorScale, Pane, Text } from "evergreen-ui";
 import { Package } from "../api/domain";
 import { isFeatured } from "../api/packageFeatured";
 import { TagBadgeGroup } from "./Tags/TagBadgeGroup";
@@ -35,7 +35,7 @@ export const PackageCard = (
     minHeight={majorScale(15)}
     {...pipe(
       props,
-      record.filterWithIndex((k, v) => k in propsKeys)
+      record.filterWithIndex((k, v) => !propsKeys.includes(k))
     )}
   >
     <Stack units={1} direction="column">
@@ -44,7 +44,7 @@ export const PackageCard = (
         {props.hideFeaturedBadge ||
           (isFeatured(props.package) && <FeaturedBadge />)}
       </Pane>
-      <Paragraph>{props.package.description}</Paragraph>
+      <Text>{props.package.description}</Text>
     </Stack>
     <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
   </Card>
