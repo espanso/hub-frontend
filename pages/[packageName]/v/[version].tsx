@@ -456,46 +456,55 @@ const VersionedPackagePage = (props: Props) => {
     searchPathname: "/search",
   });
 
-  const packagePage = (currentRepo: PackageRepo) => (
-    <Pane display="flex" flexDirection="column" minHeight="100vh">
-      <Head>
-        <title>{currentRepo.package.name} | Espanso Hub</title>
-        <meta
-          name="description"
-          content={`Past in a terminal to install the \
-          ${currentRepo.package.name} package: ${currentRepo.package.description}`}
-        />
-      </Head>
-      <ContentRow background="blueTint">
-        <BetaBanner />
-      </ContentRow>
+  const packagePage = (currentRepo: PackageRepo) => {
+    const metaInfo = {
+      title: `${currentRepo.package.name} ${currentRepo.package.version} | Espanso Hub`,
+      description: `Past in a terminal to install the \
+${currentRepo.package.name} package (v ${currentRepo.package.version}): \
+${currentRepo.package.description}`,
+    };
+    return (
+      <Pane display="flex" flexDirection="column" minHeight="100vh">
+        <Head>
+          <title>{metaInfo.title}</title>
+          <meta name="description" content={metaInfo.description} />
+          <meta property="og:site_name" content="Espanso Hub" />
+          <meta property="og:title" content={metaInfo.title} />
+          <meta property="og:description" content={metaInfo.description} />
+          <meta property="og:type" content="website" />
+          <meta property="og:image" content="/images/espanso_logo.svg" />
+        </Head>
+        <ContentRow background="blueTint">
+          <BetaBanner />
+        </ContentRow>
 
-      <ContentRow background="green500" elevation={2} zIndex={1}>
-        <Navbar
-          searchInitialValue={pipe(
-            packageSearch.query,
-            option.getOrElseW(constant(""))
-          )}
-          onSearchEnter={flow(option.of, packageSearch.setQuery)}
-        />
-      </ContentRow>
+        <ContentRow background="green500" elevation={2} zIndex={1}>
+          <Navbar
+            searchInitialValue={pipe(
+              packageSearch.query,
+              option.getOrElseW(constant(""))
+            )}
+            onSearchEnter={flow(option.of, packageSearch.setQuery)}
+          />
+        </ContentRow>
 
-      <ContentRow elevation={1} zIndex={1} paddingTop={majorScale(4)}>
-        <Stack units={4} direction="column">
-          {header(currentRepo)}
-          {isDesktop ? tabsHeader : tabsHeaderMobile}
-        </Stack>
-      </ContentRow>
+        <ContentRow elevation={1} zIndex={1} paddingTop={majorScale(4)}>
+          <Stack units={4} direction="column">
+            {header(currentRepo)}
+            {isDesktop ? tabsHeader : tabsHeaderMobile}
+          </Stack>
+        </ContentRow>
 
-      <ContentRow background="gray200" flexGrow={1}>
-        {isDesktop ? tabsContent : tabsContentMobile}
-      </ContentRow>
+        <ContentRow background="gray200" flexGrow={1}>
+          {isDesktop ? tabsContent : tabsContentMobile}
+        </ContentRow>
 
-      <ContentRow background="green600">
-        <Footer showAuthor />
-      </ContentRow>
-    </Pane>
-  );
+        <ContentRow background="green600">
+          <Footer showAuthor />
+        </ContentRow>
+      </Pane>
+    );
+  };
 
   return pipe(props.packageRepo, option.map(packagePage), option.toNullable);
 };

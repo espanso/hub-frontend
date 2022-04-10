@@ -279,15 +279,22 @@ const Search = (props: Props) => {
     </Stack>
   );
 
+  const metaInfo = {
+    title: "Explore Espanso's packages | Espanso Hub",
+    description: `Navigate packages in the explore section. \
+Search for keywords or filter out by tags.`,
+  };
+
   return (
     <Pane display="flex" flexDirection="column" minHeight="100vh">
       <Head>
-        <title>Explore Espanso's packages | Espanso Hub</title>
-        <meta
-          name="description"
-          content="Navigate packages in the explore section.
-          Search for keywords or filter out by tags."
-        />
+        <title>{metaInfo.title}</title>
+        <meta name="description" content={metaInfo.description} />
+        <meta property="og:site_name" content="Espanso Hub" />
+        <meta property="og:title" content={metaInfo.title} />
+        <meta property="og:description" content={metaInfo.description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/images/espanso_logo.svg" />
       </Head>
       <ContentRow background="blueTint">
         <BetaBanner />

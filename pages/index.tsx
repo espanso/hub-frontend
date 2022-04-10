@@ -75,21 +75,27 @@ const Index = (props: Props) => {
 
   const { foldDevices } = useResponsive();
 
+  const metaInfo = {
+    title: "Espanso Hub | Enhance your workflows with espanso packages",
+    description: `\
+Enhance your workflows with espanso packages from the Espanso Hub. \
+Emoji, code-snippets, mathematical notations, accents and more. \
+Explore the hub to find packages that fits you. \
+Look up the featured packages specifically selected by the Espanso team. \
+Not finding what fits you? Create your own package or join the Reddit community to find \
+inspiration.`,
+  };
+
   return (
     <Pane display="flex" flexDirection="column">
       <Head>
-        <title>
-          Espanso Hub | Enhance your workflows with espanso packages
-        </title>
-        <meta
-          name="description"
-          content="Enhance your workflows with espanso packages from the Espanso Hub. 
-          Emoji, code-snippets, mathematical notations, accents and more.
-          Explore the hub to find packages that fits you. 
-          Look up the featured packages specifically selected by the Espanso team.
-          Not finding what fits you? Create your own package or join the Reddit community to find
-          inspiration."
-        />
+        <title>{metaInfo.title}</title>
+        <meta name="description" content={metaInfo.description} />
+        <meta property="og:site_name" content="Espanso Hub" />
+        <meta property="og:title" content={metaInfo.title} />
+        <meta property="og:description" content={metaInfo.description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/images/espanso_logo.svg" />
       </Head>
       <FullHeightSection
         backgroundImage={foldDevices({
