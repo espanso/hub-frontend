@@ -1,4 +1,4 @@
-import { majorScale, Pane } from "evergreen-ui";
+import { Pane } from "evergreen-ui";
 import { ComponentProps } from "react";
 
 type Props = ComponentProps<typeof Pane> & {

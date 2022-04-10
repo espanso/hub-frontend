@@ -1,6 +1,4 @@
 import {
-  IconButton,
-  IconButtonAppearance,
   Link,
   majorScale,
   Menu,
@@ -12,13 +10,13 @@ import {
   Strong,
   TextInputAppearance,
 } from "evergreen-ui";
-import { useState } from "react";
-import { Stack } from "./layout";
+import { array } from "fp-ts";
+import { pipe } from "fp-ts/function";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
-import { pipe } from "fp-ts/function";
-import { array } from "fp-ts";
 
 const NavbarLink = (props: {
   href: string;
