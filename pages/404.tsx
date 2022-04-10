@@ -1,6 +1,7 @@
 import { Heading, Link, Pane, Paragraph, TextInput } from "evergreen-ui";
 import { option } from "fp-ts";
 import { flow, pipe } from "fp-ts/function";
+import Head from "next/head";
 import { useState } from "react";
 import { usePackageSearch } from "../api/search";
 import { ContentRow, Footer, Navbar, Stack, espansoTheme } from "../components";
@@ -20,6 +21,13 @@ const Custom404 = () => {
   };
   return (
     <Pane display="flex" flexDirection="column">
+      <Head>
+        <title>Page not found | Espanso Hub</title>
+        <meta
+          name="description"
+          content="The page you have requested was not found in the Espanso Hub"
+        />
+      </Head>
       <ContentRow background="green500" elevation={2} zIndex={1}>
         <Navbar
           variant="landing"

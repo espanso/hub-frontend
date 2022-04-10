@@ -81,6 +81,15 @@ const Index = (props: Props) => {
         <title>
           Espanso Hub | Enhance your workflows with espanso packages
         </title>
+        <meta
+          name="description"
+          content="Enhance your workflows with espanso packages from the Espanso Hub. 
+          Emoji, code-snippets, mathematical notations, accents and more.
+          Explore the hub to find packages that fits you. 
+          Look up the featured packages specifically selected by the Espanso team.
+          Not finding what fits you? Create your own package or join the Reddit community to find
+          inspiration."
+        />
       </Head>
       <FullHeightSection
         backgroundImage={foldDevices({

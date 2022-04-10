@@ -460,6 +460,11 @@ const VersionedPackagePage = (props: Props) => {
     <Pane display="flex" flexDirection="column" minHeight="100vh">
       <Head>
         <title>{currentRepo.package.name} | Espanso Hub</title>
+        <meta
+          name="description"
+          content={`Past in a terminal to install the \
+          ${currentRepo.package.name} package: ${currentRepo.package.description}`}
+        />
       </Head>
       <ContentRow background="blueTint">
         <BetaBanner />

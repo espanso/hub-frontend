@@ -283,6 +283,11 @@ const Search = (props: Props) => {
     <Pane display="flex" flexDirection="column" minHeight="100vh">
       <Head>
         <title>Explore Espanso's packages | Espanso Hub</title>
+        <meta
+          name="description"
+          content="Navigate packages in the explore section.
+          Search for keywords or filter out by tags."
+        />
       </Head>
       <ContentRow background="blueTint">
         <BetaBanner />
