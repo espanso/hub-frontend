@@ -7,6 +7,7 @@ import {
   Link,
   ChevronDownIcon,
   majorScale,
+  Paragraph,
 } from "evergreen-ui";
 import {
   array,
@@ -93,27 +94,30 @@ const Index = (props: Props) => {
         </ContentRow>
         <ContentRow justifyContent="center" flex={6}>
           <Stack units={2} direction="column" alignItems="center">
-            <Stack units={1}>
+            <Pane display="flex">
               <Heading
-                size={900}
+                size={1000}
                 color={espansoTheme.colors.white}
                 fontFamily="Quicksand"
               >
-                Find
-              </Heading>
-              <Heading size={900} color={espansoTheme.colors.green200}>
                 espanso
               </Heading>
-              <Heading size={900} color={espansoTheme.colors.white}>
-                packages that fit you
+              <Heading
+                size={1000}
+                color={espansoTheme.colors.green200}
+                fontFamily="Quicksand"
+              >
+                hub
               </Heading>
-            </Stack>
+            </Pane>
+            <Heading size={900} color={espansoTheme.colors.white}>
+              Find espanso packages that fit you
+            </Heading>
             <Pane elevation={2}>
               <TextInput
                 width={600}
                 height={50}
-                placeholder="Type here for wonderful packages!"
-                appearance={"landing" as TextInputAppearance}
+                placeholder="Search for wonderful packages!"
                 onKeyDown={onEnter}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setSearchValue(e.target.value)
@@ -121,6 +125,17 @@ const Index = (props: Props) => {
                 value={searchValue}
               />
             </Pane>
+            <Paragraph size={600} color={espansoTheme.colors.white}>
+              or{" "}
+              <Link
+                href="/search"
+                size={600}
+                className="override-color-white"
+                textDecoration="underline"
+              >
+                browse the hub
+              </Link>
+            </Paragraph>
           </Stack>
         </ContentRow>
         <Pane flex={4} display="flex" justifyContent="center" alignItems="end">

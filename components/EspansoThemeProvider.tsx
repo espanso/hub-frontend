@@ -56,11 +56,6 @@ export const espansoTheme = deepmerge(defaultTheme, {
             backgroundColor: "white",
           },
         },
-        landing: {
-          border: `2px solid ${espansoColors.green200}`,
-          backgroundColor: "transparent",
-          color: "white",
-        },
       },
     },
     Button: {
@@ -87,6 +82,25 @@ export const espansoTheme = deepmerge(defaultTheme, {
             backgroundColor: "trasparent",
           },
         }),
+      },
+    },
+    Heading: {
+      sizes: {
+        1000: {
+          fontSize: "42px",
+        },
+      },
+    },
+    Link: {
+      baseStyle: {
+        _focus: {
+          boxShadow: "none",
+        },
+      },
+      sizes: {
+        600: {
+          fontSize: defaultTheme.fontSizes[4],
+        },
       },
     },
   },

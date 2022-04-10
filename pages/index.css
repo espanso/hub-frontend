@@ -7,6 +7,10 @@ html {
   cursor: pointer;
 }
 
+.override-color-white {
+  color: white !important;
+}
+
 .content-row {
   width: 100%;
   padding-left: 16px;
