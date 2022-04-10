@@ -19,7 +19,7 @@ export const Navbar = (props: Props) => {
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      if (props.onSearchEnter && event.currentTarget.value) {
+      if (props.onSearchEnter && event.currentTarget.value !== undefined) {
         props.onSearchEnter(event.currentTarget.value);
       }
     }

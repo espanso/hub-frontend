@@ -1,5 +1,14 @@
 import compareVersions from "compare-versions";
-import { array, boolean, either, nonEmptyArray, option, record } from "fp-ts";
+import {
+  array,
+  boolean,
+  either,
+  nonEmptyArray,
+  option,
+  predicate,
+  record,
+  string,
+} from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { fromCompare, Ord } from "fp-ts/Ord";
@@ -174,3 +183,16 @@ export const GroupedByVersion = new t.Type<
 );
 
 export type GroupedByVersion = t.TypeOf<typeof GroupedByVersion>;
+
+interface TextSearchBrand {
+  readonly TextSearch: unique symbol;
+}
+
+export const TextSearch = t.brand(
+  t.string,
+  (s): s is t.Branded<string, TextSearchBrand> =>
+    predicate.not(string.isEmpty)(s),
+  "TextSearch"
+);
+
+export type TextSearch = t.TypeOf<typeof TextSearch>;

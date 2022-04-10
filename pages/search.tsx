@@ -1,7 +1,6 @@
 import { Pane } from "evergreen-ui";
 import {
   array,
-  boolean,
   either,
   nonEmptyArray,
   option,
@@ -11,9 +10,8 @@ import {
   taskEither,
 } from "fp-ts";
 import { Eq } from "fp-ts/Eq";
-import { constant, constNull, flow, pipe } from "fp-ts/function";
+import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
-import { useRouter } from "next/router";
 import { ComponentProps } from "react";
 import { GroupedByVersion, Package } from "../api/domain";
 import { fetchPackagesIndex } from "../api/packagesIndex";
@@ -117,42 +115,39 @@ const Search = (props: Props) => {
         nonEmptyArray.fromArray
       )
     );
-  console.log(packagesSearch.query);
-  return pipe(
-    packagesSearch.isReady,
-    boolean.fold(constNull, () => (
-      <Pane display="flex" flexDirection="column">
-        <ContentRow background="green500">
-          <Navbar
-            searchInitialValue={pipe(
-              packagesSearch.query,
-              option.getOrElseW(constant(""))
-            )}
-            onSearchEnter={flow(option.of, packagesSearch.setQuery)}
-          />
-        </ContentRow>
 
-        <ContentRow background="tint2">
-          <Pane display="flex">
-            <Pane display="flex" flexGrow={1}>
-              <CheckboxGroup
-                items={tagsCheckboxes}
-                onChange={onCheckboxesChange}
-              />
-            </Pane>
-            <Pane display="flex" flexDirection="column" flexGrow={2}>
-              {pipe(
-                props.packages,
-                option.map(filterBySearch),
-                option.map(filterByTags),
-                option.map(renderSearchResults),
-                option.toNullable
-              )}
-            </Pane>
+  return (
+    <Pane display="flex" flexDirection="column">
+      <ContentRow background="green500">
+        <Navbar
+          searchInitialValue={pipe(
+            packagesSearch.query,
+            option.getOrElseW(constant(""))
+          )}
+          onSearchEnter={flow(option.of, packagesSearch.setQuery)}
+        />
+      </ContentRow>
+
+      <ContentRow background="tint2">
+        <Pane display="flex">
+          <Pane display="flex" flexGrow={1}>
+            <CheckboxGroup
+              items={tagsCheckboxes}
+              onChange={onCheckboxesChange}
+            />
           </Pane>
-        </ContentRow>
-      </Pane>
-    ))
+          <Pane display="flex" flexDirection="column" flexGrow={2}>
+            {pipe(
+              props.packages,
+              option.map(filterBySearch),
+              option.map(filterByTags),
+              option.map(renderSearchResults),
+              option.toNullable
+            )}
+          </Pane>
+        </Pane>
+      </ContentRow>
+    </Pane>
   );
 };
 
