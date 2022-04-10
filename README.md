@@ -1,3 +1,3 @@
-# hub-frontend
+# Espanso Hub
 
-WIP
+The [espanso](https://espanso.org/) hub web application
