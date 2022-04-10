@@ -20,7 +20,7 @@ const PackageCard = (props: { package: Package }) => (
     backgroundColor="white"
     hoverElevation={2}
     onClick={() => {
-      window.location.pathname = props.package.name;
+      window.location.href = props.package.name;
     }}
   >
     <Heading>{props.package.title}</Heading>
@@ -46,9 +46,7 @@ export const PackagesGrid = (props: Props) => (
             nonEmptyArray.map(
               flow(
                 option.map(nonEmptyArray.head),
-                option.map((p) => (
-                  <PackageCard key={`${p.name}_${p.author}`} package={p} />
-                )),
+                option.map((p) => <PackageCard key={p.id} package={p} />),
                 option.toNullable
               )
             )

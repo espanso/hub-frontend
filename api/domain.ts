@@ -17,7 +17,7 @@ const PackageVersion = t.brand(
 
 export type PackageVersion = t.TypeOf<typeof PackageVersion>;
 
-const Package = t.type(
+const RawPackage = t.type(
   {
     name: t.string,
     author: t.string,
@@ -27,7 +27,27 @@ const Package = t.type(
     archive_url: t.string,
     archive_sha256_url: t.string,
   },
-  "Package"
+  "PackageRaw"
+);
+
+export type RawPackage = t.TypeOf<typeof RawPackage>;
+
+const PackageWithId = t.intersection(
+  [t.type({ id: t.string }), RawPackage],
+  "PackageWithId"
+);
+
+type PackageWithId = t.TypeOf<typeof PackageWithId>;
+
+export const Package = new t.Type<PackageWithId, PackageWithId, unknown>(
+  "Package",
+  (input: any): input is PackageWithId => PackageWithId.is(input),
+  (input, ctx) =>
+    pipe(
+      RawPackage.validate(input, ctx),
+      either.map((p) => ({ id: `${p.name}-${p.version}`, ...p }))
+    ),
+  (p) => p
 );
 
 export type Package = t.TypeOf<typeof Package>;
