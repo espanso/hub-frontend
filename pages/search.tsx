@@ -1,19 +1,13 @@
 import { Pane } from "evergreen-ui";
-import {
-  array,
-  either,
-  nonEmptyArray,
-  option,
-  readonlyNonEmptyArray,
-  string,
-  task,
-} from "fp-ts";
+import { either, nonEmptyArray, option, string, task } from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
+import { Eq } from "fp-ts/Eq";
 import { InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
 import { GroupedByVersion, Package } from "../api/domain";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { ContentRow, Navbar, PackagesGrid } from "../components";
+import { search } from "../api/search";
 
 export const getStaticProps = () =>
   pipe(
@@ -28,6 +22,10 @@ export const getStaticProps = () =>
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
+const tagEq: Eq<string> = {
+  equals: (x, y) => x.toLocaleLowerCase() === y.toLocaleLowerCase(),
+};
+
 const Search = (props: Props) => {
   const router = useRouter();
 
@@ -36,30 +34,22 @@ const Search = (props: Props) => {
     option.fromNullable,
     option.map((v) => (Array.isArray(v) ? v[0] : v))
   );
-  const queryTerms = pipe(query, option.map(string.split(" ")));
 
-  const packagesFilter = (p: Package) =>
-    pipe(queryTerms, option.isSome) &&
+  const tags = pipe(
+    router.query.tags,
+    option.fromNullable,
+    option.map((v) => (Array.isArray(v) ? v[0] : v)),
+    option.map(decodeURIComponent),
+    option.map(string.split(","))
+  );
+
+  const filterBySearch: (packages: Array<Package>) => Array<Package> = (
+    packages
+  ) =>
     pipe(
-      Object.values(p),
-      array.filter((value) => typeof value === "string"),
-      array.filter((value) =>
-        pipe(
-          queryTerms,
-          option.chain(
-            flow(
-              readonlyNonEmptyArray.filter((q) =>
-                value.toLocaleLowerCase().includes(q.toLocaleLowerCase())
-              )
-            )
-          ),
-          option.fold(
-            () => false,
-            (foundTerms) => foundTerms.length > 0
-          )
-        )
-      ),
-      array.isNonEmpty
+      query,
+      option.map(search(packages)),
+      option.getOrElseW(constant(packages))
     );
 
   return (
@@ -74,7 +64,7 @@ const Search = (props: Props) => {
         {pipe(
           props.packagesIndex,
           option.map((index) => index.packages),
-          option.map(array.filter(packagesFilter)),
+          option.map(filterBySearch),
           option.chain(nonEmptyArray.fromArray),
           option.chain(flow(GroupedByVersion.decode, option.fromEither)),
           option.map((grouped) => <PackagesGrid packages={grouped} />),
