@@ -46,6 +46,18 @@ const espansoTheme = deepmerge(defaultTheme, {
         },
       },
     },
+    Input: {
+      appearances: {
+        navbar: {
+          borderRadius: 2,
+          backgroundColor: espansoColors.green100,
+
+          _focus: {
+            backgroundColor: "white",
+          },
+        },
+      },
+    },
     Button: {
       appearances: {
         minimal: {
