@@ -1,26 +1,27 @@
-import { Heading, majorScale, Paragraph, Table, Image } from "evergreen-ui";
-import { boolean } from "fp-ts";
+import {
+  Heading,
+  majorScale,
+  Paragraph,
+  Table,
+  Image,
+  Text,
+} from "evergreen-ui";
+import { either } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import * as assets from "../api/assets";
+import { GithubURL } from "../api/assets";
+import { eitherLogError } from "../api/utils";
 import { CodeBlock } from "./CodeBlock";
 
 export type MDXSerialize = MDXRemoteSerializeResult<Record<string, unknown>>;
 
 type Props = {
+  repositoryHomepage: GithubURL;
   mdxSource: MDXSerialize;
 };
 
-const githubAssetMiddleware: (assetUrl: string) => string = (assetUrl) =>
-  pipe(
-    assetUrl.includes("github.com"),
-    boolean.fold(
-      () => assetUrl,
-      () => assetUrl.replace("/blob/", "/raw/")
-    )
-  );
-
-const markdownComponents: Record<string, React.ReactNode> = {
-  // props: React.ComponentProps<any>... forgive me for my sins
+const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
   table: Table,
   thead: (props: React.ComponentProps<any>) => (
     <Table.Head>
@@ -31,21 +32,29 @@ const markdownComponents: Record<string, React.ReactNode> = {
       ))}
     </Table.Head>
   ),
-  img: (props: React.ComponentProps<any>) => (
-    <Image
-      {...{ ...props, src: pipe(props.src, githubAssetMiddleware) }}
-      maxWidth="100%"
-    />
-  ),
+  img: (props: React.ComponentProps<any>) =>
+    pipe(
+      props.src,
+      assets.fromGithub(repositoryHomepage),
+      eitherLogError,
+      either.fold(
+        () => <></>,
+        (src) => <Image {...props} src={src} maxWidth="100%" display="block" />
+      )
+    ),
   tbody: Table.Body,
-  td: Table.TextCell,
+  td: (props: React.ComponentProps<any>) => (
+    <Table.Cell>
+      <Text>{props.children}</Text>
+    </Table.Cell>
+  ),
   tr: Table.Row,
   h1: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
       is="h1"
-      size={400}
+      size={900}
     >
       {props.children}
     </Heading>
@@ -55,7 +64,7 @@ const markdownComponents: Record<string, React.ReactNode> = {
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
       is="h2"
-      size={500}
+      size={800}
     >
       {props.children}
     </Heading>
@@ -65,7 +74,7 @@ const markdownComponents: Record<string, React.ReactNode> = {
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
       is="h3"
-      size={600}
+      size={700}
     >
       {props.children}
     </Heading>
@@ -75,7 +84,7 @@ const markdownComponents: Record<string, React.ReactNode> = {
       marginTop={majorScale(2)}
       marginBottom={majorScale(2)}
       is="h4"
-      size={700}
+      size={600}
     >
       {props.children}
     </Heading>
@@ -85,7 +94,7 @@ const markdownComponents: Record<string, React.ReactNode> = {
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
       is="h5"
-      size={800}
+      size={400}
     >
       {props}
     </Heading>
@@ -95,7 +104,7 @@ const markdownComponents: Record<string, React.ReactNode> = {
       marginTop={majorScale(4)}
       marginBottom={majorScale(2)}
       is="h6"
-      size={900}
+      size={300}
     >
       {props.children}
     </Heading>
@@ -105,6 +114,7 @@ const markdownComponents: Record<string, React.ReactNode> = {
       size={500}
       marginTop={majorScale(2)}
       marginBottom={majorScale(2)}
+      is="div"
     >
       {props.children}
     </Paragraph>
@@ -112,8 +122,17 @@ const markdownComponents: Record<string, React.ReactNode> = {
   code: (props: React.ComponentProps<any>) => (
     <CodeBlock content={String(props.children)} showCopyButton />
   ),
-};
+  inlineCode: (props: React.ComponentProps<any>) => (
+    <CodeBlock content={props.children} inline />
+  ),
+  span: (props: React.ComponentProps<any>) => (
+    <Text display="flex">{props.children}</Text>
+  ),
+});
 
 export const MDXRenderer = (props: Props) => (
-  <MDXRemote {...props.mdxSource} components={markdownComponents} />
+  <MDXRemote
+    {...props.mdxSource}
+    components={markdownComponents(props.repositoryHomepage)}
+  />
 );

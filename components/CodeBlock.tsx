@@ -4,6 +4,7 @@ import {
   DuplicateIcon,
   IconButton,
   majorScale,
+  minorScale,
   Pane,
   Popover,
   Position,
@@ -24,6 +25,7 @@ hljs.registerLanguage("plaintext", plaintext);
 type Props = {
   content: string;
   showCopyButton?: boolean;
+  inline?: boolean;
   syntax?: "yaml" | "shell" | "plaintext";
 };
 
@@ -33,14 +35,14 @@ export const CodeBlock = (props: Props) => {
 
   return (
     <Card
-      display="flex"
-      background="default"
+      display={props.inline ? "inline" : "flex"}
+      background={props.inline ? "muted" : "default"}
       alignItems="center"
-      padding={majorScale(1)}
-      elevation={2}
+      padding={props.inline ? minorScale(1) : majorScale(1)}
+      elevation={props.inline ? 0 : 2}
     >
       <Code
-        flex={1}
+        flex={props.inline ? 0 : 1}
         size={400}
         appearance="minimal"
         color={language === "yaml" ? "#98c379" : "white"} // hljs yaml does not parse curly brackets

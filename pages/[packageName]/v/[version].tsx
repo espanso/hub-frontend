@@ -14,7 +14,6 @@ import {
   SelectMenu,
   ShareIcon,
   SideSheet,
-  Table,
 } from "evergreen-ui";
 import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
 import { sequenceS } from "fp-ts/Apply";
@@ -22,6 +21,7 @@ import { constant, flow, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 import { GetStaticPropsContext } from "next";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { useRouter } from "next/router";
 import React from "react";
 import {
@@ -33,7 +33,8 @@ import { isFeatured } from "../../../api/packageFeatured";
 import { fetchPackageRepo } from "../../../api/packageRepo";
 import { fetchPackagesIndex } from "../../../api/packagesIndex";
 import { usePackageSearch } from "../../../api/search";
-import { taskEitherLogError } from "../../../api/utils";
+import { serializeReadme } from "../../../api/serializeReadme";
+import { eitherLogError, taskEitherLogError } from "../../../api/utils";
 import {
   CodeBlock,
   ContentRow,
@@ -45,8 +46,7 @@ import {
   useTabs,
 } from "../../../components";
 import { useResponsive } from "../../../components/layout/useResponsive";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serializeReadme } from "../../../api/serializeReadme";
+import { GithubURL } from "../../../api/assets";
 
 export type Props = {
   packageRepo: Option<
@@ -344,9 +344,23 @@ const VersionedPackagePage = (props: Props) => {
 
   const tabDescriptionContent = pipe(
     props.packageRepo,
-    option.map((packageRepo) => (
-      <MDXRenderer mdxSource={packageRepo.serializedReadme} />
-    )),
+    option.map((packageRepo) => ({
+      mdxSource: option.some(packageRepo.serializedReadme),
+      repositoryHomepage: pipe(
+        packageRepo.manifest.homepage,
+        option.chain(
+          flow(
+            GithubURL.decode,
+            either.fold(
+              () => option.none,
+              (url) => option.some(url)
+            )
+          )
+        )
+      ),
+    })),
+    option.chain(sequenceS(option.Apply)),
+    option.map((props) => <MDXRenderer {...props} />),
     option.getOrElse(constant(<></>)),
     tabContentWrapper
   );

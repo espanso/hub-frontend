@@ -1,14 +1,15 @@
-import { taskEither } from "fp-ts";
-import { identity, pipe } from "fp-ts/function";
+import { taskEither, either } from "fp-ts";
+import { Either } from "fp-ts/Either";
 import { TaskEither } from "fp-ts/TaskEither";
+
+const logMiddleware = <E>(error: E) => {
+  process.env.NODE_ENV === "development" && console.error(error);
+  return error;
+};
 
 export const taskEitherLogError: <E, A>(
   taskEither: TaskEither<E, A>
-) => TaskEither<E, A> = (taskEtiher) =>
-  pipe(
-    taskEtiher,
-    taskEither.bimap((error) => {
-      process.env.NODE_ENV === "development" && console.error(error);
-      return error;
-    }, identity)
-  );
+) => TaskEither<E, A> = taskEither.mapLeft(logMiddleware);
+
+export const eitherLogError: <E, A>(either: Either<E, A>) => Either<E, A> =
+  either.mapLeft(logMiddleware);
