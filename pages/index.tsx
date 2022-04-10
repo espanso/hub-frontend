@@ -20,7 +20,7 @@ import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
 import React, { useState } from "react";
 import { GroupedByVersion, Package } from "../api/domain";
-import { isFeatured } from "../api/packageFeatured";
+import { isFeatured, ordFeatured } from "../api/packageFeatured";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { usePackageSearch } from "../api/search";
 import {
@@ -157,6 +157,7 @@ const Index = (props: Props) => {
           {pipe(
             props.packages,
             option.map(array.filter(isFeatured)),
+            option.map(array.sort(ordFeatured)),
             option.chain(nonEmptyArray.fromArray),
             option.map((pcks) => <FeaturedShowcase packages={pcks} />),
             option.toNullable

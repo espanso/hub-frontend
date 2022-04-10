@@ -1,17 +1,18 @@
 import { Package } from "./domain";
 import { pipe } from "fp-ts/function";
-import { array } from "fp-ts";
+import { array, number } from "fp-ts";
+import { contramap, Ord } from "fp-ts/Ord";
 
 const featuredPackages = [
   "all-emojis",
-  "lorem",
-  "greek-letters-improved",
   "html-utils-package",
-  "math-symbols",
-  "shruggie",
+  "lorem",
   "spanish-accent",
-  "espanso-dice",
+  "greek-letters-improved",
+  "math-symbols",
   "medical-docs",
+  "shruggie",
+  "espanso-dice",
 ];
 
 export const isFeatured: (p: Package) => boolean = (p) =>
@@ -19,3 +20,8 @@ export const isFeatured: (p: Package) => boolean = (p) =>
     featuredPackages,
     array.exists((featured) => featured === p.name)
   );
+
+export const ordFeatured: Ord<Package> = pipe(
+  number.Ord,
+  contramap((p: Package) => featuredPackages.indexOf(p.name))
+);
