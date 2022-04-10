@@ -7,15 +7,47 @@ import { PackageCard } from "../PackageCard";
 import { usePackageSearch } from "../../api/search";
 import { FeaturedBadge } from "./FeaturedBadge";
 import { Stack } from "../layout";
+import { useResponsive } from "../layout/useResponsive";
 
 type Props = {
   packages: NonEmptyArray<Package>;
 };
 
 export const FeaturedShowcase = (props: Props) => {
+  const { foldDevices } = useResponsive();
   const packageSearch = usePackageSearch({
     searchPathname: "/search",
   });
+
+  const makeCommonLayout = (cardWidthPerc: string) => (
+    <Pane
+      display="flex"
+      flexWrap="wrap"
+      alignItems="center"
+      justifyContent="space-between"
+    >
+      {pipe(
+        props.packages,
+        nonEmptyArray.map((p) => (
+          <Pane
+            key={p.id}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            flexBasis={cardWidthPerc}
+            marginTop={majorScale(6)}
+          >
+            <PackageCard
+              package={p}
+              onTagClick={(tag) => packageSearch.setTags(option.some([tag]))}
+              hideDescription
+              hideFeaturedBadge
+            />
+          </Pane>
+        ))
+      )}
+    </Pane>
+  );
 
   return (
     <Pane
@@ -28,33 +60,36 @@ export const FeaturedShowcase = (props: Props) => {
         <Heading size={800}>Featured Packages</Heading>
         <FeaturedBadge />
       </Stack>
-      <Pane
-        display="flex"
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        {pipe(
-          props.packages,
-          nonEmptyArray.map((p) => (
-            <Pane
-              key={p.id}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              flexBasis="30%"
-              marginTop={majorScale(6)}
-            >
-              <PackageCard
-                package={p}
-                onTagClick={(tag) => packageSearch.setTags(option.some([tag]))}
-                hideDescription
-                hideFeaturedBadge
-              />
-            </Pane>
-          ))
-        )}
-      </Pane>
+
+      {foldDevices({
+        mobile: () => (
+          <Pane display="flex" flexDirection="column">
+            {pipe(
+              props.packages,
+              nonEmptyArray.map((p) => (
+                <Pane
+                  key={p.id}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  marginTop={majorScale(3)}
+                >
+                  <PackageCard
+                    package={p}
+                    onTagClick={(tag) =>
+                      packageSearch.setTags(option.some([tag]))
+                    }
+                    hideDescription
+                    hideFeaturedBadge
+                  />
+                </Pane>
+              ))
+            )}
+          </Pane>
+        ),
+        tablet: () => makeCommonLayout("45%"),
+        desktop: () => makeCommonLayout("30%"),
+      })}
 
       <Link marginTop={majorScale(6)} href="/search" alignSelf="flex-end">
         See all packages {">"}
