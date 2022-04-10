@@ -85,7 +85,11 @@ const Index = (props: Props) => {
   return (
     <Pane display="flex" flexDirection="column">
       <FullHeightSection
-        backgroundImage="url(/images/landing_bg.svg)"
+        backgroundImage={foldDevices({
+          mobile: () => "url(/images/landing_bg_mobile.svg)",
+          tablet: () => "url(/images/landing_bg.svg)",
+          desktop: () => "url(/images/landing_bg.svg)",
+        })}
         backgroundSize="cover"
         backgroundPosition="bottom"
       >
@@ -173,17 +177,9 @@ const Index = (props: Props) => {
           )}
         </ContentRow>
       </FullHeightSection>
-      <Pane
-        display="flex"
-        flexDirection="column"
-        backgroundImage="url(/images/landing_footer_bg_copy.svg)"
-        backgroundSize="cover"
-        backgroundPosition="bottom"
-      >
-        <ContentRow>
-          <Footer />
-        </ContentRow>
-      </Pane>
+      <ContentRow background="default">
+        <Footer />
+      </ContentRow>
     </Pane>
   );
 };
