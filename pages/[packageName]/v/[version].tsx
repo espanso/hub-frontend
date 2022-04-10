@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   Heading,
   IconButton,
@@ -6,6 +7,7 @@ import {
   Pane,
   Paragraph,
   Select,
+  SelectMenu,
   ShareIcon,
 } from "evergreen-ui";
 import { array, either, nonEmptyArray, option, task, taskEither } from "fp-ts";
@@ -155,13 +157,19 @@ const VersionedPackagePage = (props: Props) => {
             {pipe(
               currentVersion,
               option.map((version) => (
-                <Select
-                  size="small"
-                  value={version}
-                  onChange={(e) =>
+                <SelectMenu
+                  title="Select version"
+                  options={props.versions.map((v) => ({
+                    label: `v${v}`,
+                    value: v,
+                  }))}
+                  hasFilter={false}
+                  closeOnSelect={true}
+                  selected={version}
+                  onSelect={(item) =>
                     pipe(
                       props.versions,
-                      array.findFirst((v) => v === e.target.value),
+                      array.findFirst((v) => v === item.value),
                       option.chain((v) =>
                         pipe(
                           props.packageRepo,
@@ -175,15 +183,8 @@ const VersionedPackagePage = (props: Props) => {
                     )
                   }
                 >
-                  {pipe(
-                    props.versions,
-                    array.map((v) => (
-                      <option key={v} value={v}>
-                        v{v}
-                      </option>
-                    ))
-                  )}
-                </Select>
+                  <Button>{`v${version}`}</Button>
+                </SelectMenu>
               )),
               option.toNullable
             )}
