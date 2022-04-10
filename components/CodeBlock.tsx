@@ -24,13 +24,19 @@ export const CodeBlock = (props: Props) => {
       display="flex"
       background="default"
       alignItems="center"
-      height={majorScale(5)}
+      minHeight={majorScale(5)}
       padding={majorScale(1)}
       elevation={2}
       marginTop={majorScale(2)}
       marginBottom={majorScale(2)}
     >
-      <Code flex={1} size={400} appearance="minimal" color="white">
+      <Code
+        flex={1}
+        size={400}
+        appearance="minimal"
+        color="white"
+        style={{ whiteSpace: "pre-wrap" }}
+      >
         {props.content}
       </Code>
       {props.showCopyButton && (

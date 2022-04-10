@@ -6,7 +6,7 @@ import {
   clearPackagesIndexCache,
   fetchPackagesIndex,
 } from "../api/packagesIndex";
-import { DateFromTimestamp } from "../api/Package";
+import { DateFromTimestamp } from "../api/model";
 
 export const getStaticProps = pipe(
   taskEither.fromTask(clearPackagesIndexCache),
