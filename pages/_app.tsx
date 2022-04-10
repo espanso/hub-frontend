@@ -1,4 +1,5 @@
 import "./reset.css";
+import "./index.css";
 import { EspansoThemeProvider } from "../components";
 import { AppProps } from "next/app";
 
