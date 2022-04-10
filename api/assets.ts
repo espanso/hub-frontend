@@ -22,7 +22,8 @@ interface GithubURLRawBrand {
 
 const GithubURLRaw = t.brand(
   t.string,
-  (s): s is t.Branded<string, GithubURLRawBrand> => s.includes("/raw/"),
+  (s): s is t.Branded<string, GithubURLRawBrand> =>
+    GithubURL.is(s) && s.includes("/raw/"),
   "GithubURLRaw"
 );
 
@@ -34,7 +35,8 @@ interface GithubURLBlobBrand {
 
 const GithubURLBlob = t.brand(
   t.string,
-  (s): s is t.Branded<string, GithubURLBlobBrand> => s.includes("/blob/"),
+  (s): s is t.Branded<string, GithubURLBlobBrand> =>
+    GithubURL.is(s) && s.includes("/blob/"),
   "GithubURLBlob"
 );
 
@@ -109,14 +111,18 @@ const eitherFromValidation = either.mapLeft(
 export const fromGithub =
   (repositoryHomepage: string) => (localAssetOrBlob: string) =>
     pipe(
-      GithubURLBlob.is(localAssetOrBlob),
-      boolean.fold(
+      GithubURLBlob.decode(localAssetOrBlob),
+      either.fold(
+        () => GithubURLRaw.decode(localAssetOrBlob),
+        GithubURLRawFromBlob.decode
+      ),
+      either.fold(
         () =>
           GithubURLRawFromLocalAsset.decode({
             repositoryHomepage,
             relativePath: localAssetOrBlob,
           }),
-        () => GithubURLRawFromBlob.decode(localAssetOrBlob)
+        t.success
       ),
       eitherFromValidation,
       either.map(GithubURLRaw.encode)

@@ -20,6 +20,12 @@ describe("assets API", () => {
       );
     });
 
+    test("does nothing with a raw URL", () => {
+      expect(fromGithub(repositoryHomepage)(raw)).toStrictEqual(
+        either.right(raw)
+      );
+    });
+
     test("returns none for a non-Github URL", () => {
       expect(
         either.isLeft(fromGithub("https://example.com")(relativePath))
