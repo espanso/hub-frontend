@@ -1,3 +1,9 @@
-# https://www.robotstxt.org/robotstxt.html
+# *
 User-agent: *
-Disallow:
+Allow: /
+
+# Host
+Host: https://hub.espanso.org/
+
+# Sitemaps
+Sitemap: https://hub.espanso.org/sitemap.xml

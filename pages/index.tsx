@@ -5,7 +5,6 @@ import {
   majorScale,
   Pane,
   Paragraph,
-  TextInput,
 } from "evergreen-ui";
 import {
   array,
@@ -71,7 +70,7 @@ const Index = (props: Props) => {
     searchPathname: "/search",
   });
 
-  const [searchValue, setSearchValue] = useState<string | undefined>(undefined);
+  const [searchValue, _] = useState<string | undefined>(undefined);
 
   const { foldDevices } = useResponsive();
 
