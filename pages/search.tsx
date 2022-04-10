@@ -22,6 +22,7 @@ import {
 import { Eq } from "fp-ts/Eq";
 import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
+import Head from "next/head";
 import React, { ComponentProps } from "react";
 import { GroupedByVersion, Package } from "../api/domain";
 import { fetchPackagesIndex } from "../api/packagesIndex";
@@ -280,6 +281,9 @@ const Search = (props: Props) => {
 
   return (
     <Pane display="flex" flexDirection="column" minHeight="100vh">
+      <Head>
+        <title>Explore Espanso's packages | Espanso Hub</title>
+      </Head>
       <ContentRow background="blueTint">
         <BetaBanner />
       </ContentRow>

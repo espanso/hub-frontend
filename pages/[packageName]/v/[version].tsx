@@ -32,6 +32,7 @@ import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 import { GetStaticPropsContext } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import { GithubURL } from "../../../api/assets";
@@ -457,6 +458,9 @@ const VersionedPackagePage = (props: Props) => {
 
   const packagePage = (currentRepo: PackageRepo) => (
     <Pane display="flex" flexDirection="column" minHeight="100vh">
+      <Head>
+        <title>{currentRepo.package.name} | Espanso Hub</title>
+      </Head>
       <ContentRow background="blueTint">
         <BetaBanner />
       </ContentRow>

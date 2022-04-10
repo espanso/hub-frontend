@@ -18,6 +18,7 @@ import {
 } from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
+import Head from "next/head";
 import React, { useState } from "react";
 import { GroupedByVersion, Package } from "../api/domain";
 import { isFeatured, ordFeatured } from "../api/packageFeatured";
@@ -76,6 +77,11 @@ const Index = (props: Props) => {
 
   return (
     <Pane display="flex" flexDirection="column">
+      <Head>
+        <title>
+          Espanso Hub | Enhance your workflows with espanso packages
+        </title>
+      </Head>
       <FullHeightSection
         backgroundImage={foldDevices({
           mobile: () => "url(/images/landing_bg_mobile.svg)",
