@@ -318,7 +318,7 @@ const VersionedPackagePage = (props: Props) => {
             justifyContent="center"
           >
             <Paragraph size={400} color="muted" marginBottom={majorScale(2)}>
-              Copy and past to install this package
+              Paste this command in a terminal to install the package
             </Paragraph>
 
             <CodeBlock
