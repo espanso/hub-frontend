@@ -36,6 +36,7 @@ import {
   useTabs,
   FeaturedBadge,
 } from "../../../components";
+import { useResponsive } from "../../../components/layout/useResponsive";
 
 export type Props = {
   packageRepo: Option<PackageRepo>;
@@ -143,6 +144,8 @@ const YamlShowcase = (props: { files: NonEmptyArray<FileAsString> }) => {
 };
 
 const VersionedPackagePage = (props: Props) => {
+  const { device } = useResponsive();
+  const isDesktop = device === "desktop";
   const router = useRouter();
   const packagesSearch = usePackageSearch({
     searchPathname: "/search",
@@ -153,15 +156,16 @@ const VersionedPackagePage = (props: Props) => {
     option.map((p) => p.package.version)
   );
 
+  const dividerProps = isDesktop
+    ? {
+        paddingRight: majorScale(2),
+        borderRight: true,
+      }
+    : {};
+
   const header = (currentRepo: PackageRepo) => (
     <Pane display="flex">
-      <Pane
-        display="flex"
-        flexDirection="column"
-        flex={2}
-        paddingRight={majorScale(2)}
-        borderRight={true}
-      >
+      <Pane display="flex" flexDirection="column" flex={2} {...dividerProps}>
         <Pane display="flex">
           <Stack units={3} alignItems="baseline">
             <Heading size={900}>{currentRepo.package.name}</Heading>
@@ -229,23 +233,28 @@ const VersionedPackagePage = (props: Props) => {
           onClick={(tag) => packagesSearch.setTags(option.some([tag]))}
         />
       </Pane>
-      <Pane width={36} />
-      <Pane
-        display="flex"
-        flexDirection="column"
-        flex={1}
-        justifyContent="center"
-      >
-        <Paragraph size={400} color="muted" marginBottom={majorScale(2)}>
-          Copy and past to install this package
-        </Paragraph>
 
-        <CodeBlock
-          content={`espanso install ${currentRepo.package.name}`}
-          syntax="shell"
-          showCopyButton
-        />
-      </Pane>
+      {isDesktop && (
+        <>
+          <Pane width={36} />
+          <Pane
+            display="flex"
+            flexDirection="column"
+            flex={1}
+            justifyContent="center"
+          >
+            <Paragraph size={400} color="muted" marginBottom={majorScale(2)}>
+              Copy and past to install this package
+            </Paragraph>
+
+            <CodeBlock
+              content={`espanso install ${currentRepo.package.name}`}
+              syntax="shell"
+              showCopyButton
+            />
+          </Pane>
+        </>
+      )}
     </Pane>
   );
 
