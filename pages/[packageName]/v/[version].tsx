@@ -192,7 +192,7 @@ const YamlShowcaseMobile = (props: { files: NonEmptyArray<FileAsString> }) => {
 };
 
 const VersionedPackagePage = (props: Props) => {
-  const { device } = useResponsive();
+  const { device, foldDevices } = useResponsive();
   const isDesktop = device === "desktop";
   const router = useRouter();
   const packagesSearch = usePackageSearch({
@@ -213,10 +213,16 @@ const VersionedPackagePage = (props: Props) => {
 
   const header = (currentRepo: PackageRepo) => (
     <Pane display="flex">
-      <Pane display="flex" flexDirection="column" flex={2} {...dividerProps}>
+      <Stack units={2} direction="column" flex={2} {...dividerProps}>
         <Pane display="flex">
           <Stack units={3} alignItems="baseline">
-            <Heading size={isDesktop ? 900 : 600}>
+            <Heading
+              size={foldDevices({
+                desktop: () => 900,
+                tablet: () => 800,
+                mobile: () => 600,
+              })}
+            >
               {currentRepo.package.name}
             </Heading>
             {isFeatured(currentRepo.package) && <FeaturedBadge />}
@@ -275,14 +281,21 @@ const VersionedPackagePage = (props: Props) => {
             )}
           </Stack>
         </Pane>
-        <Paragraph size={isDesktop ? 500 : 300} marginTop={12}>
+        <Paragraph
+          size={foldDevices({
+            desktop: () => 500,
+            tablet: () => 400,
+            mobile: () => 300,
+          })}
+        >
           {currentRepo.package.description}
         </Paragraph>
+        <Pane />
         <TagBadgeGroup
           tags={currentRepo.package.tags}
           onClick={(tag) => packagesSearch.setTags(option.some([tag]))}
         />
-      </Pane>
+      </Stack>
 
       {isDesktop && (
         <>
