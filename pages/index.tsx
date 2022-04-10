@@ -173,7 +173,9 @@ const Index = (props: Props) => {
           )}
         </ContentRow>
       </FullHeightSection>
-      <FullHeightSection
+      <Pane
+        display="flex"
+        flexDirection="column"
         backgroundImage="url(/images/landing_footer_bg_copy.svg)"
         backgroundSize="cover"
         backgroundPosition="bottom"
@@ -181,7 +183,7 @@ const Index = (props: Props) => {
         <ContentRow>
           <Footer />
         </ContentRow>
-      </FullHeightSection>
+      </Pane>
     </Pane>
   );
 };

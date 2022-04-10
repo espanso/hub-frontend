@@ -1,44 +1,68 @@
-import { Link, Pane, majorScale, Heading, Image, Text } from "evergreen-ui";
+import { Link, Pane, majorScale, Image, Text, HeartIcon } from "evergreen-ui";
+import { array, boolean } from "fp-ts";
+import { pipe } from "fp-ts/function";
 import router from "next/router";
 import { espansoTheme } from "./EspansoThemeProvider";
 import { Stack } from "./layout";
+import { useResponsive } from "./layout/useResponsive";
 
-type FooterLinkProps = {
-  children: React.ReactNode;
-  href: string;
-  external?: boolean;
-  iconPath?: string;
+type Props = {
+  showAuthor?: boolean;
 };
 
-const FooterLink = (props: FooterLinkProps) => (
-  <Link
-    href={props.href}
-    target={props.external ? "_blank" : undefined}
-    className="link-white-override"
-  >
-    {props.iconPath ? (
-      <Stack units={1} alignItems="center">
-        <Image src={props.iconPath} display="inline-block" height={20} />
-        {props.children}
-      </Stack>
-    ) : (
-      props.children
-    )}
-  </Link>
-);
+type FooterLink = {
+  label: string;
+  href: string;
+  internal?: boolean;
+};
 
-export const Footer = () => (
-  <Pane
-    display="flex"
-    flexGrow={1}
-    paddingTop={majorScale(8)}
-    paddingBottom={majorScale(32)}
-  >
+const links: Array<FooterLink> = [
+  {
+    href: "https://espanso.org/docs/get-started/",
+    label: "Documetation",
+  },
+  {
+    href: "https://espanso.org/docs/next/packages/creating-a-package/",
+    label: "Create Package",
+  },
+  {
+    href: "/search",
+    label: "Explore",
+    internal: true,
+  },
+  {
+    href: "https://github.com/espanso/hub-frontend/",
+    label: "Contribute",
+  },
+  {
+    href: "https://espanso.org",
+    label: "Espanso",
+  },
+  {
+    href: "https://www.reddit.com/r/espanso/",
+    label: "Reddit",
+  },
+];
+
+export const Footer = (props: Props) => {
+  const { foldDevices } = useResponsive();
+
+  const makeLink = (link: FooterLink) => (
+    <Link
+      className="link-white-override"
+      href={link.href}
+      target={link.internal ? "_self" : "_blank"}
+    >
+      {link.label}
+    </Link>
+  );
+
+  const makeDesktopContent = (links: Array<FooterLink>) => (
     <Pane
-      flexGrow={1}
       display="flex"
-      flexDirection="column"
+      flex={1}
       justifyContent="space-between"
+      alignItems="center"
     >
       <Image
         height={30}
@@ -48,68 +72,74 @@ export const Footer = () => (
         className="clickable"
         onClick={() => router.push("/")}
       />
-      <Stack units={1}>
-        <Text color={espansoTheme.colors.gray400}>Made with ❤️</Text>
-        <Text color={espansoTheme.colors.gray400}>by️</Text>
-        <Link
-          href="https://www.matteopellegrino.me/"
-          target="_blank"
-          className="link-pelle"
-        >
-          Matteo Pellegrino
-        </Link>
-      </Stack>
+      {pipe(
+        links,
+        array.map((l) => (
+          <Pane key={l.href} paddingRight={majorScale(3)}>
+            {makeLink(l)}
+          </Pane>
+        ))
+      )}
     </Pane>
-    <Stack flexGrow={1} units={1} direction="column">
-      <Heading
-        size={500}
-        color={espansoTheme.colors.white}
-        paddingBottom={majorScale(2)}
-      >
-        Navigation
-      </Heading>
-      <FooterLink href="https://espanso.org/docs/get-started/" external>
-        Documetation
-      </FooterLink>
-      <FooterLink
-        href="https://espanso.org/docs/next/packages/creating-a-package/"
-        external
-      >
-        Create Package
-      </FooterLink>
-      <FooterLink href="/search">Explore</FooterLink>
-    </Stack>
-    <Stack flexGrow={1} units={1} direction="column">
-      <Heading
-        size={500}
-        color={espansoTheme.colors.white}
-        paddingBottom={majorScale(2)}
-      >
-        Community
-      </Heading>
-      <FooterLink
-        href="https://www.reddit.com/r/espanso/"
-        external
-        iconPath="/images/reddit_logo.svg"
-      >
-        Reddit
-      </FooterLink>
+  );
 
-      <FooterLink
-        href="https://github.com/espanso/hub-frontend/"
-        external
-        iconPath="/images/github_logo.png"
+  const makeMobileContent = (links: Array<FooterLink>) => (
+    <Stack units={2} direction="column" alignItems="center">
+      <Pane
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexWrap="wrap"
       >
-        Contribute
-      </FooterLink>
-
-      <FooterLink
-        href="https://espanso.org"
-        external
-        iconPath="/images/espanso_logo.svg"
-      >
-        Espanso
-      </FooterLink>
+        {pipe(
+          links,
+          array.map((l) => (
+            <Pane key={l.href} paddingRight={majorScale(3)}>
+              {makeLink(l)}
+            </Pane>
+          ))
+        )}
+      </Pane>
+      <Image
+        height={30}
+        width={172}
+        src="/images/navbar_logo.svg"
+        alt="Espanso Hub"
+        className="clickable"
+        onClick={() => router.push("/")}
+      />
     </Stack>
-  </Pane>
-);
+  );
+
+  return (
+    <Pane
+      display="flex"
+      flexDirection="column"
+      paddingTop={majorScale(4)}
+      paddingBottom={majorScale(2)}
+    >
+      {foldDevices({
+        mobile: () => makeMobileContent(links),
+        tablet: () => makeMobileContent(links),
+        desktop: () => makeDesktopContent(links),
+      })}
+
+      <Pane paddingTop={majorScale(4)}>
+        {props.showAuthor && (
+          <Stack units={1} justifyContent="center">
+            <Text color={espansoTheme.colors.green500}>Made with</Text>
+            <HeartIcon color={espansoTheme.colors.green500} />
+            <Text color={espansoTheme.colors.green500}>by</Text>
+            <Link
+              href="https://www.matteopellegrino.me/"
+              target="_blank"
+              className="link-pelle"
+            >
+              Matteo Pellegrino
+            </Link>
+          </Stack>
+        )}
+      </Pane>
+    </Pane>
+  );
+};

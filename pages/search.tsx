@@ -337,7 +337,7 @@ const Search = (props: Props) => {
       </ContentRow>
 
       <ContentRow background="green600">
-        <Footer />
+        <Footer showAuthor />
       </ContentRow>
     </Pane>
   );
