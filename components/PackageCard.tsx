@@ -5,10 +5,9 @@ import { TagBadgeGroup } from "./Tags/TagBadgeGroup";
 import { FeaturedBadge } from "./featured";
 import { Stack } from "./layout";
 
-type Props = {
+type Props = React.ComponentProps<typeof Card> & {
   package: Package;
   onTagClick: (tag: string) => unknown;
-  hideDescription?: boolean;
   hideFeaturedBadge?: boolean;
 };
 
@@ -26,19 +25,18 @@ export const PackageCard = (props: Props) => (
     onClick={() => {
       window.location.href = props.package.name;
     }}
+    justifyContent="space-between"
+    minHeight={majorScale(15)}
+    {...props}
   >
-    <Stack units={3} direction="column">
-      <Pane>
-        <Pane display="flex">
-          <Heading flex={1}>{props.package.title}</Heading>
-          {props.hideFeaturedBadge ||
-            (isFeatured(props.package) && <FeaturedBadge />)}
-        </Pane>
-        {props.hideDescription || (
-          <Paragraph>{props.package.description}</Paragraph>
-        )}
+    <Stack units={1} direction="column">
+      <Pane display="flex">
+        <Heading flex={1}>{props.package.title}</Heading>
+        {props.hideFeaturedBadge ||
+          (isFeatured(props.package) && <FeaturedBadge />)}
       </Pane>
-      <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
+      <Paragraph>{props.package.description}</Paragraph>
     </Stack>
+    <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
   </Card>
 );

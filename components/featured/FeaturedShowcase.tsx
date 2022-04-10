@@ -40,8 +40,8 @@ export const FeaturedShowcase = (props: Props) => {
             <PackageCard
               package={p}
               onTagClick={(tag) => packageSearch.setTags(option.some([tag]))}
-              hideDescription
               hideFeaturedBadge
+              height={majorScale(20)}
             />
           </Pane>
         ))
@@ -79,7 +79,6 @@ export const FeaturedShowcase = (props: Props) => {
                     onTagClick={(tag) =>
                       packageSearch.setTags(option.some([tag]))
                     }
-                    hideDescription
                     hideFeaturedBadge
                   />
                 </Pane>
