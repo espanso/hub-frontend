@@ -1,4 +1,6 @@
 import {
+  Button,
+  ButtonAppearance,
   Link,
   majorScale,
   Menu,
@@ -18,18 +20,6 @@ import { useState } from "react";
 import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
 
-const NavbarLink = (props: {
-  href: string;
-  children: React.ReactNode;
-  color?: string;
-}) => (
-  <Link href={props.href} display="flex" alignItems="center">
-    <Strong size={400} color={props.color}>
-      {props.children}
-    </Strong>
-  </Link>
-);
-
 type Props = {
   searchInitialValue?: string;
   onSearchEnter?: (value: string) => unknown;
@@ -47,7 +37,37 @@ export const Navbar = (props: Props) => {
   };
 
   const [searchValue, setSearchValue] = useState(props.searchInitialValue);
-  const { foldDevices } = useResponsive();
+  const { device, foldDevices } = useResponsive();
+  const isDesktop = device === "desktop";
+
+  const NavbarLink = (props: {
+    href: string;
+    children: React.ReactNode;
+    color?: string;
+  }) => (
+    <Link href={props.href} display="flex" alignItems="center">
+      <Strong size={400} color={props.color}>
+        {props.children}
+      </Strong>
+    </Link>
+  );
+
+  const NavbarLinkCTA = (props: {
+    href: string;
+    children: React.ReactNode;
+    color?: string;
+  }) => (
+    <Button
+      appearance={"navbar" as ButtonAppearance}
+      size="large"
+      width={isDesktop ? 160 : "auto"}
+      onClick={() => router.push(props.href)}
+    >
+      <Strong size={400} color="inherit">
+        {props.children}
+      </Strong>
+    </Button>
+  );
 
   const makeSearchInput = (widthPerc?: string) => (
     <SearchInput
@@ -64,19 +84,23 @@ export const Navbar = (props: Props) => {
   );
 
   const makeLinks = (color?: string) => [
-    <NavbarLink href="/search" color={color} key="/search">
-      Explore
+    <NavbarLink
+      href="https://espanso.org/docs/get-started/"
+      color={color}
+      key="/docs"
+    >
+      Documentation
     </NavbarLink>,
     <NavbarLink
       href="https://espanso.org/docs/next/packages/creating-a-package/"
       color={color}
       key="/createapackage"
     >
-      Create a package
+      Create Package
     </NavbarLink>,
-    <NavbarLink href="https://espanso.org/" color={color} key="/espanso">
-      Espanso
-    </NavbarLink>,
+    <NavbarLinkCTA href="/search" key="/search">
+      Explore
+    </NavbarLinkCTA>,
   ];
 
   const logoDesktop = (

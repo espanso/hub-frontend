@@ -69,6 +69,22 @@ const espansoTheme = deepmerge(defaultTheme, {
             backgroundColor: "trasparent",
           },
         },
+        navbar: deepmerge(
+          defaultTheme["components"]["Button"]["appearances"]["default"],
+          {
+            color: "white",
+            backgroundColor: "transparent",
+            borderColor: "white",
+            _hover: {
+              color: espansoColors.green500,
+              backgroundColor: "white",
+              borderColor: "white",
+            },
+            _active: {
+              backgroundColor: "trasparent",
+            },
+          }
+        ),
       },
     },
   },
