@@ -51,6 +51,7 @@ import {
   BetaBanner,
   CodeBlock,
   ContentRow,
+  espansoTheme,
   FeaturedBadge,
   Footer,
   MDXRenderer,
@@ -500,7 +501,7 @@ ${currentRepo.package.description}`,
         </ContentRow>
 
         <ContentRow background="green600">
-          <Footer showAuthor />
+          <Footer showAuthor color={espansoTheme.colors.green500} />
         </ContentRow>
       </Pane>
     );

@@ -19,6 +19,7 @@ import {
   task,
   taskEither,
 } from "fp-ts";
+import { espansoTheme } from "../components/EspansoThemeProvider";
 import { Eq } from "fp-ts/Eq";
 import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
@@ -354,7 +355,7 @@ Search for keywords or filter out by tags.`,
       </ContentRow>
 
       <ContentRow background="green600">
-        <Footer showAuthor />
+        <Footer showAuthor color={espansoTheme.colors.green500} />
       </ContentRow>
     </Pane>
   );

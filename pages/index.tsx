@@ -178,7 +178,7 @@ inspiration.`,
         </ContentRow>
       </FullHeightSection>
       <ContentRow background="default">
-        <Footer />
+        <Footer showAuthor color={espansoTheme.colors.muted}/>
       </ContentRow>
     </Pane>
   );

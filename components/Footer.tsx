@@ -6,7 +6,7 @@ import { espansoTheme } from "./EspansoThemeProvider";
 import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
 
-type Props = {
+type Props = Pick<React.ComponentProps<typeof Text>, "color"> & {
   showAuthor?: boolean;
 };
 
@@ -127,15 +127,13 @@ export const Footer = (props: Props) => {
       <Pane paddingTop={majorScale(4)}>
         {props.showAuthor && (
           <Stack units={1} justifyContent="center">
-            <Text color={espansoTheme.colors.green500}>Made with</Text>
-            <HeartIcon color={espansoTheme.colors.green500} />
-            <Text color={espansoTheme.colors.green500}>by</Text>
-            <Link
-              href="https://www.matteopellegrino.me/"
-              target="_blank"
-              className="link-pelle"
-            >
-              Matteo Pellegrino
+            <Text color={props.color}>Made with</Text>
+            <HeartIcon color={props.color} />
+            <Text color={props.color}>by</Text>
+            <Link href="https://www.matteopellegrino.me/" target="_blank">
+              <Text color={props.color} className="link-pelle">
+                Matteo Pellegrino
+              </Text>
             </Link>
           </Stack>
         )}

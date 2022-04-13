@@ -20,11 +20,8 @@ html {
   color: #d8dae5 !important;
 }
 
-.link-pelle {
-  color: #00a595 !important;
-}
-
 .link-pelle:hover {
+  transition: 0.4s;
   color: #d8dae5 !important;
 }
 
