@@ -1,8 +1,15 @@
-import { Link, Pane, majorScale, Image, Text, HeartIcon } from "evergreen-ui";
+import {
+  Link,
+  Pane,
+  majorScale,
+  Image,
+  Text,
+  HeartIcon,
+  Color,
+} from "evergreen-ui";
 import { array } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import router from "next/router";
-import { espansoTheme } from "./EspansoThemeProvider";
 import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
 
@@ -128,7 +135,7 @@ export const Footer = (props: Props) => {
         {props.showAuthor && (
           <Stack units={1} justifyContent="center">
             <Text color={props.color}>Made with</Text>
-            <HeartIcon color={props.color} />
+            <HeartIcon color={props.color as Color} />
             <Text color={props.color}>by</Text>
             <Link href="https://www.matteopellegrino.me/" target="_blank">
               <Text color={props.color} className="link-pelle">
