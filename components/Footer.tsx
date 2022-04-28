@@ -26,7 +26,7 @@ type FooterLink = {
 const links: Array<FooterLink> = [
   {
     href: "https://espanso.org/docs/get-started/",
-    label: "Documetation",
+    label: "Documentation",
   },
   {
     href: "https://espanso.org/docs/next/packages/creating-a-package/",
