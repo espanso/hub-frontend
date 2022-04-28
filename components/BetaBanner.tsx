@@ -5,6 +5,11 @@ import { useState } from "react";
 export const BetaBanner = () => {
   const [isShowing, setIsShowing] = useLocalStorage("showBetaBanner", true);
 
+  // Don't render the Beta banner when SSR
+  if (typeof window === 'undefined') {
+    return <></>;
+  }
+
   return isShowing ? (
     <Pane
       display="flex"
