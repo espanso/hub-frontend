@@ -1,5 +1,7 @@
 const isProd = process.env.NODE_ENV === "production";
+const basePath = isProd ? "/hub-frontend" : "";
 
 module.exports = {
-  assetPrefix: isProd ? "/hub-frontend/" : "",
+  basePath,
+  assetPrefix: basePath,
 };
