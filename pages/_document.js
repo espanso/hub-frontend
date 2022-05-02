@@ -28,7 +28,6 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>SSR in Next.js</title>
           <style dangerouslySetInnerHTML={{ __html: css }} />
         </Head>
 
