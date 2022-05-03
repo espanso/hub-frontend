@@ -1,17 +1,11 @@
-import {
-  Link,
-  Pane,
-  majorScale,
-  Image,
-  Text,
-  HeartIcon,
-  Color,
-} from "evergreen-ui";
+import { Link, Pane, majorScale, Text, HeartIcon, Color } from "evergreen-ui";
 import { array } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import router from "next/router";
 import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
+import Image from "next/image";
+import navbarLogo from "../public/images/navbar_logo.svg";
 
 type Props = Pick<React.ComponentProps<typeof Text>, "color"> & {
   showAuthor?: boolean;
@@ -74,7 +68,7 @@ export const Footer = (props: Props) => {
       <Image
         height={30}
         width={172}
-        src="/images/navbar_logo.svg"
+        src={navbarLogo}
         alt="Espanso Hub"
         className="clickable"
         onClick={() => router.push("/")}
@@ -110,7 +104,7 @@ export const Footer = (props: Props) => {
       <Image
         height={30}
         width={172}
-        src="/images/navbar_logo.svg"
+        src={navbarLogo}
         alt="Espanso Hub"
         className="clickable"
         onClick={() => router.push("/")}

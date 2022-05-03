@@ -11,7 +11,6 @@ import {
   SearchInput,
   Strong,
   TextInputAppearance,
-  Image,
 } from "evergreen-ui";
 import { array } from "fp-ts";
 import { constant, pipe } from "fp-ts/function";
@@ -20,6 +19,9 @@ import { useState } from "react";
 import { espansoTheme } from ".";
 import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
+import Image from "next/image";
+import navbarLogo from "../public/images/navbar_logo.svg";
+import navbarLogoMobile from "../public/images/navbar_logo.svg";
 
 type NavbarVariant = "default" | "landing";
 
@@ -124,7 +126,7 @@ export const Navbar = (props: Props) => {
     <Image
       height={30}
       width={172}
-      src="/images/navbar_logo.svg"
+      src={navbarLogo}
       alt="Espanso Hub"
       className="clickable"
       onClick={() => router.push("/")}
@@ -135,7 +137,7 @@ export const Navbar = (props: Props) => {
     <Image
       height={30}
       width={30}
-      src="/images/navbar_logo_mobile.svg"
+      src={navbarLogoMobile}
       alt="Espanso Hub"
       className="clickable"
       onClick={() => router.push("/")}

@@ -33,6 +33,9 @@ import {
   Stack,
 } from "../components";
 import { useResponsive } from "../components/layout/useResponsive";
+import Image from "next/image";
+// Landing bg images generated from https://app.haikei.app/
+import landingBg from "../public/images/landing_bg.svg";
 
 export const getStaticProps = () =>
   pipe(
@@ -58,12 +61,20 @@ export const getStaticProps = () =>
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
-// Landing bg images generated from https://app.haikei.app/
 const FullHeightSection = (props: React.ComponentProps<typeof Pane>) => (
   <Pane display="flex" minHeight="100vh" flexDirection="column" {...props}>
     {props.children}
   </Pane>
 );
+
+const BackgroundImage = (props: React.ComponentProps<typeof Image>) => {
+  const { children, ...imageProps } = props;
+  return (
+    <div style={{ zIndex: -1, height: "100%" }}>
+      <Image layout="fill" objectFit="cover" {...imageProps} />
+    </div>
+  );
+};
 
 const Index = (props: Props) => {
   const packageSearch = usePackageSearch({
@@ -96,15 +107,8 @@ inspiration.`,
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/espanso_logo.svg" />
       </Head>
-      <FullHeightSection
-        backgroundImage={foldDevices({
-          mobile: () => "url(/images/landing_bg_mobile.svg)",
-          tablet: () => "url(/images/landing_bg.svg)",
-          desktop: () => "url(/images/landing_bg.svg)",
-        })}
-        backgroundSize="cover"
-        backgroundPosition="bottom"
-      >
+      <FullHeightSection>
+        <BackgroundImage src={landingBg} />
         <ContentRow>
           <Navbar
             variant="landing"
@@ -178,7 +182,7 @@ inspiration.`,
         </ContentRow>
       </FullHeightSection>
       <ContentRow background="default">
-        <Footer showAuthor color={espansoTheme.colors.muted}/>
+        <Footer showAuthor color={espansoTheme.colors.muted} />
       </ContentRow>
     </Pane>
   );
