@@ -6,7 +6,6 @@ import { OrderedByVersion } from "../api/domain";
 import { fetchPackageRepo } from "../api/packageRepo";
 import { fetchPackagesIndex } from "../api/packagesIndex";
 import { serializeReadme } from "../api/serializeReadme";
-import { taskEitherLogError } from "../api/utils";
 import VersionedPackagePage, { Props } from "./[packageName]/v/[version]";
 
 export const getStaticProps = (context: GetStaticPropsContext) =>
@@ -49,7 +48,6 @@ export const getStaticProps = (context: GetStaticPropsContext) =>
         ),
       })
     ),
-    taskEitherLogError,
     task.map((props) => ({
       props: pipe(
         props,

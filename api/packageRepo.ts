@@ -14,7 +14,6 @@ import { TaskEither } from "fp-ts/TaskEither";
 import { unzip } from "unzipit";
 import * as yaml from "yaml";
 import { Package, PackageManifest, PackageRepo } from "./domain";
-import { taskEitherLogError } from "./utils";
 
 // https://espanso.org/docs/next/packages/package-specification/
 const mandatoryFilenames = {
@@ -125,6 +124,5 @@ export const fetchPackageRepo: (
         either.chain(sequenceS(either.Apply)),
         taskEither.fromEither
       )
-    ),
-    taskEitherLogError
+    )
   );

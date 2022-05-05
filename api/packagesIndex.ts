@@ -1,8 +1,9 @@
 import flatCache from "flat-cache";
-import { array, either, option, task, taskEither } from "fp-ts";
+import { array, either, option, taskEither } from "fp-ts";
 import { constant, flow, pipe } from "fp-ts/function";
 import { TaskEither } from "fp-ts/TaskEither";
-import { Package, PackagesIndex } from "./domain";
+import { PackagesIndex } from "./domain";
+import { taskEitherLogError } from "./utils";
 
 const PACKAGE_INDEX_URL =
   process.env.PACKAGE_INDEX_URL ||
@@ -46,7 +47,8 @@ const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
           })
         ),
       taskEither.of
-    )
+    ),
+    taskEitherLogError
   );
 
 export const fetchPackagesIndex: TaskEither<Error, PackagesIndex> = pipe(

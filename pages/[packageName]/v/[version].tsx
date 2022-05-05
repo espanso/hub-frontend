@@ -46,7 +46,6 @@ import { fetchPackageRepo } from "../../../api/packageRepo";
 import { fetchPackagesIndex } from "../../../api/packagesIndex";
 import { usePackageSearch } from "../../../api/search";
 import { serializeReadme } from "../../../api/serializeReadme";
-import { taskEitherLogError } from "../../../api/utils";
 import {
   BetaBanner,
   CodeBlock,
@@ -116,7 +115,6 @@ export const getStaticProps = (context: GetStaticPropsContext) =>
         ),
       })
     ),
-    taskEitherLogError,
     task.map((props) => ({
       props: pipe(
         props,
