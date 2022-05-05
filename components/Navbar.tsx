@@ -22,6 +22,7 @@ import { useResponsive } from "./layout/useResponsive";
 import Image from "next/image";
 import navbarLogo from "../public/images/navbar_logo.svg";
 import navbarLogoMobile from "../public/images/navbar_logo.svg";
+import notOptimizedImageLoader from "../api/notOptimizedImageLoader";
 
 type NavbarVariant = "default" | "landing";
 
@@ -127,6 +128,7 @@ export const Navbar = (props: Props) => {
       height={30}
       width={172}
       src={navbarLogo}
+      loader={notOptimizedImageLoader}
       alt="Espanso Hub"
       className="clickable"
       onClick={() => router.push("/")}
@@ -138,6 +140,7 @@ export const Navbar = (props: Props) => {
       height={30}
       width={30}
       src={navbarLogoMobile}
+      loader={notOptimizedImageLoader}
       alt="Espanso Hub"
       className="clickable"
       onClick={() => router.push("/")}

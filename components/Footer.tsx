@@ -6,6 +6,7 @@ import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
 import Image from "next/image";
 import navbarLogo from "../public/images/navbar_logo.svg";
+import notOptimizedImageLoader from "../api/notOptimizedImageLoader";
 
 type Props = Pick<React.ComponentProps<typeof Text>, "color"> & {
   showAuthor?: boolean;
@@ -69,6 +70,7 @@ export const Footer = (props: Props) => {
         height={30}
         width={172}
         src={navbarLogo}
+        loader={notOptimizedImageLoader}
         alt="Espanso Hub"
         className="clickable"
         onClick={() => router.push("/")}
@@ -105,6 +107,7 @@ export const Footer = (props: Props) => {
         height={30}
         width={172}
         src={navbarLogo}
+        loader={notOptimizedImageLoader}
         alt="Espanso Hub"
         className="clickable"
         onClick={() => router.push("/")}

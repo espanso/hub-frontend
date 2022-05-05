@@ -36,6 +36,7 @@ import { useResponsive } from "../components/layout/useResponsive";
 import Image from "next/image";
 // Landing bg images generated from https://app.haikei.app/
 import landingBg from "../public/images/landing_bg.svg";
+import notOptimizedImageLoader from "../api/notOptimizedImageLoader";
 
 export const getStaticProps = () =>
   pipe(
@@ -71,7 +72,12 @@ const BackgroundImage = (props: React.ComponentProps<typeof Image>) => {
   const { children, ...imageProps } = props;
   return (
     <div style={{ zIndex: -1, height: "100%" }}>
-      <Image layout="fill" objectFit="cover" {...imageProps} />
+      <Image
+        layout="fill"
+        objectFit="cover"
+        {...imageProps}
+        loader={notOptimizedImageLoader}
+      />
     </div>
   );
 };

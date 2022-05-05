@@ -6,7 +6,7 @@ import {
   Image,
   Text,
   UnorderedList,
-  ListItem
+  ListItem,
 } from "evergreen-ui";
 import { either } from "fp-ts";
 import { pipe } from "fp-ts/function";
@@ -139,7 +139,7 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
   ),
   li: (props: React.ComponentProps<any>) => (
     <ListItem>{props.children}</ListItem>
-  )
+  ),
 });
 
 export const MDXRenderer = (props: Props) => (
