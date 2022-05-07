@@ -71,6 +71,7 @@ export const Footer = (props: Props) => {
         width={172}
         src={navbarLogo}
         loader={notOptimizedImageLoader}
+        unoptimized
         alt="Espanso Hub"
         className="clickable"
         onClick={() => router.push("/")}
@@ -108,6 +109,7 @@ export const Footer = (props: Props) => {
         width={172}
         src={navbarLogo}
         loader={notOptimizedImageLoader}
+        unoptimized
         alt="Espanso Hub"
         className="clickable"
         onClick={() => router.push("/")}

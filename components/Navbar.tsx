@@ -129,6 +129,7 @@ export const Navbar = (props: Props) => {
       width={172}
       src={navbarLogo}
       loader={notOptimizedImageLoader}
+      unoptimized
       alt="Espanso Hub"
       className="clickable"
       onClick={() => router.push("/")}
@@ -141,6 +142,7 @@ export const Navbar = (props: Props) => {
       width={30}
       src={navbarLogoMobile}
       loader={notOptimizedImageLoader}
+      unoptimized
       alt="Espanso Hub"
       className="clickable"
       onClick={() => router.push("/")}
