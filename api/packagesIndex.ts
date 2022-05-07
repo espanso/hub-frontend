@@ -19,10 +19,7 @@ const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
     option.fold(
       () =>
         pipe(
-          taskEither.tryCatch(
-            constant(fetch(PACKAGE_INDEX_URL)),
-            either.toError
-          ),
+          taskEither.tryCatch(() => fetch(PACKAGE_INDEX_URL), either.toError),
           taskEither.chain((response) =>
             taskEither.tryCatch(constant(response.json()), either.toError)
           ),
