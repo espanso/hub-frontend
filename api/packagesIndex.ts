@@ -1,6 +1,6 @@
 import flatCache from "flat-cache";
 import { array, either, option, taskEither } from "fp-ts";
-import { constant, flow, pipe } from "fp-ts/function";
+import { flow, pipe } from "fp-ts/function";
 import { TaskEither } from "fp-ts/TaskEither";
 import { PackagesIndex } from "./domain";
 import { taskEitherLogError } from "./utils";
@@ -36,7 +36,6 @@ const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
                 array.filter((p) => p.name !== "dummy-package")
               ),
             };
-            console.log("set cache");
             cache.setKey(PACKAGE_INDEX_URL, noDummyPackage);
             cache.save();
             return cache.getKey(PACKAGE_INDEX_URL);
