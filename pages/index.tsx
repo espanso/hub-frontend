@@ -77,6 +77,7 @@ const BackgroundImage = (props: React.ComponentProps<typeof Image>) => {
         objectFit="cover"
         {...imageProps}
         loader={notOptimizedImageLoader}
+        unoptimized
       />
     </div>
   );
