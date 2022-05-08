@@ -6,6 +6,7 @@ import { FeaturedBadge } from "./featured";
 import { Stack } from "./layout";
 import { record } from "fp-ts";
 import { pipe } from "fp-ts/function";
+import Link from "next/link";
 
 type Props = {
   package: Package;
@@ -18,34 +19,33 @@ const propsKeys = ["package", "onTagClick", "hideFeaturedBadge"];
 export const PackageCard = (
   props: Props & React.ComponentProps<typeof Card>
 ) => (
-  <Card
-    className="clickable"
-    display="flex"
-    width="100%"
-    flexDirection="column"
-    float="left"
-    padding={majorScale(2)}
-    backgroundColor="white"
-    hoverElevation={2}
-    border
-    onClick={() => {
-      window.location.href = props.package.name;
-    }}
-    justifyContent="space-between"
-    minHeight={majorScale(15)}
-    {...pipe(
-      props,
-      record.filterWithIndex((k, v) => !propsKeys.includes(k))
-    )}
-  >
-    <Stack units={1} direction="column">
-      <Pane display="flex">
-        <Heading flex={1}>{props.package.title}</Heading>
-        {props.hideFeaturedBadge ||
-          (isFeatured(props.package) && <FeaturedBadge />)}
-      </Pane>
-      <Text>{props.package.description}</Text>
-    </Stack>
-    <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
-  </Card>
+  <Link href={`/${props.package.name}`}>
+    <Card
+      className="clickable"
+      display="flex"
+      width="100%"
+      flexDirection="column"
+      float="left"
+      padding={majorScale(2)}
+      backgroundColor="white"
+      hoverElevation={2}
+      border
+      justifyContent="space-between"
+      minHeight={majorScale(15)}
+      {...pipe(
+        props,
+        record.filterWithIndex((k, v) => !propsKeys.includes(k))
+      )}
+    >
+      <Stack units={1} direction="column">
+        <Pane display="flex">
+          <Heading flex={1}>{props.package.title}</Heading>
+          {props.hideFeaturedBadge ||
+            (isFeatured(props.package) && <FeaturedBadge />)}
+        </Pane>
+        <Text>{props.package.description}</Text>
+      </Stack>
+      <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
+    </Card>
+  </Link>
 );

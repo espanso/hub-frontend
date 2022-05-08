@@ -1,7 +1,6 @@
 import {
   ChevronRightIcon,
   Heading,
-  Link,
   majorScale,
   Pane,
   Position,
@@ -40,6 +39,7 @@ import {
   PackageCard,
   Stack,
   TagBadgeGroup,
+  NextjsLink,
 } from "../components";
 import { useResponsive } from "../components/layout/useResponsive";
 
@@ -139,12 +139,12 @@ const Search = (props: Props) => {
       <Text size={500} color="muted">
         {preamble}
       </Text>
-      <Link
+      <NextjsLink
         size={500}
         href="https://espanso.org/docs/next/packages/creating-a-package/"
       >
         {label}
-      </Link>
+      </NextjsLink>
     </Stack>
   );
 

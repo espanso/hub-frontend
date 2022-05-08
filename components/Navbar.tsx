@@ -1,7 +1,6 @@
 import {
   Button,
   ButtonAppearance,
-  Link,
   majorScale,
   Menu,
   MenuIcon,
@@ -23,6 +22,7 @@ import Image from "next/image";
 import navbarLogo from "../public/images/navbar_logo.svg";
 import navbarLogoMobile from "../public/images/navbar_logo_mobile.svg";
 import notOptimizedImageLoader from "../api/notOptimizedImageLoader";
+import { NextjsLink } from "./NextjsLink";
 
 type NavbarVariant = "default" | "landing";
 
@@ -65,11 +65,13 @@ export const Navbar = (props: Props) => {
     children: React.ReactNode;
     color?: string;
   }) => (
-    <Link href={props.href} display="flex" alignItems="center">
-      <Strong size={400} color={props.color}>
-        {props.children}
-      </Strong>
-    </Link>
+    <Pane display="flex" alignItems="center">
+      <NextjsLink href={props.href}>
+        <Strong size={400} color={props.color}>
+          {props.children}
+        </Strong>
+      </NextjsLink>
+    </Pane>
   );
 
   const NavbarLinkCTA = (props: {

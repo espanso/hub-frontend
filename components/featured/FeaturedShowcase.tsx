@@ -1,4 +1,4 @@
-import { majorScale, Pane, Heading, Link } from "evergreen-ui";
+import { majorScale, Pane, Heading } from "evergreen-ui";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Package } from "../../api/domain";
 import { pipe } from "fp-ts/function";
@@ -8,6 +8,7 @@ import { usePackageSearch } from "../../api/search";
 import { FeaturedBadge } from "./FeaturedBadge";
 import { Stack } from "../layout";
 import { useResponsive } from "../layout/useResponsive";
+import { NextjsLink } from "../NextjsLink";
 
 type Props = {
   packages: NonEmptyArray<Package>;
@@ -89,10 +90,9 @@ export const FeaturedShowcase = (props: Props) => {
         tablet: () => makeCommonLayout("45%"),
         desktop: () => makeCommonLayout("30%"),
       })}
-
-      <Link marginTop={majorScale(6)} href="/search" alignSelf="flex-end">
+      <NextjsLink href="/search" marginTop={majorScale(6)} alignSelf="flex-end">
         See all packages {">"}
-      </Link>
+      </NextjsLink>
     </Pane>
   );
 };

@@ -11,3 +11,4 @@ export * from "./Tags/TagBadgeGroup";
 export * from "./BetaBanner";
 export * from "./Footer";
 export * from "./SearchBar";
+export * from "./NextjsLink";

@@ -1,4 +1,4 @@
-import { Link, Pane, majorScale, Text, HeartIcon, Color } from "evergreen-ui";
+import { Pane, majorScale, Text, HeartIcon, Color } from "evergreen-ui";
 import { array } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import router from "next/router";
@@ -7,6 +7,7 @@ import { useResponsive } from "./layout/useResponsive";
 import Image from "next/image";
 import navbarLogo from "../public/images/navbar_logo.svg";
 import notOptimizedImageLoader from "../api/notOptimizedImageLoader";
+import { NextjsLink } from "./NextjsLink";
 
 type Props = Pick<React.ComponentProps<typeof Text>, "color"> & {
   showAuthor?: boolean;
@@ -15,34 +16,38 @@ type Props = Pick<React.ComponentProps<typeof Text>, "color"> & {
 type FooterLink = {
   label: string;
   href: string;
-  internal?: boolean;
+  external?: boolean;
 };
 
 const links: Array<FooterLink> = [
   {
     href: "https://espanso.org/docs/get-started/",
     label: "Documentation",
+    external: true,
   },
   {
     href: "https://espanso.org/docs/next/packages/creating-a-package/",
     label: "Create Package",
+    external: true,
   },
   {
     href: "/search",
     label: "Explore",
-    internal: true,
   },
   {
     href: "https://github.com/espanso/hub-frontend/",
     label: "Contribute",
+    external: true,
   },
   {
     href: "https://espanso.org",
     label: "Espanso",
+    external: true,
   },
   {
     href: "https://www.reddit.com/r/espanso/",
     label: "Reddit",
+    external: true,
   },
 ];
 
@@ -50,13 +55,13 @@ export const Footer = (props: Props) => {
   const { foldDevices } = useResponsive();
 
   const makeLink = (link: FooterLink) => (
-    <Link
-      className="link-white-override"
+    <NextjsLink
       href={link.href}
-      target={link.internal ? "_self" : "_blank"}
+      className="link-white-override"
+      external={link.external}
     >
       {link.label}
-    </Link>
+    </NextjsLink>
   );
 
   const makeDesktopContent = (links: Array<FooterLink>) => (
@@ -136,11 +141,11 @@ export const Footer = (props: Props) => {
             <Text color={props.color}>Made with</Text>
             <HeartIcon color={props.color as Color} />
             <Text color={props.color}>by</Text>
-            <Link href="https://www.matteopellegrino.me/" target="_blank">
+            <NextjsLink href="https://www.matteopellegrino.me/" target="_blank">
               <Text color={props.color} className="link-pelle">
                 Matteo Pellegrino
               </Text>
-            </Link>
+            </NextjsLink>
           </Stack>
         )}
       </Pane>

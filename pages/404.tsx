@@ -1,10 +1,17 @@
-import { Heading, Link, Pane, Paragraph, TextInput } from "evergreen-ui";
+import { Heading, Pane, Paragraph, TextInput } from "evergreen-ui";
 import { option } from "fp-ts";
 import { flow, pipe } from "fp-ts/function";
 import Head from "next/head";
 import { useState } from "react";
 import { usePackageSearch } from "../api/search";
-import { ContentRow, Footer, Navbar, Stack, espansoTheme } from "../components";
+import {
+  ContentRow,
+  Footer,
+  Navbar,
+  Stack,
+  espansoTheme,
+  NextjsLink,
+} from "../components";
 
 const Custom404 = () => {
   const packageSearch = usePackageSearch({
@@ -70,9 +77,9 @@ const Custom404 = () => {
             </Pane>
             <Paragraph size={600}>
               or{" "}
-              <Link href="/search" size={600} textDecoration="underline">
+              <NextjsLink href="/search" passHref={true}>
                 browse the hub
-              </Link>
+              </NextjsLink>
             </Paragraph>
           </Stack>
         </ContentRow>

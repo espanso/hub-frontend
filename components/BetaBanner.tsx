@@ -1,5 +1,6 @@
-import { CrossIcon, InlineAlert, Link, majorScale, Pane } from "evergreen-ui";
+import { CrossIcon, InlineAlert, majorScale, Pane } from "evergreen-ui";
 import { useState } from "react";
+import { NextjsLink } from "./NextjsLink";
 
 // Self-contained as it is a temporary component
 export const BetaBanner = () => {
@@ -21,13 +22,13 @@ export const BetaBanner = () => {
         <InlineAlert size={300}>
           Espanso Hub is currently in beta. If you have an issue, please report
           it{" "}
-          <Link
+          <NextjsLink
             href="https://github.com/espanso/hub-frontend/issues"
             target="_blank"
             style={{ color: "inherit", textDecoration: "underline" }}
           >
             here
-          </Link>
+          </NextjsLink>
           .
         </InlineAlert>
       </Pane>

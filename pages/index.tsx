@@ -1,7 +1,6 @@
 import {
   ChevronDownIcon,
   Heading,
-  Link,
   majorScale,
   Pane,
   Paragraph,
@@ -31,6 +30,7 @@ import {
   Navbar,
   SearchBar,
   Stack,
+  NextjsLink,
 } from "../components";
 import { useResponsive } from "../components/layout/useResponsive";
 import Image from "next/image";
@@ -152,25 +152,25 @@ inspiration.`,
             ></SearchBar>
             <Paragraph size={600} color={espansoTheme.colors.white}>
               or{" "}
-              <Link
+              <NextjsLink
                 href="/search"
                 size={600}
                 className="link-white-override"
                 textDecoration="underline"
               >
                 explore the hub
-              </Link>
+              </NextjsLink>
             </Paragraph>
           </Stack>
         </ContentRow>
         <Pane flex={4} display="flex" justifyContent="center" alignItems="end">
-          <Link href="#featured_showcase">
+          <NextjsLink href="#featured_showcase">
             <ChevronDownIcon
               size={majorScale(2)}
               color={espansoTheme.colors.white}
               marginBottom={majorScale(4)}
             />
-          </Link>
+          </NextjsLink>
         </Pane>
       </FullHeightSection>
       <FullHeightSection
