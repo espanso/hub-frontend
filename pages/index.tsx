@@ -123,7 +123,11 @@ inspiration.`,
           <Stack units={6} direction="column" alignItems="center">
             <Stack units={3} direction="column" alignItems="center">
               <Pane display="flex" alignContent="center">
-                <Heading size={1000} color={espansoTheme.colors.white}>
+                <Heading
+                  size={1000}
+                  color={espansoTheme.colors.white}
+                  textAlign="center"
+                >
                   Enhance your workflows with espanso packages
                 </Heading>
               </Pane>

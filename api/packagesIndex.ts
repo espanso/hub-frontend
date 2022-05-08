@@ -19,7 +19,7 @@ const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
         pipe(
           taskEither.tryCatch(() => fetch(PACKAGE_INDEX_URL), either.toError),
           taskEither.chain((response) =>
-            taskEither.tryCatch(constant(response.json()), either.toError)
+            taskEither.tryCatch(() => response.json(), either.toError)
           ),
           taskEither.chain(
             flow(
@@ -36,7 +36,7 @@ const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
                 array.filter((p) => p.name !== "dummy-package")
               ),
             };
-            console.log("no cache");
+            console.log("set cache");
             cache.setKey(PACKAGE_INDEX_URL, noDummyPackage);
             cache.save();
             return cache.getKey(PACKAGE_INDEX_URL);

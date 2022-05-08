@@ -1,5 +1,5 @@
 import {
-  ChevronDownIcon,
+  ChevronRightIcon,
   Heading,
   Link,
   majorScale,
@@ -209,18 +209,14 @@ const Search = (props: Props) => {
 
   const [showSideSheet, setShowSideSheet] = React.useState(false);
 
-  const filtersCheckboxes = (
-    <CheckboxGroup
-      title="Filters"
-      items={tagsCheckboxes}
-      onChange={onCheckboxesChange}
-      limit={15}
-    />
-  );
-
   const filters = isDesktop ? (
     <Pane display="flex" flex={1}>
-      {filtersCheckboxes}
+      <CheckboxGroup
+        title="Tags"
+        items={tagsCheckboxes}
+        onChange={onCheckboxesChange}
+        limit={15}
+      />
     </Pane>
   ) : (
     <React.Fragment>
@@ -231,10 +227,15 @@ const Search = (props: Props) => {
         width="80%"
       >
         <Pane
-          marginLeft={majorScale(1)}
+          marginLeft={majorScale(3)}
+          marginTop={majorScale(3)}
           onClick={() => setShowSideSheet(false)}
         >
-          {filtersCheckboxes}
+          <CheckboxGroup
+            title="Tags"
+            items={tagsCheckboxes}
+            onChange={onCheckboxesChange}
+          />
         </Pane>
       </SideSheet>
     </React.Fragment>
@@ -269,6 +270,7 @@ const Search = (props: Props) => {
 
   const showFiltersBtnMobile = (
     <Stack units={1} alignItems="center">
+      <ChevronRightIcon color="muted" />
       <Text
         color="muted"
         className="clickable"
@@ -276,7 +278,6 @@ const Search = (props: Props) => {
       >
         Filter by tags
       </Text>
-      <ChevronDownIcon color="muted" />
     </Stack>
   );
 

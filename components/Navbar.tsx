@@ -75,7 +75,6 @@ export const Navbar = (props: Props) => {
   const NavbarLinkCTA = (props: {
     href: string;
     children: React.ReactNode;
-    color?: string;
   }) => (
     <Button
       appearance={"navbar" as ButtonAppearance}
@@ -118,9 +117,15 @@ export const Navbar = (props: Props) => {
     >
       Create Package
     </NavbarLink>,
-    <NavbarLinkCTA href="/search" key="/search">
-      Explore
-    </NavbarLinkCTA>,
+    isDesktop ? (
+      <NavbarLinkCTA href="/search" key="/search">
+        Explore
+      </NavbarLinkCTA>
+    ) : (
+      <NavbarLink href="/search" key="/search">
+        Eplore
+      </NavbarLink>
+    ),
   ];
 
   const logoDesktop = (
