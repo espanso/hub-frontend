@@ -25,14 +25,14 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
 
       - name: Build (manually triggered)
-        if: ${{ github.event_name }} == 'workflow_dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           yarn
           yarn build
           yarn export
 
       - name: Build (new release triggered)
-        if: ${{ github.event_name }} == 'repository_dispatch'
+        if: ${{ github.event_name == 'repository_dispatch'}}
         env:
           PACKAGE_INDEX_URL: ${{ github.event.client_payload.package_index_url }}
         run: |
