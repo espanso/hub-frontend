@@ -5,9 +5,7 @@ import { TaskEither } from "fp-ts/TaskEither";
 import { PackagesIndex } from "./domain";
 import { taskEitherLogError } from "./utils";
 
-const PACKAGE_INDEX_URL =
-  process.env.PACKAGE_INDEX_URL ||
-  "https://github.com/espanso/hub/releases/download/v1.0.0/package_index.json";
+const PACKAGE_INDEX_URL = process.env.PACKAGE_INDEX_URL || "";
 
 const PACKAGE_INDEX_CACHE_ID = "packagesIndex";
 const CACHE_DIR = process.env.PACKAGE_INDEX_CACHE_DIR || undefined;
