@@ -21,7 +21,7 @@ import { Stack } from "./layout";
 import { useResponsive } from "./layout/useResponsive";
 import Image from "next/image";
 import navbarLogo from "../public/images/navbar_logo.svg";
-import navbarLogoMobile from "../public/images/navbar_logo.svg";
+import navbarLogoMobile from "../public/images/navbar_logo_mobile.svg";
 import notOptimizedImageLoader from "../api/notOptimizedImageLoader";
 
 type NavbarVariant = "default" | "landing";
