@@ -38,6 +38,7 @@ const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
                 array.filter((p) => p.name !== "dummy-package")
               ),
             };
+            console.log("no cache");
             cache.setKey(PACKAGE_INDEX_URL, noDummyPackage);
             cache.save();
             return cache.getKey(PACKAGE_INDEX_URL);

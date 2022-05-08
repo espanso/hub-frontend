@@ -467,11 +467,8 @@ ${currentRepo.package.description}`,
         <Head>
           <title>{metaInfo.title}</title>
           <meta name="description" content={metaInfo.description} />
-          <meta property="og:site_name" content="Espanso Hub" />
           <meta property="og:title" content={metaInfo.title} />
           <meta property="og:description" content={metaInfo.description} />
-          <meta property="og:type" content="website" />
-          <meta property="og:image" content="/images/espanso_logo.svg" />
         </Head>
         <ContentRow background="blueTint">
           <BetaBanner />
