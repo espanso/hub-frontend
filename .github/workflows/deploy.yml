@@ -2,9 +2,8 @@ name: Deploy to Github Pages
 
 on:
   push:
-    # TODO: re-add main filter once testing is completed
-    # branches:
-    #   - main
+    branches:
+      - main
 
 jobs:
   deployment:
