@@ -49,6 +49,7 @@ class CustomDocument extends Document<DocumentProps> {
           <Main />
           {hydrationScript}
           <NextScript />
+          <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "47f96ee94a8d478d9b600fdc38a68bc1"}'></script>
         </body>
       </Html>
     );
