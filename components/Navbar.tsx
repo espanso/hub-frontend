@@ -125,7 +125,7 @@ export const Navbar = (props: Props) => {
       </NavbarLinkCTA>
     ) : (
       <NavbarLink href="/search" key="/search">
-        Eplore
+        Explore
       </NavbarLink>
     ),
   ];
