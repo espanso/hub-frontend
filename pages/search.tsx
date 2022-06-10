@@ -270,7 +270,7 @@ const Search = (props: Props) => {
 
   const showFiltersBtnMobile = (
     <Stack units={1} alignItems="center">
-      <ChevronRightIcon color="muted" />
+      <ChevronRightIcon color="muted" onClick={() => setShowSideSheet(true)} />
       <Text
         color="muted"
         className="clickable"
