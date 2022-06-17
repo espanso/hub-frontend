@@ -24,7 +24,8 @@ describe("search API", () => {
   test("selecting multiple tags combines all possible results", () => {
     const packagesJson = [
       generatePackageWithTags(["a"]),
-      generatePackageWithTags(["b"]),
+      generatePackageWithTags(["c", "d"]),
+      generatePackageWithTags(["x", "y", "z"]),
     ]
 
     pipe(
@@ -46,7 +47,7 @@ describe("search API", () => {
         (e) => console.log(e), // at least 1 element is left
         (packages) => pipe( // all elements are right, so T[]
           packages,
-          (packages) => tagsSearch(packages)(["a", "b"]),
+          (packages) => tagsSearch(packages)(["a", "c"]),
           (filtered) => expect(filtered.length).toEqual(2)
         )
       )
