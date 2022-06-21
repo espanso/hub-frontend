@@ -21,9 +21,9 @@ export const tagsSearch: (
   packages: Array<Package>
 ) => (tags: NonEmptyArray<string>) => Array<Package> = (packages) => (tags) =>
   pipe(
-    tags,
-    array.reduce(packages, (acc, tag) =>
-      acc.filter((p) => p.tags.includes(tag))
+    packages,
+    array.filter((pckg) => pckg.tags.some(
+      (t) => tags.includes(t))
     )
   );
 
