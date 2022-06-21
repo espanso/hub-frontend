@@ -17,6 +17,5 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*" 
-      - run: yarn ci
-      - run: yarn run build --if-present
+      - run: yarn
       - run: yarn test
