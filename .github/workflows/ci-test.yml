@@ -1,21 +1,23 @@
-name: Node.js CI
+name: CI Test
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - name: npm ci, build, test
+
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*" 
-      - run: yarn
-      - run: yarn test
+          cache: "yarn"
+
+      - name: Run tests
+        run: |
+          yarn
+          yarn test
