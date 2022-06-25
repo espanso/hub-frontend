@@ -33,7 +33,7 @@ type CommonProps = {
   syntax?: "yaml" | "shell" | "plaintext";
 } 
 
-const makeBlock = (inline: boolean, language: string = "yaml") => (content: string) =>
+const makeBlock = (inline: boolean, language: string = "plaintext") => (content: string) =>
   <Code
     flex={inline ? 0 : 1}
     size={400}
