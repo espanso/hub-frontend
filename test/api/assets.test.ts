@@ -1,4 +1,4 @@
-import { fromGithub } from "../api/assets";
+import { fromGithub } from "../../api/assets";
 import { either } from "fp-ts";
 
 describe("assets API", () => {
