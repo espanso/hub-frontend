@@ -6,7 +6,7 @@ import { FeaturedBadge } from "./featured";
 import { Stack } from "./layout";
 import { record } from "fp-ts";
 import { pipe } from "fp-ts/function";
-import Link from "next/link";
+import { NextjsLink } from "./NextjsLink";
 
 type Props = {
   package: Package;
@@ -19,7 +19,7 @@ const propsKeys = ["package", "onTagClick", "hideFeaturedBadge"];
 export const PackageCard = (
   props: Props & React.ComponentProps<typeof Card>
 ) => (
-  <Link href={`/${props.package.name}`}>
+  <NextjsLink href={`/${props.package.name}`}>
     <Card
       className="clickable"
       display="flex"
@@ -47,5 +47,5 @@ export const PackageCard = (
       </Stack>
       <TagBadgeGroup tags={props.package.tags} onClick={props.onTagClick} />
     </Card>
-  </Link>
+  </NextjsLink>
 );
