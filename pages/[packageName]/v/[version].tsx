@@ -61,6 +61,7 @@ import {
   useTabs,
 } from "../../../components";
 import { useResponsive } from "../../../components/layout/useResponsive";
+import { splitLines } from "../../../api/utils"
 
 export type Props = {
   packageRepo: Option<
@@ -151,13 +152,21 @@ export const getStaticPaths = pipe(
   }))
 );
 
+const N_LINES_INCREMENTAL_CODE_BLOCK = 100;
+
 const YamlShowcase = (props: { files: NonEmptyArray<FileAsString> }) => {
   const tabs = pipe(
     props.files,
     nonEmptyArray.map((f) => ({
       id: f.name,
       label: f.name,
-      render: () => <CodeBlock content={f.content} syntax="yaml" />,
+      render: () => 
+        <CodeBlock 
+          variant="incremental"
+          syntax="yaml"
+          content={pipe(
+            f.content, 
+            splitLines(N_LINES_INCREMENTAL_CODE_BLOCK))}/>,
     }))
   );
 
@@ -177,7 +186,13 @@ const YamlShowcaseMobile = (props: { files: NonEmptyArray<FileAsString> }) => {
     nonEmptyArray.map((f) => ({
       id: f.name,
       label: f.name,
-      render: () => <CodeBlock content={f.content} syntax="yaml" />,
+      render: () => 
+        <CodeBlock 
+          variant="incremental"
+          syntax="yaml"
+          content={pipe(
+            f.content, 
+            splitLines(N_LINES_INCREMENTAL_CODE_BLOCK))}/>,
     }))
   );
 
@@ -336,6 +351,7 @@ const VersionedPackagePage = (props: Props) => {
             </Paragraph>
 
             <CodeBlock
+              variant="default"
               content={`espanso install ${currentRepo.package.name}`}
               syntax="shell"
               showCopyButton

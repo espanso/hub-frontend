@@ -123,13 +123,13 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
     </Paragraph>
   ),
   code: (props: React.ComponentProps<any>) => (
-    <CodeBlock content={String(props.children)} showCopyButton />
+    <CodeBlock variant="default" content={String(props.children)} showCopyButton />
   ),
   inlineCode: (props: React.ComponentProps<any>) => (
-    <CodeBlock content={String(props.children)} inline />
+    <CodeBlock variant="inline" content={String(props.children)}  />
   ),
   kbd: (props: React.ComponentProps<any>) => (
-    <CodeBlock content={String(props.children)} inline />
+    <CodeBlock variant="inline" content={String(props.children)} />
   ),
   span: (props: React.ComponentProps<any>) => (
     <Text display="flex">{props.children}</Text>
