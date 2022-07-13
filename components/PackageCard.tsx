@@ -19,7 +19,7 @@ const propsKeys = ["package", "onTagClick", "hideFeaturedBadge"];
 export const PackageCard = (
   props: Props & React.ComponentProps<typeof Card>
 ) => (
-  <NextjsLink href={`/${props.package.name}`}>
+  <NextjsLink href={`/${props.package.name}`} width={props.width}>
     <Card
       className="clickable"
       display="flex"

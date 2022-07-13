@@ -43,6 +43,7 @@ export const FeaturedShowcase = (props: Props) => {
               onTagClick={(tag) => packageSearch.setTags(option.some([tag]))}
               hideFeaturedBadge
               height={majorScale(22)}
+              width="100%"
             />
           </Pane>
         ))
@@ -81,6 +82,7 @@ export const FeaturedShowcase = (props: Props) => {
                       packageSearch.setTags(option.some([tag]))
                     }
                     hideFeaturedBadge
+                    width="100%"
                   />
                 </Pane>
               ))
