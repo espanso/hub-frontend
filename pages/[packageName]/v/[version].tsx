@@ -250,77 +250,90 @@ const VersionedPackagePage = (props: Props) => {
   const header = (currentRepo: PackageRepo) => (
     <Pane display="flex">
       <Stack units={2} direction="column" flex={2} {...dividerProps}>
-        <Pane display="flex">
-          <Stack units={3} alignItems="baseline">
-            <Heading
-              size={foldDevices({
-                desktop: () => 900,
-                tablet: () => 800,
-                mobile: () => 600,
-              })}
-            >
-              {currentRepo.package.name}
-            </Heading>
-            {isFeatured(currentRepo.package) && <FeaturedBadge />}
-          </Stack>
+        <Stack units={1} direction="column">
+          <Pane display="flex">
+            <Stack units={3} alignItems="baseline">
+              <Heading
+                size={foldDevices({
+                  desktop: () => 900,
+                  tablet: () => 800,
+                  mobile: () => 600,
+                })}
+              >
+                {currentRepo.package.name}
+              </Heading>
+              {isFeatured(currentRepo.package) && <FeaturedBadge />}
+            </Stack>
 
-          <Pane flexGrow={1} />
-          <Stack units={1} alignItems="center">
-            {pipe(
-              currentRepo.manifest.homepage,
-              option.map((homepage) => (
-                <IconButton
-                  icon={ShareIcon}
-                  appearance="minimal"
-                  onClick={() => {
-                    window.open(homepage, "_blank");
-                  }}
-                />
-              )),
-              option.toNullable
-            )}
+            <Pane flexGrow={1} />
+            <Stack units={1} alignItems="center">
+              {pipe(
+                currentRepo.manifest.homepage,
+                option.map((homepage) => (
+                  <IconButton
+                    icon={ShareIcon}
+                    appearance="minimal"
+                    onClick={() => {
+                      window.open(homepage, "_blank");
+                    }}
+                  />
+                )),
+                option.toNullable
+              )}
 
-            {pipe(
-              currentVersion,
-              option.map((version) => (
-                <SelectMenu
-                  height={pipe(
-                    props.versions,
-                    array.reduce(40, (acc) => acc + 33)
-                  )}
-                  position={Position.BOTTOM_RIGHT}
-                  title="Select version"
-                  options={props.versions.map((v) => ({
-                    label: `v${v}`,
-                    value: v,
-                  }))}
-                  hasFilter={false}
-                  closeOnSelect={true}
-                  selected={version}
-                  onSelect={(item) =>
-                    pipe(
+              {pipe(
+                currentVersion,
+                option.map((version) => (
+                  <SelectMenu
+                    height={pipe(
                       props.versions,
-                      array.findFirst((v) => v === item.value),
-                      option.chain((v) =>
-                        pipe(
-                          props.packageRepo,
-                          option.map((p) => p.package.name),
-                          option.map((n) => `/${n}/v/${v}`),
-                          option.map((pathname) => ({ pathname }))
-                        )
-                      ),
-                      option.map((url) => router.push(url)),
-                      option.toUndefined
-                    )
-                  }
-                >
-                  <Button>{`v${version}`}</Button>
-                </SelectMenu>
-              )),
-              option.toNullable
-            )}
-          </Stack>
-        </Pane>
+                      array.reduce(40, (acc) => acc + 33)
+                    )}
+                    position={Position.BOTTOM_RIGHT}
+                    title="Select version"
+                    options={props.versions.map((v) => ({
+                      label: `v${v}`,
+                      value: v,
+                    }))}
+                    hasFilter={false}
+                    closeOnSelect={true}
+                    selected={version}
+                    onSelect={(item) =>
+                      pipe(
+                        props.versions,
+                        array.findFirst((v) => v === item.value),
+                        option.chain((v) =>
+                          pipe(
+                            props.packageRepo,
+                            option.map((p) => p.package.name),
+                            option.map((n) => `/${n}/v/${v}`),
+                            option.map((pathname) => ({ pathname }))
+                          )
+                        ),
+                        option.map((url) => router.push(url)),
+                        option.toUndefined
+                      )
+                    }
+                  >
+                    <Button>{`v${version}`}</Button>
+                  </SelectMenu>
+                )),
+                option.toNullable
+              )}
+            </Stack>
+          </Pane>
+
+          <Text
+          size={foldDevices({
+            desktop: () => 400,
+            tablet: () => 300,
+            mobile: () => 300,
+          })}
+          color={espansoTheme.colors.muted}
+        >
+          By {currentRepo.manifest.author}
+        </Text>
+        </Stack>
         <Paragraph
           size={foldDevices({
             desktop: () => 500,
