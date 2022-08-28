@@ -19,7 +19,9 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "exclude": [
     "node_modules"

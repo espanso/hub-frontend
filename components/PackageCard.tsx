@@ -34,7 +34,7 @@ export const PackageCard = (
       minHeight={majorScale(15)}
       {...pipe(
         props,
-        record.filterWithIndex((k, v) => !propsKeys.includes(k))
+        record.filterWithIndex((k, _) => !propsKeys.includes(k))
       )}
     >
       <Stack units={1} direction="column">
