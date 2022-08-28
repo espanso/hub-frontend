@@ -9,10 +9,11 @@ import {
   record,
   string,
 } from "fp-ts";
-import { constant, flow, pipe } from "fp-ts/function";
+import { constant, flow, identity, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { fromCompare, Ord } from "fp-ts/Ord";
 import * as t from "io-ts";
+import { PathReporter } from "io-ts/lib/PathReporter";
 import * as tp from "io-ts-types";
 
 interface PackageVersionBrand {
@@ -79,10 +80,47 @@ export const DateFromTimestamp = new t.Type<Date, number, unknown>(
 
 export type DateFromTimestamp = t.TypeOf<typeof DateFromTimestamp>;
 
+const arrayValidate: (ctx: t.Context) => <T>(a: unknown) => t.Validation<T[]> = ctx => a =>
+  Array.isArray(a) ? t.success(a) : t.failure(a, ctx, "Not an array")
+
+// This codec creates an Array of Package ignoring non valid Package.
+// Decode errors are reported by console.error per each Package.
+// https://github.com/espanso/hub-frontend/issues/28
+export const PackageArray = new t.Type<Array<Package>>(
+  "PackageArray",
+  (input): input is Array<Package> => Array.isArray(input) && input.every(Package.is),
+  (input, ctx) =>
+    pipe(
+      input,
+      arrayValidate(ctx),
+      either.map(
+        array.filterMapWithIndex((i, p) => pipe(
+          p,
+          Package.decode,
+          validation => pipe(
+            validation,
+            either.fold(
+              () => pipe(
+                `\n[>>>>] warn  - PackageArray decode failure: ignoring the package
+                  ${JSON.stringify((input as Array<unknown>)[i])}
+                  because
+                  ${PathReporter.report(validation).join('\n')}\n`,
+                console.error,
+                () => option.none
+              ),
+              option.some
+            ))
+        ))
+      )),
+  identity
+);
+
+export type PackageArray = t.TypeOf<typeof PackageArray>;
+
 export const PackagesIndex = t.type(
   {
     last_update: t.number,
-    packages: t.array(Package),
+    packages: PackageArray,
   },
   "PackagesIndex"
 );
@@ -142,9 +180,9 @@ export const OrderedByVersion = new t.Type<
   (input, ctx) =>
     pipe(
       Array.isArray(input) &&
-        input.every(
-          flow(Package.decode, either.fold(constant(false), constant(true)))
-        ),
+      input.every(
+        flow(Package.decode, either.fold(constant(false), constant(true)))
+      ),
       boolean.fold(constant(t.failure(input, ctx)), () =>
         pipe(
           input,
