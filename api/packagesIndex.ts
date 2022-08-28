@@ -3,7 +3,6 @@ import { array, either, option, taskEither } from "fp-ts";
 import { flow, pipe } from "fp-ts/function";
 import { TaskEither } from "fp-ts/TaskEither";
 import { PackagesIndex } from "./domain";
-import { taskEitherLogError } from "./utils";
 
 const PACKAGE_INDEX_URL = process.env.PACKAGE_INDEX_URL || "";
 
@@ -43,7 +42,7 @@ const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
         ),
       taskEither.of
     ),
-    taskEitherLogError
+    taskEither.mapLeft(x => { console.error(x); return x }),
   );
 
 export const fetchPackagesIndex: TaskEither<Error, PackagesIndex> = pipe(
