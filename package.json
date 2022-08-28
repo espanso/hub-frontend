@@ -36,6 +36,9 @@
     "yaml": "^1.10.2"
   },
   "scripts": {
+    "clean-cache": "rm -rf .cache",
+    "prebuild": "yarn clean-cache",
+    "predev": "yarn clen-cache",
     "dev": "next dev",
     "build": "next build",
     "postbuild": "next-sitemap",
