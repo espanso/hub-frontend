@@ -12,3 +12,5 @@ export * from "./BetaBanner";
 export * from "./Footer";
 export * from "./SearchBar";
 export * from "./NextjsLink";
+export * from "./ShareButton";
+export * from "./icons";
