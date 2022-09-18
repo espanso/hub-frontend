@@ -24,7 +24,7 @@ describe("packagesIndex API", () => {
             author: "author",
             description: "description",
             title: "title",
-            version: "x.x.x",
+            version: "0.0.1",
             archive_url: "archive_url",
             archive_sha256_url: "archive_sha256_url"
         }
@@ -34,7 +34,7 @@ describe("packagesIndex API", () => {
             author: "author",
             description: "description",
             title: "title",
-            version: "x.x.x",
+            version: "0.0.1",
             tags: [
                 "tag1",
                 "tag2",

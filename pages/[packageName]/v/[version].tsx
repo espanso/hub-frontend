@@ -12,7 +12,6 @@ import {
   Paragraph,
   Position,
   SelectMenu,
-  ShareIcon,
   SideSheet,
   Text,
 } from "evergreen-ui";
@@ -55,12 +54,15 @@ import {
   Footer,
   MDXRenderer,
   Navbar,
+  NextjsLink,
   Stack,
   TabProps,
   TagBadgeGroup,
   useTabs,
+  useResponsive,
+  ShareButton,
+  GithubIcon
 } from "../../../components";
-import { useResponsive } from "../../../components/layout/useResponsive";
 import { splitLines } from "../../../api/utils"
 
 export type Props = {
@@ -267,19 +269,20 @@ const VersionedPackagePage = (props: Props) => {
 
             <Pane flexGrow={1} />
             <Stack units={1} alignItems="center">
+              <ShareButton package={currentRepo.package}/>
               {pipe(
                 currentRepo.manifest.homepage,
-                option.map((homepage) => (
-                  <IconButton
-                    icon={ShareIcon}
-                    appearance="minimal"
-                    onClick={() => {
-                      window.open(homepage, "_blank");
-                    }}
-                  />
-                )),
+                option.map(url => 
+                  <NextjsLink href={url} external>
+                    <IconButton 
+                      icon={GithubIcon} 
+                      iconSize={18}
+                      appearance="minimal" 
+                      color={espansoTheme.colors.gray700}/>
+                  </NextjsLink>),
                 option.toNullable
               )}
+              
 
               {pipe(
                 currentVersion,
