@@ -8,6 +8,8 @@ type Props = {
     package: Package
 }
 
+const FEATURE_FLAG_EMAIL_LINK = false;
+
 export const ShareButton = (props: Props) => {
     const [url, setUrl] = useState<string | undefined>(undefined);
     const [canShare, setCanShare] = useState<boolean | undefined>(undefined);
@@ -70,11 +72,11 @@ Check it out at ${u}
                 onSelect={onCopyLink}>
                     Copy Link
                 </Menu.Item>
-            <Menu.Item 
+            {FEATURE_FLAG_EMAIL_LINK ?? <Menu.Item 
                 icon={EnvelopeIcon}
                 onSelect={onEmailLink}>
                     Email Link
-            </Menu.Item>
+            </Menu.Item>}
             </Menu.Group>
         </Menu>}>   
         <IconButton icon={ExportIcon} appearance="minimal"/>
