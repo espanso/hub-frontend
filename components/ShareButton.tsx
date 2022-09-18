@@ -1,4 +1,4 @@
-import { EnvelopeIcon, ExportIcon, IconButton, LinkIcon, Menu, Popover, Position, ShareIcon, toaster } from "evergreen-ui"
+import { EnvelopeIcon, ExportIcon, IconButton, LinkIcon, Menu, Popover, Position, toaster } from "evergreen-ui"
 import { option } from "fp-ts";
 import { pipe } from "fp-ts/lib/function";
 import { useEffect, useState } from "react";
@@ -19,11 +19,15 @@ export const ShareButton = (props: Props) => {
         option.fromNullable,
         option.fold(
             () => toaster.warning("Unable to share package", {id: "toaster-share-unable"}),
-            u => navigator.share({
-                title: props.package.title,
-                text: props.package.description,
-                url: u
-            })
+            async u => {
+                try{
+                    await navigator.share({
+                        title: props.package.title,
+                        text: props.package.description,
+                        url: u
+                    })
+                }catch{}
+            }
         )
     );
 
@@ -59,7 +63,7 @@ Check it out at ${u}
 
     useEffect(() => {
         setCanShare(typeof navigator.share === "function");
-        setUrl(`${window.location.hostname}${window.location.pathname}${window.location.search}`);
+        setUrl(`${window.location.toString()}`);
     }, []);
 
     const linkShareLayout = <Popover
@@ -83,7 +87,7 @@ Check it out at ${u}
     </Popover>
 
     const webShareAPILayout = <IconButton 
-        icon={ShareIcon} 
+        icon={ExportIcon} 
         appearance="minimal"
         onClick={onClick}/>
 
