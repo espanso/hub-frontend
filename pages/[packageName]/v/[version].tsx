@@ -242,6 +242,8 @@ const VersionedPackagePage = (props: Props) => {
     option.map((p) => p.package.version)
   );
 
+  const latestVersion = pipe(props.versions, array.head);
+
   const dividerProps = isDesktop
     ? {
         paddingRight: majorScale(2),
@@ -366,12 +368,26 @@ const VersionedPackagePage = (props: Props) => {
               Paste this command in a terminal to install the package
             </Paragraph>
 
-            <CodeBlock
-              variant="default"
-              content={`espanso install ${currentRepo.package.name}`}
-              syntax="shell"
-              showCopyButton
-            />
+            {pipe(
+              [currentVersion, latestVersion],
+              array.compact,
+              nonEmptyArray.fromArray,
+              option.map(([current, latest]) =>
+                current === latest
+                  ? option.some('')
+                  : option.some(` --version ${current}`)
+              ),
+              option.flatten,
+              option.map((installationOptions) => (
+                <CodeBlock
+                  variant="default"
+                  content={`espanso install ${currentRepo.package.name}${installationOptions}`}
+                  syntax="shell"
+                  showCopyButton
+                />
+              )),
+              option.toNullable
+            )}
           </Pane>
         </>
       )}
