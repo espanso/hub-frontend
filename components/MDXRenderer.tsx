@@ -24,7 +24,9 @@ type Props = {
 };
 
 const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
-  table: Table,
+  table: (props: React.ComponentProps<any>) => (
+    <Table>{props.children}</Table>
+  ),
   thead: (props: React.ComponentProps<any>) => (
     <Table.Head>
       {props.children.props.children.map((c: React.ComponentProps<any>) => (
@@ -45,13 +47,17 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
         (src) => <Image {...props} src={src} maxWidth="100%" display="block" />
       )
     ),
-  tbody: Table.Body,
+  tbody: (props: React.ComponentProps<any>) => (
+    <Table.Body>{props.children}</Table.Body>
+  ),
   td: (props: React.ComponentProps<any>) => (
     <Table.Cell>
       <Text>{props.children}</Text>
     </Table.Cell>
   ),
-  tr: Table.Row,
+  tr: (props: React.ComponentProps<any>) => (
+    <Table.Row>{props.children}</Table.Row>
+  ),
   h1: (props: React.ComponentProps<any>) => (
     <Heading
       marginTop={majorScale(4)}

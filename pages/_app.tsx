@@ -1,4 +1,4 @@
-import { AppProps } from "next/app";
+import type { AppProps } from "next/app";
 import { EspansoThemeProvider } from "../components";
 import "./reset.css";
 import "./index.css";
