@@ -1,4 +1,4 @@
-import { Card, Heading, majorScale, Pane, Text } from "evergreen-ui";
+import { Card, Heading, majorScale, Pane, Text, Small } from "evergreen-ui";
 import { Package } from "../api/domain";
 import { isFeatured } from "../api/packageFeatured";
 import { TagBadgeGroup } from "./Tags/TagBadgeGroup";
@@ -39,7 +39,7 @@ export const PackageCard = (
     >
       <Stack units={1} direction="column">
         <Pane display="flex">
-          <Heading flex={1}>{props.package.title}</Heading>
+          <Heading flex={1}>{props.package.title} <Small>[{props.package.name}]</Small> </Heading>
           {props.hideFeaturedBadge ||
             (isFeatured(props.package) && <FeaturedBadge />)}
         </Pane>
