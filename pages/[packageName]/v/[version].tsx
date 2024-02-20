@@ -490,8 +490,8 @@ const VersionedPackagePage = (props: Props) => {
   const packagePage = (currentRepo: PackageRepo) => {
     const metaInfo = {
       title: `${currentRepo.package.name} ${currentRepo.package.version} | Espanso Hub`,
-      description: `Past in a terminal to install the \
-${currentRepo.package.name} package (v ${currentRepo.package.version}): \
+      description: `Paste in a terminal to install the \
+${currentRepo.package.name} package (v${currentRepo.package.version}): \
 ${currentRepo.package.description}`,
     };
     return (
