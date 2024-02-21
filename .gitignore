@@ -121,6 +121,16 @@ dist
 # production
 /build
 
+# yarn cruft
+## Disables zero install - https://yarnpkg.com/features/caching and https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
 # misc
 .DS_Store
 .env.local
