@@ -13,6 +13,7 @@ import {
   Position,
   SelectMenu,
   SideSheet,
+  Small,
   Text,
 } from "evergreen-ui";
 import {
@@ -55,6 +56,7 @@ import {
   MDXRenderer,
   Navbar,
   NextjsLink,
+  PackageNamer,
   Stack,
   TabProps,
   TagBadgeGroup,
@@ -325,7 +327,7 @@ const VersionedPackagePage = (props: Props) => {
               )}
             </Stack>
           </Pane>
-
+          
           <Text
           size={foldDevices({
             desktop: () => 400,
@@ -333,9 +335,19 @@ const VersionedPackagePage = (props: Props) => {
             mobile: () => 300,
           })}
           color={espansoTheme.colors.muted}
-        >
-          By {currentRepo.manifest.author}
-        </Text>
+          >
+            <PackageNamer package={currentRepo.package} />
+          </Text>
+          <Text
+          size={foldDevices({
+            desktop: () => 400,
+            tablet: () => 300,
+            mobile: () => 300,
+          })}
+          color={espansoTheme.colors.muted}
+          >
+            By {currentRepo.manifest.author}
+          </Text>
         </Stack>
         <Paragraph
           size={foldDevices({
