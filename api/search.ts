@@ -3,11 +3,12 @@ import { constVoid, flow, identity, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
 import { Option } from "fp-ts/Option";
 import Fuse from "fuse.js";
+import type { IFuseOptions } from "fuse.js";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Package, TextSearch } from "./domain";
 
-const textSearchOptions: Fuse.IFuseOptions<Package> = {
+const textSearchOptions: IFuseOptions<Package> = {
   useExtendedSearch: true, // enables '|' OR and ' ' AND operators
   keys: ["name", "author", "description", "title"],
 };

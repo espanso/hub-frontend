@@ -38,10 +38,12 @@ export const espansoTheme = deepmerge(defaultTheme, {
     Tab: {
       appearances: {
         secondary: {
-          _current: {
-            borderRadius: 2,
-            borderLeft: `2px solid ${espansoColors.green500}`,
-            backgroundColor: espansoColors.green25,
+          selectors: {
+            _current: {
+              borderRadius: 2,
+              borderLeft: `2px solid ${espansoColors.green500}`,
+              backgroundColor: espansoColors.green25,
+            },
           },
         },
       },
@@ -51,9 +53,10 @@ export const espansoTheme = deepmerge(defaultTheme, {
         navbar: {
           borderRadius: 2,
           backgroundColor: espansoColors.green100,
-
-          _focus: {
-            backgroundColor: "white",
+          selectors: {
+            _focus: {
+              backgroundColor: "white",
+            },
           },
         },
       },
@@ -62,24 +65,28 @@ export const espansoTheme = deepmerge(defaultTheme, {
       appearances: {
         minimal: {
           backgroundColor: "transparent",
-          _hover: {
-            backgroundColor: "trasparent",
-          },
-          _active: {
-            backgroundColor: "trasparent",
+          selectors: {
+            _hover: {
+              backgroundColor: "trasparent",
+            },
+            _active: {
+              backgroundColor: "trasparent",
+            },
           },
         },
         navbar: deepmerge(defaultTheme.components.Button.appearances.default, {
           color: "white",
           backgroundColor: "transparent",
           borderColor: "white",
-          _hover: {
-            color: espansoColors.green500,
-            backgroundColor: "white",
-            borderColor: "white",
-          },
-          _active: {
-            backgroundColor: "trasparent",
+          selectors: {
+            _hover: {
+              color: espansoColors.green500,
+              backgroundColor: "white",
+              borderColor: "white",
+            },
+            _active: {
+              backgroundColor: "trasparent",
+            },
           },
         }),
       },
@@ -93,8 +100,10 @@ export const espansoTheme = deepmerge(defaultTheme, {
     },
     Link: {
       baseStyle: {
-        _focus: {
-          boxShadow: "none",
+        selectors: {
+          _focus: {
+            boxShadow: "none",
+          },
         },
       },
       sizes: {
