@@ -1,4 +1,4 @@
-import { Card, Heading, majorScale, Pane, Text, Small } from "evergreen-ui";
+import { Card, Heading, majorScale, Pane, Text } from "evergreen-ui";
 import { Package } from "../api/domain";
 import { isFeatured } from "../api/packageFeatured";
 import { TagBadgeGroup } from "./Tags/TagBadgeGroup";
