@@ -13,7 +13,6 @@ import {
   Position,
   SelectMenu,
   SideSheet,
-  Small,
   Text,
 } from "evergreen-ui";
 import {
@@ -264,7 +263,7 @@ const VersionedPackagePage = (props: Props) => {
                   mobile: () => 600,
                 })}
               >
-                {currentRepo.package.name}
+                {currentRepo.package.title}
               </Heading>
               {isFeatured(currentRepo.package) && <FeaturedBadge />}
             </Stack>
