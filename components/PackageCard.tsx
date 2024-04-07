@@ -4,9 +4,11 @@ import { isFeatured } from "../api/packageFeatured";
 import { TagBadgeGroup } from "./Tags/TagBadgeGroup";
 import { FeaturedBadge } from "./featured";
 import { Stack } from "./layout";
+import { PackageNamer } from "./PackageNamer";
 import { record } from "fp-ts";
 import { pipe } from "fp-ts/function";
 import { NextjsLink } from "./NextjsLink";
+
 
 type Props = {
   package: Package;
@@ -40,8 +42,12 @@ export const PackageCard = (
       <Stack units={1} direction="column">
         <Pane display="flex">
           <Heading flex={1}>{props.package.title}</Heading>
-          {props.hideFeaturedBadge ||
-            (isFeatured(props.package) && <FeaturedBadge />)}
+
+          <Card display="flex" alignItems="center">
+            <PackageNamer package={props.package} /> 
+            {props.hideFeaturedBadge ||
+              (isFeatured(props.package) && <FeaturedBadge />)}
+            </Card>
         </Pane>
         <Text>{props.package.description}</Text>
       </Stack>
