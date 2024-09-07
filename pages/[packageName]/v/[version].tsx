@@ -359,8 +359,8 @@ const VersionedPackagePage = (props: Props) => {
       mdxSource: option.fromNullable(packageRepo.serializedReadme),
       repositoryHomepage: pipe(
         packageRepo.manifest.homepage,
-        GithubURL.decode,
-        option.fromEither
+        option.map(GithubURL.decode),
+        option.flatMap(option.fromEither)
       ),
     })),
     option.chain(sequenceS(option.Apply)),
