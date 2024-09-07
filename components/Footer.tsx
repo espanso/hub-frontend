@@ -141,7 +141,10 @@ export const Footer = (props: Props) => {
             <Text color={props.color}>Made with</Text>
             <HeartIcon color={props.color as Color} />
             <Text color={props.color}>by</Text>
-            <NextjsLink href="https://www.matteopellegrino.me/" target="_blank">
+            <NextjsLink
+              href="https://www.matteopellegrino.dev/"
+              target="_blank"
+            >
               <Text color={props.color} className="link-pelle">
                 Matteo Pellegrino
               </Text>
