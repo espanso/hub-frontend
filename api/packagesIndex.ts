@@ -1,7 +1,6 @@
 import flatCache from "flat-cache";
-import { array, either, option, taskEither } from "fp-ts";
-import { flow, pipe } from "fp-ts/function";
-import { TaskEither } from "fp-ts/TaskEither";
+import { array, either } from "fp-ts";
+import { pipe } from "fp-ts/function";
 import { PackagesIndex } from "./domain";
 
 const PACKAGE_INDEX_URL = process.env.PACKAGE_INDEX_URL || "";
@@ -9,43 +8,39 @@ const PACKAGE_INDEX_URL = process.env.PACKAGE_INDEX_URL || "";
 const PACKAGE_INDEX_CACHE_ID = "packagesIndex";
 const CACHE_DIR = process.env.PACKAGE_INDEX_CACHE_DIR || undefined;
 
-const fetchPackagesIndexInternal = (cache: flatCache.Cache) =>
-  pipe(
-    cache.getKey(PACKAGE_INDEX_URL),
-    option.fromNullable,
-    option.fold(
-      () =>
-        pipe(
-          taskEither.tryCatch(() => fetch(PACKAGE_INDEX_URL), either.toError),
-          taskEither.chain((response) =>
-            taskEither.tryCatch(() => response.json(), either.toError)
-          ),
-          taskEither.chain(
-            flow(
-              PackagesIndex.decode,
-              either.mapLeft(either.toError),
-              taskEither.fromEither
-            )
-          ),
-          taskEither.map((packagesIndex) => {
-            const noDummyPackage: PackagesIndex = {
-              ...packagesIndex,
-              packages: pipe(
-                packagesIndex.packages,
-                array.filter((p) => p.name !== "dummy-package")
-              ),
-            };
-            cache.setKey(PACKAGE_INDEX_URL, noDummyPackage);
-            cache.save();
-            return cache.getKey(PACKAGE_INDEX_URL);
-          })
-        ),
-      taskEither.of
-    ),
-    taskEither.mapLeft(x => { console.error(x); return x }),
-  );
+async function fetchPackagesIndex(url: string): Promise<PackagesIndex> {
+  const response = await fetch(url);
+  const json = await response.json();
 
-export const fetchPackagesIndex: TaskEither<Error, PackagesIndex> = pipe(
-  flatCache.load(PACKAGE_INDEX_CACHE_ID, CACHE_DIR),
-  fetchPackagesIndexInternal
-);
+  return pipe(
+    PackagesIndex.decode(json),
+    either.map((x) => ({
+      ...x,
+      packages: pipe(
+        x.packages,
+        array.filter((p) => p.name !== "dummy-package")
+      ),
+    })),
+    either.fold(
+      (e) => Promise.reject(e),
+      (x) => Promise.resolve(x)
+    )
+  );
+}
+
+export async function getPackagesIndex(): Promise<PackagesIndex> {
+  const cache = flatCache.load(PACKAGE_INDEX_CACHE_ID, CACHE_DIR);
+  const cachedPackagesIndex = cache.getKey(PACKAGE_INDEX_URL);
+  if (cachedPackagesIndex) {
+    return cachedPackagesIndex;
+  }
+
+  const packagesIndex = await fetchPackagesIndex(PACKAGE_INDEX_URL);
+
+  cache.setKey(PACKAGE_INDEX_URL, packagesIndex);
+  cache.save();
+  return cache.getKey(PACKAGE_INDEX_URL);
+}
+
+// export const getPackagesIndex: TaskEither<Error, PackagesIndex> =
+//   taskEither.tryCatch(fetchPackagesIndexOrCache, either.toError);

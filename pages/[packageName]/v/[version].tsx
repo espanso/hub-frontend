@@ -15,36 +15,21 @@ import {
   SideSheet,
   Text,
 } from "evergreen-ui";
-import {
-  array,
-  boolean,
-  either,
-  nonEmptyArray,
-  option,
-  string,
-  task,
-  taskEither,
-} from "fp-ts";
+import { array, boolean, nonEmptyArray, option, string } from "fp-ts";
 import { sequenceS } from "fp-ts/Apply";
-import { constant, flow, pipe, identity } from "fp-ts/function";
+import { constant, flow, identity, pipe } from "fp-ts/function";
 import { NonEmptyArray } from "fp-ts/NonEmptyArray";
-import { Option } from "fp-ts/Option";
 import { GetStaticPropsContext } from "next";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import { GithubURL } from "../../../api/assets";
-import {
-  FileAsString,
-  OrderedByVersion,
-  PackageRepo,
-} from "../../../api/domain";
+import { FileAsString, PackageRepo } from "../../../api/domain";
+import { PackageDetails, resolvePackage } from "../../../api/package";
 import { isFeatured } from "../../../api/packageFeatured";
-import { fetchPackageRepo } from "../../../api/packageRepo";
-import { fetchPackagesIndex } from "../../../api/packagesIndex";
+import { getPackagesIndex } from "../../../api/packagesIndex";
 import { usePackageSearch } from "../../../api/search";
-import { serializeReadme } from "../../../api/serializeReadme";
+import { splitLines } from "../../../api/utils";
 import {
   BetaBanner,
   CodeBlock,
@@ -52,108 +37,46 @@ import {
   espansoTheme,
   FeaturedBadge,
   Footer,
+  GithubIcon,
   MDXRenderer,
   Navbar,
   NextjsLink,
   PackageNamer,
+  ShareButton,
   Stack,
   TabProps,
   TagBadgeGroup,
-  useTabs,
   useResponsive,
-  ShareButton,
-  GithubIcon
+  useTabs,
 } from "../../../components";
-import { splitLines } from "../../../api/utils"
 
-export type Props = {
-  packageRepo: Option<
-    PackageRepo & {
-      serializedReadme: MDXRemoteSerializeResult<Record<string, unknown>>;
-    }
-  >;
-  versions: Array<string>;
+export type Props = PackageDetails;
+
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const packagesIndex = await getPackagesIndex();
+  const packageName = context.params?.packageName;
+  const version = context.params?.version;
+
+  const props = await resolvePackage(
+    packagesIndex,
+    Array.isArray(packageName) ? packageName[0] : packageName,
+    Array.isArray(version) ? version[0] : version
+  );
+
+  return {
+    props,
+  };
 };
 
-export const getStaticProps = (context: GetStaticPropsContext) =>
-  pipe(
-    fetchPackagesIndex,
-    taskEither.chain((packagesIndex) =>
-      pipe(
-        packagesIndex.packages,
-        array.filter(
-          (p) =>
-            context.params !== undefined &&
-            p.name === context.params.packageName
-        ),
-        OrderedByVersion.decode,
-        either.mapLeft(
-          flow(
-            array.reduce("", (acc, curr) => `${acc}, ${curr.message}`),
-            either.toError
-          )
-        ),
-        taskEither.fromEither
-      )
-    ),
-    taskEither.chain((packages) =>
-      sequenceS(taskEither.ApplyPar)({
-        packageRepo: pipe(
-          packages,
-          array.findFirst(
-            (p) =>
-              context.params !== undefined &&
-              p.version === context.params.version
-          ),
-          option.map(fetchPackageRepo),
-          taskEither.fromOption(
-            () => new Error(`Version ${context.params?.version} not found`)
-          ),
-          taskEither.flatten,
-          serializeReadme
-        ),
-        versions: pipe(
-          packages,
-          nonEmptyArray.map((p) => p.version),
-          taskEither.right
-        ),
-      })
-    ),
-    task.map((props) => ({
-      props: pipe(
-        props,
-        either.foldW(
-          () => ({
-            packageRepo: option.none,
-            versions: [],
-          }),
-          (v) => ({
-            packageRepo: option.some(v.packageRepo),
-            versions: v.versions,
-          })
-        )
-      ),
-    }))
-  )();
-
-export const getStaticPaths = pipe(
-  fetchPackagesIndex,
-  task.map(
-    flow(
-      either.map((d) => d.packages),
-      either.map(
-        array.map((p) => ({
-          params: { packageName: p.name, version: p.version },
-        }))
-      ),
-      either.getOrElseW(constant([]))
-    )
-  ),
-  task.map((paths) => ({
-    paths,
+export const getStaticPaths = async () => {
+  const packagesIndex = await getPackagesIndex();
+  return {
+    paths: packagesIndex.packages.map((p) => ({
+      params: { packageName: p.name, version: p.version },
+    })),
     fallback: false,
-  }))
-);
+  };
+};
 
 const N_LINES_INCREMENTAL_CODE_BLOCK = 100;
 
@@ -163,13 +86,13 @@ const YamlShowcase = (props: { files: NonEmptyArray<FileAsString> }) => {
     nonEmptyArray.map((f) => ({
       id: f.name,
       label: f.name,
-      render: () => 
-        <CodeBlock 
+      render: () => (
+        <CodeBlock
           variant="incremental"
           syntax="yaml"
-          content={pipe(
-            f.content, 
-            splitLines(N_LINES_INCREMENTAL_CODE_BLOCK))}/>,
+          content={pipe(f.content, splitLines(N_LINES_INCREMENTAL_CODE_BLOCK))}
+        />
+      ),
     }))
   );
 
@@ -189,13 +112,13 @@ const YamlShowcaseMobile = (props: { files: NonEmptyArray<FileAsString> }) => {
     nonEmptyArray.map((f) => ({
       id: f.name,
       label: f.name,
-      render: () => 
-        <CodeBlock 
+      render: () => (
+        <CodeBlock
           variant="incremental"
           syntax="yaml"
-          content={pipe(
-            f.content, 
-            splitLines(N_LINES_INCREMENTAL_CODE_BLOCK))}/>,
+          content={pipe(f.content, splitLines(N_LINES_INCREMENTAL_CODE_BLOCK))}
+        />
+      ),
     }))
   );
 
@@ -240,6 +163,7 @@ const VersionedPackagePage = (props: Props) => {
 
   const currentVersion = pipe(
     props.packageRepo,
+    option.fromNullable,
     option.map((p) => p.package.version)
   );
 
@@ -272,20 +196,21 @@ const VersionedPackagePage = (props: Props) => {
 
             <Pane flexGrow={1} />
             <Stack units={1} alignItems="center">
-              <ShareButton package={currentRepo.package}/>
+              <ShareButton package={currentRepo.package} />
               {pipe(
                 currentRepo.manifest.homepage,
-                option.map(url => 
+                option.map((url) => (
                   <NextjsLink href={url} external>
-                    <IconButton 
-                      icon={GithubIcon} 
+                    <IconButton
+                      icon={GithubIcon}
                       iconSize={18}
-                      appearance="minimal" 
-                      color={espansoTheme.colors.gray700}/>
-                  </NextjsLink>),
+                      appearance="minimal"
+                      color={espansoTheme.colors.gray700}
+                    />
+                  </NextjsLink>
+                )),
                 option.toNullable
               )}
-              
 
               {pipe(
                 currentVersion,
@@ -311,6 +236,7 @@ const VersionedPackagePage = (props: Props) => {
                         option.chain((v) =>
                           pipe(
                             props.packageRepo,
+                            option.fromNullable,
                             option.map((p) => p.package.name),
                             option.map((n) => `/${n}/v/${v}`),
                             option.map((pathname) => ({ pathname }))
@@ -328,24 +254,24 @@ const VersionedPackagePage = (props: Props) => {
               )}
             </Stack>
           </Pane>
-          
+
           <Text
-          size={foldDevices({
-            desktop: () => 400,
-            tablet: () => 300,
-            mobile: () => 300,
-          })}
-          color={espansoTheme.colors.muted}
+            size={foldDevices({
+              desktop: () => 400,
+              tablet: () => 300,
+              mobile: () => 300,
+            })}
+            color={espansoTheme.colors.muted}
           >
             <PackageNamer package={currentRepo.package} />
           </Text>
           <Text
-          size={foldDevices({
-            desktop: () => 400,
-            tablet: () => 300,
-            mobile: () => 300,
-          })}
-          color={espansoTheme.colors.muted}
+            size={foldDevices({
+              desktop: () => 400,
+              tablet: () => 300,
+              mobile: () => 300,
+            })}
+            color={espansoTheme.colors.muted}
           >
             By {currentRepo.manifest.author}
           </Text>
@@ -385,7 +311,7 @@ const VersionedPackagePage = (props: Props) => {
               nonEmptyArray.fromArray,
               option.map(([current, latest]) =>
                 current === latest
-                  ? option.some('')
+                  ? option.some("")
                   : option.some(` --version ${current}`)
               ),
               option.flatten,
@@ -418,7 +344,7 @@ const VersionedPackagePage = (props: Props) => {
   );
 
   const tabDescription = pipe(
-    props.packageRepo,
+    option.fromNullable(props.packageRepo),
     option.chain((packageRepo) =>
       pipe(
         packageRepo.readme,
@@ -430,18 +356,11 @@ const VersionedPackagePage = (props: Props) => {
       )
     ),
     option.map((packageRepo) => ({
-      mdxSource: option.some(packageRepo.serializedReadme),
+      mdxSource: option.fromNullable(packageRepo.serializedReadme),
       repositoryHomepage: pipe(
         packageRepo.manifest.homepage,
-        option.chain(
-          flow(
-            GithubURL.decode,
-            either.fold(
-              () => option.none,
-              (url) => option.some(url)
-            )
-          )
-        )
+        GithubURL.decode,
+        option.fromEither
       ),
     })),
     option.chain(sequenceS(option.Apply)),
@@ -456,17 +375,17 @@ const VersionedPackagePage = (props: Props) => {
 
   const tabSourceDesktop = pipe(
     props.packageRepo,
-    option.map((p) => p.packageYml),
-    option.map((files) => (
-      <Pane>
-        <YamlShowcase files={files} />
-      </Pane>
-    )),
-    option.map((content) => ({
+    option.fromNullable,
+    option.map((packageRepo) => ({
       id: "source",
       label: `Source`,
       icon: <CodeIcon />,
-      render: () => tabContentWrapper(content),
+      render: () =>
+        tabContentWrapper(
+          <Pane>
+            <YamlShowcase files={packageRepo.packageYml} />
+          </Pane>
+        ),
     }))
   );
 
@@ -487,17 +406,17 @@ const VersionedPackagePage = (props: Props) => {
 
   const tabSourceMobile = pipe(
     props.packageRepo,
-    option.map((p) => p.packageYml),
-    option.map((files) => (
-      <Pane>
-        <YamlShowcaseMobile files={files} />
-      </Pane>
-    )),
-    option.map((content) => ({
+    option.fromNullable,
+    option.map((packageRepo) => ({
       id: "source",
       label: `Source`,
       icon: <CodeIcon />,
-      render: () => tabContentWrapper(content),
+      render: () =>
+        tabContentWrapper(
+          <Pane>
+            <YamlShowcaseMobile files={packageRepo.packageYml} />
+          </Pane>
+        ),
     }))
   );
 
@@ -514,54 +433,53 @@ const VersionedPackagePage = (props: Props) => {
     searchPathname: "/search",
   });
 
-  const packagePage = (currentRepo: PackageRepo) => {
-    const metaInfo = {
-      title: `${currentRepo.package.name} ${currentRepo.package.version} | Espanso Hub`,
-      description: `Paste in a terminal to install the \
-${currentRepo.package.name} package (v${currentRepo.package.version}): \
-${currentRepo.package.description}`,
-    };
-    return (
-      <Pane display="flex" flexDirection="column" minHeight="100vh">
-        <Head>
-          <title>{metaInfo.title}</title>
-          <meta name="description" content={metaInfo.description} />
-          <meta property="og:title" content={metaInfo.title} />
-          <meta property="og:description" content={metaInfo.description} />
-        </Head>
-        <ContentRow background="blueTint">
-          <BetaBanner />
-        </ContentRow>
+  const metaInfo = !props.packageRepo
+    ? {}
+    : {
+        title: `${props.packageRepo.package.name} ${props.packageRepo.package.version} | Espanso Hub`,
+        description: `Paste in a terminal to install the \
+${props.packageRepo.package.name} package (v${props.packageRepo.package.version}): \
+${props.packageRepo.package.description}`,
+      };
 
-        <ContentRow background="green500" elevation={2} zIndex={1}>
-          <Navbar
-            searchInitialValue={pipe(
-              packageSearch.query,
-              option.getOrElseW(constant(""))
-            )}
-            onSearchEnter={flow(option.of, packageSearch.setQuery)}
-          />
-        </ContentRow>
+  return (
+    <Pane display="flex" flexDirection="column" minHeight="100vh">
+      <Head>
+        <title>{metaInfo.title}</title>
+        <meta name="description" content={metaInfo.description} />
+        <meta property="og:title" content={metaInfo.title} />
+        <meta property="og:description" content={metaInfo.description} />
+      </Head>
+      <ContentRow background="blueTint">
+        <BetaBanner />
+      </ContentRow>
 
-        <ContentRow elevation={1} zIndex={1} paddingTop={majorScale(4)}>
-          <Stack units={4} direction="column">
-            {header(currentRepo)}
-            {isDesktop ? tabsHeader : tabsHeaderMobile}
-          </Stack>
-        </ContentRow>
+      <ContentRow background="green500" elevation={2} zIndex={1}>
+        <Navbar
+          searchInitialValue={pipe(
+            packageSearch.query,
+            option.getOrElseW(constant(""))
+          )}
+          onSearchEnter={flow(option.of, packageSearch.setQuery)}
+        />
+      </ContentRow>
 
-        <ContentRow background="gray200" flexGrow={1}>
-          {isDesktop ? tabsContent : tabsContentMobile}
-        </ContentRow>
+      <ContentRow elevation={1} zIndex={1} paddingTop={majorScale(4)}>
+        <Stack units={4} direction="column">
+          {props.packageRepo && header(props.packageRepo)}
+          {isDesktop ? tabsHeader : tabsHeaderMobile}
+        </Stack>
+      </ContentRow>
 
-        <ContentRow background="green600">
-          <Footer showAuthor color={espansoTheme.colors.green500} />
-        </ContentRow>
-      </Pane>
-    );
-  };
+      <ContentRow background="gray200" flexGrow={1}>
+        {isDesktop ? tabsContent : tabsContentMobile}
+      </ContentRow>
 
-  return pipe(props.packageRepo, option.map(packagePage), option.toNullable);
+      <ContentRow background="green600">
+        <Footer showAuthor color={espansoTheme.colors.green500} />
+      </ContentRow>
+    </Pane>
+  );
 };
 
 export default VersionedPackagePage;
