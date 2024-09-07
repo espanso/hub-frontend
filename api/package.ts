@@ -79,9 +79,9 @@ export async function resolvePackage(
       remarkPlugins: [remarkGfm],
     },
   }).catch((e) => {
-    console.error(`
-      Failed to serialize readme for ${currentVersion.name}
-      ${e}`);
+    console.error(`>>>
+      Failed to serialize readme for package "${currentVersion.name}@${currentVersion.version}":\n${e}
+      >>>`);
     return null;
   });
 
