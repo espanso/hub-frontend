@@ -101,10 +101,10 @@ export const PackageArray = new t.Type<Array<Package>>(
             validation,
             either.fold(
               () => pipe(
-                `\n[>>>>] warn  - PackageArray decode failure: ignoring the package
+                `[>>>>] warn - Package decode failure: ignoring
                   ${JSON.stringify((input as Array<unknown>)[i])}
                   because
-                  ${PathReporter.report(validation).join('\n')}\n`,
+                  ${PathReporter.report(validation).join('\n')}`,
                 console.error,
                 () => option.none
               ),

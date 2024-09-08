@@ -8,24 +8,15 @@ import {
   Strong,
   Text,
 } from "evergreen-ui";
-import {
-  array,
-  boolean,
-  either,
-  nonEmptyArray,
-  option,
-  record,
-  task,
-  taskEither,
-} from "fp-ts";
-import { espansoTheme } from "../components/EspansoThemeProvider";
+import { array, boolean, nonEmptyArray, option } from "fp-ts";
 import { Eq } from "fp-ts/Eq";
 import { constant, flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import React, { ComponentProps } from "react";
-import { GroupedByVersion, Package } from "../api/domain";
-import { fetchPackagesIndex } from "../api/packagesIndex";
+import { Package } from "../api/domain";
+import { groupByVersion } from "../api/package";
+import { getPackagesIndex } from "../api/packagesIndex";
 import { tagsSearch, textSearch, usePackageSearch } from "../api/search";
 import { tagsCount } from "../api/tags";
 import {
@@ -36,34 +27,23 @@ import {
   EmptyResultsIcon,
   Footer,
   Navbar,
+  NextjsLink,
   PackageCard,
   Stack,
   TagBadgeGroup,
-  NextjsLink,
 } from "../components";
+import { espansoTheme } from "../components/EspansoThemeProvider";
 import { useResponsive } from "../components/layout/useResponsive";
 
-export const getStaticProps = () =>
-  pipe(
-    fetchPackagesIndex,
-    taskEither.map((index) => index.packages),
-    taskEither.chain(
-      flow(
-        GroupedByVersion.decode,
-        either.mapLeft(either.toError),
-        taskEither.fromEither
-      )
-    ),
-    taskEither.map<GroupedByVersion, Package[]>(
-      flow(record.map(nonEmptyArray.head), Object.values)
-    ),
-    task.map(either.fold(constant(option.none), option.some)),
-    task.map((packages) => ({
-      props: {
-        packages,
-      },
-    }))
-  )();
+export const getStaticProps = async () => {
+  const packagesIndex = await getPackagesIndex();
+
+  return {
+    props: {
+      packages: groupByVersion(packagesIndex.packages),
+    },
+  };
+};
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 

@@ -5,22 +5,14 @@ import {
   Pane,
   Paragraph,
 } from "evergreen-ui";
-import {
-  array,
-  either,
-  nonEmptyArray,
-  option,
-  record,
-  task,
-  taskEither,
-} from "fp-ts";
-import { constant, flow, pipe } from "fp-ts/function";
+import { array, nonEmptyArray, option } from "fp-ts";
+import { flow, pipe } from "fp-ts/function";
 import { InferGetStaticPropsType } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import React, { useState } from "react";
-import { GroupedByVersion, Package } from "../api/domain";
 import { isFeatured, ordFeatured } from "../api/packageFeatured";
-import { fetchPackagesIndex } from "../api/packagesIndex";
+import { getPackagesIndex } from "../api/packagesIndex";
 import { usePackageSearch } from "../api/search";
 import {
   ContentRow,
@@ -28,37 +20,25 @@ import {
   FeaturedShowcase,
   Footer,
   Navbar,
+  NextjsLink,
   SearchBar,
   Stack,
-  NextjsLink,
 } from "../components";
 import { useResponsive } from "../components/layout/useResponsive";
-import Image from "next/image";
 // Landing bg images generated from https://app.haikei.app/
-import landingBg from "../public/images/landing_bg.svg";
 import notOptimizedImageLoader from "../api/notOptimizedImageLoader";
+import { groupByVersion } from "../api/package";
+import landingBg from "../public/images/landing_bg.svg";
 
-export const getStaticProps = () =>
-  pipe(
-    fetchPackagesIndex,
-    taskEither.map((index) => index.packages),
-    taskEither.chain(
-      flow(
-        GroupedByVersion.decode,
-        either.mapLeft(either.toError),
-        taskEither.fromEither
-      )
-    ),
-    taskEither.map<GroupedByVersion, Package[]>(
-      flow(record.map(nonEmptyArray.head), Object.values)
-    ),
-    task.map(either.fold(constant(option.none), option.some)),
-    task.map((packages) => ({
-      props: {
-        packages,
-      },
-    }))
-  )();
+export const getStaticProps = async () => {
+  const packagesIndex = await getPackagesIndex();
+
+  return {
+    props: {
+      packages: groupByVersion(packagesIndex.packages),
+    },
+  };
+};
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
