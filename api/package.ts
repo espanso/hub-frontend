@@ -77,6 +77,7 @@ export async function resolvePackage(
   const serializedReadme = await serialize(fixLiteralHTML(packageRepo.readme), {
     mdxOptions: {
       remarkPlugins: [remarkGfm],
+      format: "md",
     },
   }).catch((e) => {
     console.error(`>>>

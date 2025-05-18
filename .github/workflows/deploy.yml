@@ -28,7 +28,7 @@ jobs:
         env:
           PACKAGE_INDEX_URL: "https://github.com/espanso/hub/releases/download/v1.0.0/package_index.json"
         run: |
-          yarn
+          yarn install --frozen-lockfile
           yarn build
           yarn export
 
