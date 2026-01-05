@@ -128,15 +128,32 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
       {props.children}
     </Paragraph>
   ),
-  code: (props: React.ComponentProps<any>) => (
-    <CodeBlock variant="default" content={String(props.children)} showCopyButton />
-  ),
-  inlineCode: (props: React.ComponentProps<any>) => (
-    <CodeBlock variant="inline" content={String(props.children)}  />
-  ),
-  kbd: (props: React.ComponentProps<any>) => (
-    <CodeBlock variant="inline" content={String(props.children)} />
-  ),
+  code: (props: React.ComponentProps<any>) => {
+    // The `code` component can be used for single-line or multi-line code blocks. Determine which to use.
+    // Usually multi-line blocks are wrapped in `pre` and are handled that way instead of this.
+    // className will exist if this is a code block and the syntax language is defined.
+    if (props.className) {
+      return defaultCodeBlock(String(props.children));
+    }
+    return (<CodeBlock variant="inline" content={String(props.children)}  />);
+  },
+  pre: (props: React.ComponentProps<any>) => {
+    // The <pre> block is how multi-line code-blocks are rendered. This unpacks it and renders it appopriately.
+    // Ensure we have exactly one child:
+    if (!props.children) {
+      return null; // No child --> render nothing
+    }
+
+    const child = React.Children.only(props.children);
+
+    // Check if the child is a function that makes a <code> element:
+    if ( React.isValidElement(child) && typeof child.type === "function" && (child.type as Function).name === "code" ) {
+      const codeChildrenProps: React.ComponentProps<any> = child.props;
+      return defaultCodeBlock(String(codeChildrenProps.children || "")); // Fall back to empty string if there is no code.
+    }
+    // If there is no <code> child, return null. There should be a child <code> element.
+    return null;
+  },
   span: (props: React.ComponentProps<any>) => (
     <Text display="flex">{props.children}</Text>
   ),
@@ -147,6 +164,13 @@ const markdownComponents = (repositoryHomepage: assets.GithubURL) => ({
     <ListItem>{props.children}</ListItem>
   ),
 });
+
+/**
+ * Multiple components can create a Default CodeBlock component, so define it only once:
+ */
+const defaultCodeBlock = (codeContent: string) => {
+  return <CodeBlock variant="default" content={codeContent} showCopyButton />;
+}
 
 export const MDXRenderer = (props: Props) => (
   <MDXRemote
