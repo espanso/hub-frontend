@@ -38,6 +38,10 @@ jobs:
           PACKAGE_INDEX_URL: "https://github.com/espanso/hub/releases/download/v1.0.0/package_index.json"
         run: |
           pnpm build
+          if [ -d build/client/hub-frontend ]; then
+            cp -a build/client/hub-frontend/. build/client/
+            rm -rf build/client/hub-frontend
+          fi
           # Create a .nojekyll file to prevent GitHub Pages from ignoring files that begin with an underscore
           touch build/client/.nojekyll
 

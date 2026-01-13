@@ -5,6 +5,8 @@ import {
 } from "./app/services/packages";
 
 export default {
+  basename: "/hub-frontend",
+  ssr: false,
   async prerender() {
     const packageNames = await getUniquePackageNames();
     const versionPaths = await getAllPackageVersionPaths();
