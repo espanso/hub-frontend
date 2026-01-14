@@ -11,8 +11,17 @@ import { PackageCard } from "../components/PackageCard";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Espanso Hub | Enhance your workflows with espanso packages" },
+    {
+      name: "description",
+      content: `\
+Enhance your workflows with espanso packages from the Espanso Hub. \
+Emoji, code-snippets, mathematical notations, accents and more. \
+Explore the hub to find packages that fits you. \
+Look up the featured packages specifically selected by the Espanso team. \
+Not finding what fits you? Create your own package or join the Reddit community to find \
+inspiration.`,
+    },
   ];
 }
 
