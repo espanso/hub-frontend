@@ -47,7 +47,7 @@ export default function Home({
   };
 
   return (
-    <div style={{ backgroundImage: "url(images/landing_bg.svg)" }}>
+    <div style={{ backgroundImage: "url(/images/landing_bg.svg)" }}>
       {/* {packages.packages.map((pkg) => (
         <li key={pkg.id}>{pkg.title}</li>
       ))} */}

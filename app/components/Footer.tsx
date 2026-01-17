@@ -50,7 +50,7 @@ export function Footer({ showAuthor = false }: FooterProps) {
         <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img
-              src="images/navbar_logo.svg"
+              src="/images/navbar_logo.svg"
               alt="Espanso Hub"
               className="h-7 w-auto"
             />

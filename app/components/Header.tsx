@@ -34,7 +34,7 @@ export function Header({
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <img
-              src="images/navbar_logo.svg"
+              src="/images/navbar_logo.svg"
               alt="Espanso Hub"
               className="h-6 md:h-7 w-auto"
             />
