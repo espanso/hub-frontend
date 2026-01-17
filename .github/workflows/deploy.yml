@@ -1,40 +1,65 @@
-name: Deploy to Github Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  deployment:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
-          cache: "yarn"
+          node-version: 20
+          cache: pnpm
 
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         env:
           PACKAGE_INDEX_URL: "https://github.com/espanso/hub/releases/download/v1.0.0/package_index.json"
         run: |
-          yarn install --frozen-lockfile
-          yarn build
-          yarn export
+          pnpm build
+          if [ -d build/client/hub-frontend ]; then
+            cp -a build/client/hub-frontend/. build/client/
+            rm -rf build/client/hub-frontend
+          fi
+          # Create a .nojekyll file to prevent GitHub Pages from ignoring files that begin with an underscore
+          touch build/client/.nojekyll
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./out
-          cname: hub.espanso.org
+          path: build/client
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
