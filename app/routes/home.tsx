@@ -6,7 +6,7 @@ import { Input } from "../components/ui/input";
 import { getPackagesIndex } from "../services/packages";
 import type { Route } from "./+types/home";
 import { Badge } from "../components/ui/badge";
-import { isFeatured } from "../model/packages";
+import { isFeatured, type Package } from "../model/packages";
 import { PackageCard } from "../components/PackageCard";
 
 export function meta({}: Route.MetaArgs) {
@@ -103,8 +103,18 @@ export default function Home({
 
           {/* Grid */}
           <div className="flex flex-col md:grid md:grid-flow-col md:grid-rows-5 lg:grid-rows-3 gap-8">
-            {packages.packages
-              .filter(isFeatured)
+            {Array.from(
+              packages.packages
+                .filter(isFeatured)
+                .reduce((acc, pkg) => {
+                  const existing = acc.get(pkg.name);
+                  if (!existing || pkg.version > existing.version) {
+                    acc.set(pkg.name, pkg);
+                  }
+                  return acc;
+                }, new Map<string, Package>())
+                .values(),
+            )
               .slice(0, 9)
               .map((pkg) => (
                 <div key={pkg.id} className="w-96">
